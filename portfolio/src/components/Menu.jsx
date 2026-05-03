@@ -1,5 +1,6 @@
 import { NavLink } from "react-router-dom";
 import { User } from "lucide-react";
+import logo from "../assets/icons/unifacisa-icon.png";
 
 function Menu() {
   return (
@@ -8,12 +9,17 @@ function Menu() {
         className="max-w-7xl mx-auto p-5 flex items-center justify-between"
         aria-label="Navegação principal"
       >
-      
         <h1 className="text-lg font-bold">
-          <NavLink to="/">Logo</NavLink>
+          <NavLink to="/" className="flex items-center gap-2">
+            <img
+              src={logo}
+              alt="Logo do site"
+              className="w-8 h-8 object-contain"
+            />
+            <span className="font-semibold text-xl font-sans">Unifacisa</span>
+          </NavLink>
         </h1>
 
-        
         <ul className="hidden md:flex items-center font-semibold text-lg gap-10">
           <li>
             <NavLink to="/courses">Cursos</NavLink>

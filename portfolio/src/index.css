@@ -6,10 +6,12 @@
   --color-primary: #43A7F5;
   --color-highlight: #9747FF;
   --color-text: #FFFFFF;
+  --color-background-white: #F5F5F5;
+
 
   --color-primary-hover:#5A4BC9;
 
-  --font-sans: "Afacad", ui-sans-serif, system-ui, sans-serif;
+  --font-sans: "Poppins", sans-serif;
 
 }
 
