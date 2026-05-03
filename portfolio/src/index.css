@@ -1,23 +1,16 @@
 @import "tailwindcss";
 
 @theme {
-  --color-background: #222023;
-  --color-accent: #131313;
-  --color-primary: #9747FF;
-  --color-highlight: #FFB12A;
-  --color-text: #F5F5F5;
-  --color-highlight-pink: #EF6795;
-  --color-primary-hover:#5A4BC9;
-  --color-accent-book:#6C5CE7;
-  --color-accent-anime:#5135A4;
-  --color-accent-song:#EF6795;
-  --color-accent-performance:#B06AB3;
-  --color-accent-movie:#522A70;
-  --color-accent-series:#8A56E2;
+  --color-background: #2346B7;
+  --color-accent: #CCFF05;
+  --color-primary: #43A7F5;
+  --color-highlight: #9747FF;
+  --color-text: #FFFFFF;
 
+  --color-primary-hover:#5A4BC9;
 
   --font-sans: "Afacad", ui-sans-serif, system-ui, sans-serif;
-  --font-serif: "Roboto", sans-serif, Georgia, serif;
+
 }
 
 @layer components {
@@ -29,31 +22,4 @@
     @apply bg-primary px-4 py-1.5 rounded-lg hover:bg-primary-hover cursor-pointer
   }
 
-  .mobile-container {
-    @apply px-5;
-  }
-
-  body {
-    background-color: var(--color-background);
-  }
-
-  .hide-scrollbar::-webkit-scrollbar {
-  display: none;
-}
-
-.hide-scrollbar {
-  -ms-overflow-style: none;
-  scrollbar-width: none;
-}
-
-  @keyframes sparkle {
-  0%, 100% {
-    transform: scale(1);
-    opacity: 0.9;
-  }
-  50% {
-    transform: scale(1.25);
-    opacity: 1;
-  }
-}
 }
