@@ -14,7 +14,9 @@ function Home() {
               <h1 className="text-2xl font-semibold">Cursos</h1>
 
               <div className="flex text-sm gap-10 items-center mt-4">
-            <h4 className="whitespace-nowrap font-normal text-md">Filtrar por:</h4>
+                <h4 className="whitespace-nowrap font-normal text-md">
+                  Filtrar por:
+                </h4>
 
                 <FilterSelect
                   label="Matriz"
@@ -25,14 +27,11 @@ function Home() {
               </div>
             </header>
 
-            <div className="bg-background-white rounded-lg p-6 flex flex-col gap-4 w-full h-[500px]">
-            </div>
+            <div className="bg-background-white rounded-lg p-6 flex flex-col gap-4 w-full h-[500px]"></div>
           </div>
 
           <aside className="w-64 py-6 mt-13">
-            <h2 className="text-text font-semibold text-lg">
-              Notificações
-            </h2>
+            <h2 className="text-text font-semibold text-lg">Notificações</h2>
           </aside>
         </div>
       </div>
