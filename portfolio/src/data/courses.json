@@ -1,0 +1,19 @@
+[
+  {
+    "id": 1,
+    "title": "Administração",
+    "icon": "admin"
+  },
+
+  {
+    "id": 2,
+    "title": "Análise e Desenvolvimento de Sistemas",
+    "icon": "ads"
+  },
+
+  {
+    "id": 3,
+    "title": "Arquitetura e Urbanismo",
+    "icon": "arq"
+  }
+]
