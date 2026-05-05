@@ -28,7 +28,9 @@ function Subjects() {
           <h2 id="competencias-title">Competências</h2>
 
           <div className="flex text-sm gap-10 items-center mt-4">
-            <h4 className="whitespace-nowrap font-normal text-md">Filtrar por:</h4>
+            <h4 className="whitespace-nowrap font-normal text-md">
+              Filtrar por:
+            </h4>
             <FilterSelect
               label="Matriz"
               options={["62", "63"]}
