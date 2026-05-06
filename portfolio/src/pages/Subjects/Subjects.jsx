@@ -3,6 +3,7 @@ import Subject from "../../components/Subject";
 import Layout from "../../Layout/Layout";
 import subjectsData from "../../data/subjects.json";
 import FilterSelect from "../../components/FilterSelect";
+import PlannerCard from "../../components/PlannerCard";
 
 function Subjects() {
   const [matriz, setMatriz] = useState("");
