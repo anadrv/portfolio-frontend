@@ -22,7 +22,7 @@ function Menu() {
 
         <ul className="hidden md:flex items-center font-semibold text-lg gap-10">
           <li>
-            <NavLink to="/courses">Cursos</NavLink>
+            <NavLink to="/">Cursos</NavLink>
           </li>
 
           <li>
