@@ -1,9 +1,22 @@
 import { useState } from "react";
 import Layout from "../../Layout/Layout";
 import FilterSelect from "../../components/FilterSelect";
+import CourseCard from "../../components/CourseCard";
+
+import adminIcon from "../../assets/icons/courses/admin.png";
+import adsIcon from "../../assets/icons/courses/ads.png";
+import arqIcon from "../../assets/icons/courses/arq.png";
+
+import courses from "../../data/courses.json";
 
 function Home() {
   const [matriz, setMatriz] = useState("");
+
+  const iconMap = {
+    admin: adminIcon,
+    ads: adsIcon,
+    arq: arqIcon,
+  };
 
   return (
     <Layout>
@@ -27,7 +40,15 @@ function Home() {
               </div>
             </header>
 
-            <div className="bg-background-white rounded-lg p-6 flex flex-col gap-4 w-full h-[500px]"></div>
+            <div className="bg-background-white rounded-lg p-6 grid grid-cols-3 gap-3 w-full h-[500px] overflow-y-auto items-start">
+              {courses.map((course) => (
+                <CourseCard
+                  key={course.id}
+                  title={course.title}
+                  icons={[iconMap[course.icon]]}
+                />
+              ))}
+            </div>
           </div>
 
           <aside className="w-64 py-6 mt-13">
