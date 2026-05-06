@@ -15,5 +15,11 @@
     "id": 3,
     "title": "Arquitetura e Urbanismo",
     "icon": "arq"
+  },
+
+  {
+    "id": 4,
+    "title": "Design Gráfico Digital",
+    "icon": "design"
   }
 ]

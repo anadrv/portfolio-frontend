@@ -6,6 +6,7 @@ import CourseCard from "../../components/CourseCard";
 import adminIcon from "../../assets/icons/courses/admin.png";
 import adsIcon from "../../assets/icons/courses/ads.png";
 import arqIcon from "../../assets/icons/courses/arq.png";
+import dsgIcon from "../../assets/icons/courses/design.png";
 
 import courses from "../../data/courses.json";
 
@@ -16,6 +17,7 @@ function Home() {
     admin: adminIcon,
     ads: adsIcon,
     arq: arqIcon,
+    design: dsgIcon,
   };
 
   return (
@@ -40,7 +42,7 @@ function Home() {
               </div>
             </header>
 
-            <div className="bg-background-white rounded-lg p-6 grid grid-cols-3 gap-3 w-full h-[500px] overflow-y-auto items-start">
+            <div className="bg-background-white rounded-lg p-6 grid grid-cols-3 gap-4 w-full min-h-[500px] content-start">
               {courses.map((course) => (
                 <CourseCard
                   key={course.id}
