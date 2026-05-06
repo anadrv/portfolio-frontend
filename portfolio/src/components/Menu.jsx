@@ -29,9 +29,6 @@ function Menu() {
             <NavLink to="/notifications">Notificações</NavLink>
           </li>
 
-          <li>
-            <NavLink to="/subjects">Configurações</NavLink>
-          </li>
 
           <li>
             <NavLink
