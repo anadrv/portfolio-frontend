@@ -7,6 +7,7 @@ import adminIcon from "../../assets/icons/courses/admin.png";
 import adsIcon from "../../assets/icons/courses/ads.png";
 import arqIcon from "../../assets/icons/courses/arq.png";
 import dsgIcon from "../../assets/icons/courses/design.png";
+import lawIcon from "../../assets/icons/courses/law.png";
 
 import courses from "../../data/courses.json";
 
@@ -18,7 +19,12 @@ function Home() {
     ads: adsIcon,
     arq: arqIcon,
     design: dsgIcon,
+    law: lawIcon,
   };
+
+  const filteredCourses = courses.filter((course) => {
+    return matriz === "" || course.matriz === matriz;
+  });
 
   return (
     <Layout>
@@ -42,8 +48,8 @@ function Home() {
               </div>
             </header>
 
-            <div className="bg-background-white rounded-lg p-6 grid grid-cols-3 gap-4 w-full min-h-[500px] content-start">
-              {courses.map((course) => (
+            <div className="bg-background-white rounded-lg p-6 grid gap-4 w-full min-h-[500px] content-start [grid-template-columns:repeat(auto-fit,minmax(220px,1fr))]">
+              {filteredCourses.map((course) => (
                 <CourseCard
                   key={course.id}
                   title={course.title}
