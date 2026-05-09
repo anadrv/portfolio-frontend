@@ -32,5 +32,12 @@
     "title": "Direito",
     "icon": "law",
     "matriz": "62"
+  },
+  
+  {
+    "id": 6,
+    "title": "Educação Física",
+    "icon": "physical-education",
+    "matriz": ["62", "63"]
   }
 ]

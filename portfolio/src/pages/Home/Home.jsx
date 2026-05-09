@@ -2,17 +2,20 @@ import { useState } from "react";
 import Layout from "../../Layout/Layout";
 import FilterSelect from "../../components/FilterSelect";
 import CourseCard from "../../components/CourseCard";
+import CreateCourse from "../../components/CreateCourse";
 
 import adminIcon from "../../assets/icons/courses/admin.png";
 import adsIcon from "../../assets/icons/courses/ads.png";
 import arqIcon from "../../assets/icons/courses/arq.png";
 import dsgIcon from "../../assets/icons/courses/design.png";
 import lawIcon from "../../assets/icons/courses/law.png";
+import peIcon from "../../assets/icons/courses/physical-education.png";
 
 import courses from "../../data/courses.json";
 
 function Home() {
   const [matriz, setMatriz] = useState("");
+  const [showCreate, setShowCreate] = useState(false);
 
   const iconMap = {
     admin: adminIcon,
@@ -20,10 +23,11 @@ function Home() {
     arq: arqIcon,
     design: dsgIcon,
     law: lawIcon,
+    "physical-education": peIcon,
   };
 
   const filteredCourses = courses.filter((course) => {
-    return matriz === "" || course.matriz === matriz;
+    return matriz === "" || course.matriz.includes(matriz);
   });
 
   return (
@@ -35,7 +39,10 @@ function Home() {
               <h1 className="text-2xl font-semibold">Cursos</h1>
 
               <div className="flex flex-wrap md:flex-nowrap text-sm gap-3 md:gap-10 items-center">
-                <button className="bg-white py-2 px-4 text-background font-semibold text-sm rounded whitespace-nowrap">
+                <button
+                  onClick={() => setShowCreate(true)}
+                  className="bg-white py-2 px-4 text-background font-semibold text-sm rounded whitespace-nowrap"
+                >
                   Adicionar novo curso
                 </button>
 
@@ -58,7 +65,6 @@ function Home() {
                 gridTemplateColumns: "repeat(auto-fill, minmax(220px, 1fr))",
               }}
             >
-              {" "}
               {filteredCourses.map((course) => (
                 <CourseCard
                   key={course.id}
@@ -74,6 +80,23 @@ function Home() {
           </aside>
         </div>
       </div>
+
+      {showCreate && (
+        <div
+          className="fixed inset-0 bg-black/50 flex items-center justify-center z-50"
+          onClick={() => setShowCreate(false)}
+        >
+          <div onClick={(e) => e.stopPropagation()}>
+            <CreateCourse
+              onCancel={() => setShowCreate(false)}
+              onSave={(data) => {
+                console.log("novo curso:", data);
+                setShowCreate(false);
+              }}
+            />
+          </div>
+        </div>
+      )}
     </Layout>
   );
 }
