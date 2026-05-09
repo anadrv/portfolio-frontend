@@ -29,12 +29,16 @@ function Home() {
   return (
     <Layout>
       <div className="px-6">
-        <div className="flex gap-16">
+        <div className="flex flex-col lg:flex-row gap-16">
           <div className="flex-1">
-            <header className="py-6 text-text font-semibold flex items-center justify-between">
+            <header className="py-6 text-text font-semibold flex flex-col md:flex-row md:items-center md:justify-between gap-4">
               <h1 className="text-2xl font-semibold">Cursos</h1>
 
-              <div className="flex text-sm gap-10 items-center mt-4">
+              <div className="flex flex-wrap md:flex-nowrap text-sm gap-3 md:gap-10 items-center">
+                <button className="bg-white py-2 px-4 text-background font-semibold text-sm rounded whitespace-nowrap">
+                  Adicionar novo curso
+                </button>
+
                 <h4 className="whitespace-nowrap font-normal text-md">
                   Filtrar por:
                 </h4>
@@ -48,7 +52,13 @@ function Home() {
               </div>
             </header>
 
-            <div className="bg-background-white rounded-lg p-6 grid gap-4 w-full min-h-[500px] content-start [grid-template-columns:repeat(auto-fit,minmax(220px,1fr))]">
+            <div
+              className="bg-background-white rounded-lg p-6 grid gap-6 w-full min-h-[500px] items-start content-start"
+              style={{
+                gridTemplateColumns: "repeat(auto-fill, minmax(220px, 1fr))",
+              }}
+            >
+              {" "}
               {filteredCourses.map((course) => (
                 <CourseCard
                   key={course.id}
@@ -59,7 +69,7 @@ function Home() {
             </div>
           </div>
 
-          <aside className="w-64 py-6 mt-13">
+          <aside className="lg:w-64 py-6 lg:mt-13">
             <h2 className="text-text font-semibold text-lg">Notificações</h2>
           </aside>
         </div>
