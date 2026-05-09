@@ -8,7 +8,7 @@ function FilterSelect({ label, options, value, onChange }) {
         <select
           value={value}
           onChange={(e) => onChange(e.target.value)}
-          className="w-full p-2 pr-10 rounded bg-white text-background appearance-none focus:outline-none"
+          className="w-full p-2 pr-10 rounded bg-white text-background appearance-none focus:outline-none cursor-pointer"
         >
           <option value="">{label}</option>
 

@@ -21,5 +21,11 @@
     "id": 4,
     "title": "Design Gráfico Digital",
     "icon": "design"
+  },
+  
+  {
+    "id": 5,
+    "title": "Direito",
+    "icon": "law"
   }
 ]

@@ -26,7 +26,12 @@ function Subjects() {
 
       <main className="px-6 flex gap-30 text-text text-lg font-semibold">
         <section aria-labelledby="competencias-title" className="flex-1">
-          <h2 id="competencias-title">Competências</h2>
+          <div className="flex justify-between mb-8">
+            <h2 id="competencias-title">Competências</h2>
+            <button className="bg-white p-1 px-2 text-background font-semibold text-sm rounded">
+              Adicionar nova competência
+            </button>
+          </div>
 
           <div className="flex text-sm gap-10 items-center mt-4">
             <h4 className="whitespace-nowrap font-normal text-md">
