@@ -1,3 +1,6 @@
+import { useState, useContext } from "react";
+import { AuthContext } from "../../context/AuthContext";
+import { useNavigate } from "react-router-dom";
 import LoginLayout from "../../Layout/LoginLayout";
 import unifacisa from "../../assets/images/name-image.png";
 import border from "../../assets/images/border-image.png";
@@ -5,9 +8,46 @@ import bo from "../../assets/images/border2-image.png";
 import jack from "../../assets/images/jack-image.png";
 
 function Login() {
+  const [formData, setFormData] = useState({
+    email: "",
+    password: "",
+  });
+
+  const navigate = useNavigate();
+  const { login } = useContext(AuthContext);
+
+  function handleChange(e) {
+    const { name, value } = e.target;
+
+    setFormData((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
+  }
+
+  function handleSubmit(e) {
+    e.preventDefault();
+
+    if (!formData.email || !formData.password) {
+      alert("Preencha todos os campos!");
+      return;
+    }
+
+    login({
+      user: {
+        email: formData.email,
+      },
+    });
+
+    alert("Login realizado com sucesso!", {
+      autoClose: 1500,
+    });
+
+    navigate("/");
+  }
+
   return (
     <LoginLayout>
-
       <img
         src={unifacisa}
         alt="Unifacisa"
@@ -15,11 +55,10 @@ function Login() {
       />
 
       <div className="min-h-screen flex items-center justify-center px-6">
-
         <div className="bg-blue-800 w-full max-w-3xl rounded-3xl shadow-2xl p-12 flex mt-5">
-
+          
           <div className="w-1/2 flex items-center justify-center relative">
-
+            
             <img
               src={border}
               alt=""
@@ -29,11 +68,11 @@ function Login() {
             <img
               src={bo}
               alt=""
-              className="w-45 absolute  right-8 "
+              className="w-45 absolute right-8"
             />
 
             <div className="bg-sky-200 border-3 border-slate-400 rounded-md w-70 h-80 flex items-center justify-center absolute z-20 right-13">
-
+              
               <img
                 src={jack}
                 alt="Jack"
@@ -41,32 +80,35 @@ function Login() {
               />
 
             </div>
-
           </div>
 
           <div className="w-1/2 flex flex-col justify-center">
-
+            
             <h1 className="text-4xl font-bold text-white mb-4 relative top-1">
               Entrar
             </h1>
 
-            <form className="w-full flex flex-col gap-3">
-
+            <form
+              className="w-full flex flex-col gap-3"
+              onSubmit={handleSubmit}
+            >
+              
               <div>
                 <label className="block text-sm text-white mb-2">
                   E-mail:
                 </label>
 
                 <div className="relative">
-
+                  
                   <div className="absolute left-0 top-0 h-full w-3 bg-sky-400 rounded-l-2xl"></div>
 
                   <input
                     type="email"
                     name="email"
+                    value={formData.email}
+                    onChange={handleChange}
                     className="w-85 py-2 pl-5 pr-3 rounded-2xl border border-gray-300 outline-none focus:border-blue-400 bg-white"
                   />
-
                 </div>
               </div>
 
@@ -76,20 +118,21 @@ function Login() {
                 </label>
 
                 <div className="relative">
-
+                  
                   <div className="absolute left-0 top-0 h-full w-3 bg-sky-400 rounded-l-2xl"></div>
 
                   <input
                     type="password"
                     name="password"
+                    value={formData.password}
+                    onChange={handleChange}
                     className="w-85 py-2 pl-5 pr-3 rounded-2xl border border-gray-300 outline-none focus:border-blue-400 bg-white"
                   />
-
                 </div>
               </div>
 
               <div className="flex items-center gap-2 mt-1">
-
+                
                 <input
                   type="checkbox"
                   id="remember"
@@ -102,7 +145,6 @@ function Login() {
                 >
                   Continuar conectado(a)
                 </label>
-
               </div>
 
               <button
@@ -121,7 +163,6 @@ function Login() {
 
             </form>
           </div>
-
         </div>
       </div>
     </LoginLayout>
