@@ -38,6 +38,6 @@
     "id": 6,
     "title": "Educação Física",
     "icon": "physical-education",
-    "matriz": ["62", "63"]
+    "matriz": "62"
   }
 ]
