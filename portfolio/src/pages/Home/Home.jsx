@@ -11,11 +11,13 @@ import dsgIcon from "../../assets/icons/courses/design.png";
 import lawIcon from "../../assets/icons/courses/law.png";
 import peIcon from "../../assets/icons/courses/physical-education.png";
 
-import courses from "../../data/courses.json";
+import coursesData from "../../data/courses.json";
 
 function Home() {
   const [matriz, setMatriz] = useState("");
   const [showCreate, setShowCreate] = useState(false);
+
+  const [courses, setCourses] = useState(coursesData);
 
   const iconMap = {
     admin: adminIcon,
@@ -60,7 +62,7 @@ function Home() {
             </header>
 
             <div
-              className="bg-background-white rounded-lg p-6 grid gap-6 w-full min-h-[500px] items-start content-start"
+              className="bg-background-white rounded-lg p-6 grid gap-3 w-full min-h-[500px] items-start content-start"
               style={{
                 gridTemplateColumns: "repeat(auto-fill, minmax(220px, 1fr))",
               }}
@@ -69,7 +71,9 @@ function Home() {
                 <CourseCard
                   key={course.id}
                   title={course.title}
-                  icons={[iconMap[course.icon]]}
+                  icons={[
+                    course.image ? course.image.preview : iconMap[course.icon],
+                  ]}
                 />
               ))}
             </div>
@@ -90,7 +94,15 @@ function Home() {
             <CreateCourse
               onCancel={() => setShowCreate(false)}
               onSave={(data) => {
-                console.log("novo curso:", data);
+                const newCourse = {
+                  id: Date.now(),
+                  title: data.curso,
+                  matriz: [data.matriz],
+                  image: data.image,
+                };
+
+                setCourses((prev) => [...prev, newCourse]);
+
                 setShowCreate(false);
               }}
             />
