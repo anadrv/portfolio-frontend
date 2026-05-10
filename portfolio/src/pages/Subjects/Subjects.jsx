@@ -3,11 +3,13 @@ import Subject from "../../components/Subject";
 import Layout from "../../Layout/Layout";
 import subjectsData from "../../data/subjects.json";
 import FilterSelect from "../../components/FilterSelect";
+import CreateSubjectModal from "../../components/CreateSubjectModal";
 
 function Subjects() {
   const [matriz, setMatriz] = useState("");
   const [trimestre, setTrimestre] = useState("");
   const [status, setStatus] = useState("");
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   const filteredSubjects = subjectsData.filter((subject) => {
     return (
@@ -29,7 +31,10 @@ function Subjects() {
         <section aria-labelledby="competencias-title" className="flex-1">
           <div className="flex justify-between mb-8">
             <h2 id="competencias-title">Competências</h2>
-            <button className="bg-white p-2 px-4 text-background font-semibold text-sm rounded hover:bg-accent cursor-pointer">
+            <button
+              onClick={() => setIsModalOpen(true)}
+              className="bg-white p-2 px-4 text-background font-semibold text-sm rounded hover:bg-accent cursor-pointer"
+            >
               Adicionar nova competência
             </button>
           </div>
@@ -84,6 +89,9 @@ function Subjects() {
           <h2 id="notificacoes-title">Notificações</h2>
         </aside>
       </main>
+      {isModalOpen && (
+        <CreateSubjectModal onClose={() => setIsModalOpen(false)} />
+      )}
     </Layout>
   );
 }
