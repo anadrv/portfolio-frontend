@@ -3,7 +3,7 @@ import Menu from "../components/Menu";
 
 function Layout({ children }) {
   return (
-    <div className="relative min-h-screen w-full bg-background px-24 pt-12">
+    <div className="relative min-h-screen w-full bg-background p-8 py-4 md:px-24 md:pt-12">
       <div
         className="absolute inset-0 bg-cover bg-no-repeat"
         style={{
