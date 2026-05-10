@@ -3,7 +3,7 @@ import Subject from "../../components/Subject";
 import Layout from "../../Layout/Layout";
 import subjectsData from "../../data/subjects.json";
 import FilterSelect from "../../components/FilterSelect";
-import PlannerCard from "../../components/PlannerCard";
+
 
 function Subjects() {
   const [matriz, setMatriz] = useState("");
@@ -28,7 +28,7 @@ function Subjects() {
         <section aria-labelledby="competencias-title" className="flex-1">
           <div className="flex justify-between mb-8">
             <h2 id="competencias-title">Competências</h2>
-            <button className="bg-white p-1 px-2 text-background font-semibold text-sm rounded">
+            <button className="bg-white p-2 px-4 text-background font-semibold text-sm rounded hover:bg-accent cursor-pointer">
               Adicionar nova competência
             </button>
           </div>
@@ -53,7 +53,14 @@ function Subjects() {
 
             <FilterSelect
               label="Status"
-              options={["Em andamento", "Validado", "Não avaliado"]}
+              options={[
+                "Em andamento",
+                "Validado pela coordenação",
+                "Não avaliado",
+                "Liberado para customizar",
+                "Disponível no Canvas",
+                "Integrado ao RM-Canvas",
+              ]}
               value={status}
               onChange={setStatus}
             />
