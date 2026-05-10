@@ -1,4 +1,5 @@
 import { useState, useRef } from "react";
+import { motion } from "framer-motion";
 import FilterSelect from "./FilterSelect";
 import pencilIcon from "../assets/images/pencil.png";
 
@@ -59,7 +60,22 @@ function CreateCourse({ onCancel, onSave }) {
   };
 
   return (
-    <div className="bg-background rounded-2xl p-8 w-[400px] overflow-hidden flex flex-col gap-4">
+    <motion.div
+      initial={{ opacity: 0, y: 30 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.3 }}
+      className="
+          bg-background
+          rounded-2xl
+          p-5 sm:p-8
+          w-[100%]
+          max-w-[370px]
+          sm:w-[400px]
+          overflow-hidden
+          flex
+          flex-col
+          gap-4
+        " >
       <div className="flex items-center gap-4">
         <img src={pencilIcon} alt="pencil" className="w-5 h-5" />
 
@@ -132,6 +148,7 @@ function CreateCourse({ onCancel, onSave }) {
             label="Matriz"
             options={["62", "63"]}
             value={matriz}
+            className="h-10"
             onChange={(value) => {
               setMatriz(value);
 
@@ -162,7 +179,7 @@ function CreateCourse({ onCancel, onSave }) {
           Salvar alterações
         </button>
       </div>
-    </div>
+    </motion.div>
   );
 }
 

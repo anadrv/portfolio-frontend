@@ -34,16 +34,16 @@ function Home() {
 
   return (
     <Layout>
-      <div className="px-6">
+      <div className="px-5 mt-5">
         <div className="flex flex-col lg:flex-row gap-16">
           <div className="flex-1">
             <header className="py-6 text-text font-semibold flex flex-col md:flex-row md:items-center md:justify-between gap-4">
               <h1 className="text-2xl font-semibold">Cursos</h1>
 
-              <div className="flex flex-wrap md:flex-nowrap text-sm gap-3 md:gap-10 items-center">
+              <div className="flex flex-col md:flex-row text-sm gap-3 md:gap-10 md:items-center">
                 <button
                   onClick={() => setShowCreate(true)}
-                  className="bg-white py-2 px-4 text-background font-semibold text-sm rounded whitespace-nowrap"
+                  className="bg-white py-2 px-4 w-full md:w-auto text-background font-semibold text-sm rounded whitespace-nowrap hover:bg-accent cursor-pointer transition"
                 >
                   Adicionar novo curso
                 </button>
