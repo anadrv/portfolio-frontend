@@ -1,5 +1,7 @@
 import { useState } from "react";
 import { Pencil } from "lucide-react";
+import validateSubject from "../validations/validateSubject";
+import showFeedback from "../utils/showFeedback";
 import plannerIcon from "../assets/icons/planner-white-icon.png";
 import FilterInfo from "./FilterInfo";
 import PrimaryButton from "./PrimaryButton";
@@ -16,6 +18,26 @@ function PlannerInfoModal({ onClose }) {
     canvas: false,
     integracao: false,
   });
+
+  const [errors, setErrors] = useState({});
+  const [successMessage, setSuccessMessage] = useState("");
+
+  function handleSave() {
+    const validationErrors = validateSubject({
+      trimestre,
+      statuses,
+    });
+
+    if (Object.keys(validationErrors).length > 0) {
+      setErrors(validationErrors);
+      return;
+    }
+
+    setErrors({});
+    setIsEditing(false);
+
+    showFeedback(setSuccessMessage, "Dados atualizados com sucesso!");
+  }
 
   return (
     <div
@@ -36,18 +58,24 @@ function PlannerInfoModal({ onClose }) {
 
         <section className="flex items-center gap-4 mb-6 justify-between">
           {isEditing ? (
-            <FilterSelect
-              label="Trimestre"
-              options={[
-                "1º Trimestre",
-                "2º Trimestre",
-                "3º Trimestre",
-                "4º Trimestre",
-              ]}
-              value={trimestre}
-              onChange={setTrimestre}
-              textSize="text-sm"
-            />
+            <div className="w-full">
+              <FilterSelect
+                label="Trimestre"
+                options={[
+                  "1º Trimestre",
+                  "2º Trimestre",
+                  "3º Trimestre",
+                  "4º Trimestre",
+                ]}
+                value={trimestre}
+                onChange={setTrimestre}
+                textSize="text-sm"
+              />
+
+              {errors.trimestre && (
+                <p className="text-red-400 text-xs mt-2">{errors.trimestre}</p>
+              )}
+            </div>
           ) : (
             <FilterInfo>{trimestre}</FilterInfo>
           )}
@@ -164,10 +192,8 @@ function PlannerInfoModal({ onClose }) {
               >
                 Cancelar
               </button>
-              <PrimaryButton
-                textSize="text-sm"
-                onClick={() => setIsEditing(false)}
-              >
+
+              <PrimaryButton textSize="text-sm" onClick={handleSave}>
                 Salvar alterações
               </PrimaryButton>
             </>
@@ -181,6 +207,11 @@ function PlannerInfoModal({ onClose }) {
             </button>
           )}
         </footer>
+        {successMessage && (
+          <p className="text-green-400 text-sm mt-4 text-center font-semibold">
+            {successMessage}
+          </p>
+        )}
       </article>
     </div>
   );
