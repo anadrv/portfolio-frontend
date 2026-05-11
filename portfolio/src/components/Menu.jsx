@@ -1,10 +1,35 @@
-import { useState } from "react";
-import { NavLink } from "react-router-dom";
+import { useEffect, useRef, useState } from "react";
+import { NavLink, useNavigate } from "react-router-dom";
 import { User, X } from "lucide-react";
 import logo from "../assets/icons/unifacisa-icon.png";
 
 function Menu() {
   const [open, setOpen] = useState(false);
+  const [profileOpen, setProfileOpen] = useState(false);
+  const navigate = useNavigate();
+
+  const profileRef = useRef(null);
+
+  useEffect(() => {
+    function handleClickOutside(event) {
+      if (profileRef.current && !profileRef.current.contains(event.target)) {
+        setProfileOpen(false);
+      }
+    }
+
+    document.addEventListener("mousedown", handleClickOutside);
+
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
+
+  function handleLogout() {
+    localStorage.removeItem("token");
+    localStorage.removeItem("user");
+
+    navigate("/login");
+  }
 
   return (
     <header className="bg-primary text-white rounded-lg relative">
@@ -31,13 +56,28 @@ function Menu() {
             <NavLink to="/notifications">Notificações</NavLink>
           </li>
 
-          <li>
-            <NavLink
-              to="/profile"
-              className="p-2 rounded-full hover:bg-white/20 transition flex items-center"
+          <li className="relative" ref={profileRef}>
+            <button
+              onClick={() => setProfileOpen(!profileOpen)}
+              className="p-2 rounded-full hover:bg-white/20 transition flex items-center cursor-pointer"
             >
               <User size={24} />
-            </NavLink>
+            </button>
+
+            {profileOpen && (
+              <div className="absolute -right-8 top-16 w-56 rounded-lg bg-white p-1 shadow-lg text-background">
+                <div className="p-2 border-b border-primary mb-2">
+                  <p className="text-sm">Olá, Jungsu!</p>
+                </div>
+
+                <button
+                  onClick={handleLogout}
+                  className="w-full text-left bg-text p-2 rounded hover:bg-primary hover:text-text transition cursor-pointer text-base"
+                >
+                  Sair
+                </button>
+              </div>
+            )}
           </li>
         </ul>
 
