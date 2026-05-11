@@ -8,10 +8,7 @@ function Menu() {
 
   return (
     <header className="bg-primary text-white rounded-lg relative">
-      <nav
-        className="max-w-7xl mx-auto p-5 flex items-center justify-between"
-        aria-label="Navegação principal"
-      >
+      <nav className="w-full px-8 py-5 flex items-center justify-between">
         {/* Logo */}
         <h1 className="text-lg font-bold">
           <NavLink to="/" className="flex items-center gap-2">
@@ -20,9 +17,7 @@ function Menu() {
               alt="Logo do site"
               className="w-8 h-8 object-contain"
             />
-            <span className="font-semibold text-xl font-sans">
-              Unifacisa
-            </span>
+            <span className="font-semibold text-xl font-sans">Unifacisa</span>
           </NavLink>
         </h1>
 
@@ -46,7 +41,6 @@ function Menu() {
           </li>
         </ul>
 
-
         <button
           className="md:hidden flex flex-col gap-1 p-2 cursor-pointer"
           onClick={() => setOpen(!open)}
@@ -65,43 +59,41 @@ function Menu() {
       </nav>
 
       {/* MOBILE MENU */}
-      {/* MOBILE MENU */}
-{open && (
-  <div className="md:hidden absolute top-full mt-2 left-0 w-full rounded-lg bg-primary">
-    <ul className="flex flex-col p-2 gap-2 font-semibold text-md">
-      
-      <li>
-        <NavLink
-          to="/"
-          onClick={() => setOpen(false)}
-          className="block p-2 rounded hover:bg-white/20 transition"
-        >
-          Cursos
-        </NavLink>
-      </li>
+      {open && (
+        <div className="md:hidden absolute top-full mt-2 left-0 w-full rounded-lg bg-primary">
+          <ul className="flex flex-col p-2 gap-2 font-semibold text-md">
+            <li>
+              <NavLink
+                to="/"
+                onClick={() => setOpen(false)}
+                className="block p-2 rounded hover:bg-white/20 transition"
+              >
+                Cursos
+              </NavLink>
+            </li>
 
-      <li>
-        <NavLink
-          to="/notifications"
-          onClick={() => setOpen(false)}
-          className="block p-2 rounded hover:bg-white/20 transition"
-        >
-          Notificações
-        </NavLink>
-      </li>
+            <li>
+              <NavLink
+                to="/notifications"
+                onClick={() => setOpen(false)}
+                className="block p-2 rounded hover:bg-white/20 transition"
+              >
+                Notificações
+              </NavLink>
+            </li>
 
-      <li>
-        <NavLink
-          to="/profile"
-          onClick={() => setOpen(false)}
-          className="block p-2 rounded hover:bg-white/20 transition"
-        >
-          Conta
-        </NavLink>
-      </li>
-    </ul>
-  </div>
-)}
+            <li>
+              <NavLink
+                to="/profile"
+                onClick={() => setOpen(false)}
+                className="block p-2 rounded hover:bg-white/20 transition"
+              >
+                Conta
+              </NavLink>
+            </li>
+          </ul>
+        </div>
+      )}
     </header>
   );
 }

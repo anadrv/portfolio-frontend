@@ -84,7 +84,7 @@ function Subjects() {
 
         <aside
           aria-labelledby="notificacoes-title"
-          className="hidden md:mr-40 md:block"
+          className="hidden lg:block lg:mr-40"
         >
           <h2 id="notificacoes-title">Notificações</h2>
         </aside>

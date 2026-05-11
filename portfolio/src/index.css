@@ -13,6 +13,8 @@
 
   --font-sans: "Poppins", sans-serif;
 
+  --breakpoint-3xl: 112.5rem;
+
 }
 
 @layer components {
@@ -23,5 +25,7 @@
   .btn-style {
     @apply bg-primary px-4 py-1.5 rounded-lg hover:bg-primary-hover cursor-pointer
   }
+
+  
 
 }
