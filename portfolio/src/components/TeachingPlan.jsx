@@ -1,6 +1,9 @@
-import teachingPlanIcon from "../assets/icons/planner-icon.png";
+import teachingPlanIcon from "../assets/icons/planner-white-icon.png";
+import { useState } from "react";
+import InfoModal from "./InfoModal";
 
 function TeachingPlan() {
+  const [isModalOpen, setIsModalOpen] = useState(false);
   return (
     <article className="flex-1 bg-background rounded-lg p-4 flex flex-col gap-4">
       <header className="flex items-center justify-between bg-white p-4 py-6 rounded-lg">
@@ -25,15 +28,24 @@ function TeachingPlan() {
         <div className="flex items-center gap-2">
           <span className="w-3 h-3 rounded-full bg-accent"></span>
 
-          <h2 className="text-xs font-medium">
-            Validado pela coordenação
-          </h2>
+          <h2 className="text-xs font-medium">Validado pela coordenação</h2>
         </div>
 
-        <button className="text-xs bg-highlight py-1 px-2 rounded font-normal transition-transform duration-300 hover:scale-105 cursor-pointer">
+        <button
+          onClick={() => setIsModalOpen(true)}
+          className="text-xs bg-highlight py-1 px-2 rounded font-normal transition-transform duration-300 hover:scale-105 cursor-pointer"
+        >
+          {" "}
           Ver ou editar informações
         </button>
       </section>
+      {isModalOpen && (
+        <InfoModal
+          onClose={() => setIsModalOpen(false)}
+          title="PLANO DE ENSINO"
+          icon={teachingPlanIcon}
+        />
+      )}
     </article>
   );
 }

@@ -2,12 +2,11 @@ import { useState } from "react";
 import { Pencil } from "lucide-react";
 import validateSubject from "../validations/validateSubject";
 import showFeedback from "../utils/showFeedback";
-import plannerIcon from "../assets/icons/planner-white-icon.png";
 import FilterInfo from "./FilterInfo";
 import PrimaryButton from "./PrimaryButton";
 import FilterSelect from "./FilterSelect";
 
-function PlannerInfoModal({ onClose }) {
+function InfoModal({ onClose, title, icon }) {
   const [isEditing, setIsEditing] = useState(false);
 
   const [trimestre, setTrimestre] = useState("1º Trimestre");
@@ -50,9 +49,13 @@ function PlannerInfoModal({ onClose }) {
       >
         <header className="flex items-center justify-between mb-8 gap-6">
           <div className="flex items-center gap-3">
-            <img src={plannerIcon} alt="Ícone do planner" className="w-8 h-8" />
+            <img
+              src={icon}
+              alt={`Ícone do ${title}`}
+              className="w-8 h-8"
+            />
 
-            <h2 className="text-xl font-bold">PLANNER</h2>
+            <h2 className="text-xl font-bold">{title}</h2>
           </div>
         </header>
 
@@ -73,7 +76,9 @@ function PlannerInfoModal({ onClose }) {
               />
 
               {errors.trimestre && (
-                <p className="text-red-400 text-xs mt-2">{errors.trimestre}</p>
+                <p className="text-red-400 text-xs mt-2">
+                  {errors.trimestre}
+                </p>
               )}
             </div>
           ) : (
@@ -207,6 +212,7 @@ function PlannerInfoModal({ onClose }) {
             </button>
           )}
         </footer>
+
         {successMessage && (
           <p className="text-green-400 text-sm mt-4 text-center font-semibold">
             {successMessage}
@@ -217,4 +223,4 @@ function PlannerInfoModal({ onClose }) {
   );
 }
 
-export default PlannerInfoModal;
+export default InfoModal;
