@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { NavLink, useNavigate } from "react-router-dom";
 import { User, X } from "lucide-react";
+import SearchBar from "./SearchBar";
 import logo from "../assets/icons/unifacisa-icon.png";
 
 function Menu() {
@@ -42,12 +43,16 @@ function Menu() {
               alt="Logo do site"
               className="w-8 h-8 object-contain"
             />
-            <span className="font-semibold text-xl font-sans">Unifacisa</span>
+            <span className="font-semibold text-xl font-sans md:hidden lg:block">Unifacisa</span>
           </NavLink>
         </h1>
 
+        <div className="hidden md:block flex-1 max-w-md px-4">
+  <SearchBar />
+</div>
+
         {/* DESKTOP MENU */}
-        <ul className="hidden md:flex items-center font-semibold text-lg gap-10">
+        <ul className="hidden md:flex items-center font-semibold gap-10 md:gap-4 md:text-sm lg:text-lg lg:gap-10">
           <li>
             <NavLink to="/">Cursos</NavLink>
           </li>

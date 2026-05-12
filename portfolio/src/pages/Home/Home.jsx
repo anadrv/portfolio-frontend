@@ -74,6 +74,7 @@ function Home() {
                   icons={[
                     course.image ? course.image.preview : iconMap[course.icon],
                   ]}
+                  link={`/course/${course.id}`}
                 />
               ))}
             </div>
