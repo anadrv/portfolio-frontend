@@ -1,4 +1,5 @@
-import teachingPlanIcon from "../assets/icons/planner-white-icon.png";
+import teachingWhitePlanIcon from "../assets/icons/planner-white-icon.png";
+import teachingPlanIcon from "../assets/icons/planner-icon.png";
 import { useState } from "react";
 import InfoModal from "./InfoModal";
 
@@ -43,7 +44,7 @@ function TeachingPlan() {
         <InfoModal
           onClose={() => setIsModalOpen(false)}
           title="PLANO DE ENSINO"
-          icon={teachingPlanIcon}
+          icon={teachingWhitePlanIcon}
         />
       )}
     </article>

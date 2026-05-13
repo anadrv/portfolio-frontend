@@ -1,6 +1,7 @@
 import { useState } from "react";
 import InfoModal from "./InfoModal";
-import plannerIcon from "../assets/icons/planner-white-icon.png";
+import plannerWhiteIcon from "../assets/icons/planner-white-icon.png";
+import plannerIcon from "../assets/icons/planner-icon.png";
 
 function PlannerCard() {
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -42,7 +43,7 @@ function PlannerCard() {
           <InfoModal
             onClose={() => setIsModalOpen(false)}
             title="PLANNER"
-            icon={plannerIcon}
+            icon={plannerWhiteIcon}
           />
         )}
       </article>

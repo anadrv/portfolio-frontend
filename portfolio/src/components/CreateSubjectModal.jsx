@@ -68,12 +68,12 @@ function CreateSubjectModal({ onClose }) {
         onClick={(e) => e.stopPropagation()}
       >
         <h2
-  id="modal-title"
-  className="text-xl font-semibold mb-6 flex items-center gap-2"
->
-  <Pencil size={18} />
-  CADASTRAR COMPETÊNCIA
-</h2>
+          id="modal-title"
+          className="text-xl font-semibold mb-6 flex items-center gap-2"
+        >
+          <Pencil size={18} />
+          CADASTRAR COMPETÊNCIA
+        </h2>
 
         {/* selects */}
         <section className="flex gap-2 w-full mb-6 font-semibold">
@@ -183,7 +183,7 @@ function CreateSubjectModal({ onClose }) {
 
         {/* ações */}
         <div className="flex justify-between items-center mt-6">
-          <button onClick={onClose} className="text-sm underline">
+          <button onClick={onClose} className="text-sm hover:underline cursor-pointer">
             Cancelar
           </button>
 
