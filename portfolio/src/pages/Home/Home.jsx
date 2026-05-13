@@ -34,7 +34,7 @@ function Home() {
 
   return (
     <Layout>
-      <div className="px-5 mt-5">
+      <div className="mt-5">
         <div className="flex flex-col lg:flex-row gap-16">
           <div className="flex-1">
             <header className="py-6 text-text font-semibold flex flex-col md:flex-row md:items-center md:justify-between gap-4">
@@ -80,9 +80,7 @@ function Home() {
             </div>
           </div>
 
-          <aside className="lg:w-64 py-6 lg:mt-13">
-            <h2 className="text-text font-semibold text-lg">Notificações</h2>
-          </aside>
+         
         </div>
       </div>
 
