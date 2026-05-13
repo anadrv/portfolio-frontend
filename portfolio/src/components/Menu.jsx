@@ -43,11 +43,11 @@ function Menu() {
               alt="Logo do site"
               className="w-8 h-8 object-contain"
             />
-            <span className="font-semibold text-xl font-sans md:hidden lg:block">Unifacisa</span>
+            <span className="hidden font-semibold text-xl font-sans md:hidden lg:block">Unifacisa</span>
           </NavLink>
         </h1>
 
-        <div className="hidden md:block flex-1 max-w-md px-4">
+        <div className="flex-1 max-w-lg px-6 md:px-4">
   <SearchBar />
 </div>
 
@@ -70,7 +70,7 @@ function Menu() {
             </button>
 
             {profileOpen && (
-              <div className="absolute -right-8 top-16 w-56 rounded-lg bg-white p-1 shadow-lg text-background">
+              <div className="absolute -right-8 top-16 w-56 rounded-lg bg-white p-1 shadow-lg text-background z-20">
                 <div className="p-2 border-b border-primary mb-2">
                   <p className="text-sm">Olá, Jungsu!</p>
                 </div>

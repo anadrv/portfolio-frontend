@@ -34,13 +34,13 @@ function Subjects() {
 
   return (
     <Layout>
-      <header className="md:p-6 flex flex-col text-text font-semibold">
+      <header className="flex flex-col text-text font-semibold">
         <h1 className="text-xl md:text-2xl font-semibold py-6">
           Sistemas de Informações
         </h1>
       </header>
 
-      <main className="md:px-6 flex gap-30 text-text text-lg font-semibold">
+      <main className=" flex gap-30 text-text text-lg font-semibold">
         <section aria-labelledby="competencias-title" className="flex-1">
           <div className="flex justify-between mb-8">
             <h2 id="competencias-title">Competências</h2>

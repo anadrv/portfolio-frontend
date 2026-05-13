@@ -168,13 +168,13 @@ function CreateCourse({ onCancel, onSave }) {
       </div>
 
       <div className="flex items-center justify-between mt-2">
-        <button onClick={onCancel} className="text-white text-sm underline">
+        <button onClick={onCancel} className="text-white text-sm hover:underline cursor-pointer">
           Cancelar
         </button>
 
         <button
           onClick={handleSave}
-          className="bg-[#CCFF05] text-blue-900 font-medium text-sm px-5 py-2 rounded transition-colors hover:opacity-90"
+          className="bg-accent text-blue-900 font-medium text-sm px-5 py-2 rounded transition-colors hover:opacity-90 cursor-pointer"
         >
           Salvar alterações
         </button>
