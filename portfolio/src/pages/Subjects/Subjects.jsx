@@ -94,6 +94,9 @@ function Subjects() {
               <Subject
                 key={`${subject.id}-${currentPage}`}
                 title={subject.title}
+                matriz={subject.matriz}
+                trimestre={subject.trimestre}
+                status={subject.status}
               />
             ))}
           </div>

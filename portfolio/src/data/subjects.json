@@ -4,7 +4,7 @@
     "title": "C01 - Programar em linguagem estruturada",
     "matriz": "62",
     "trimestre": "1º",
-    "status": "Validado"
+    "status": "Necessita revisão"
   },
   {
     "id": 2,
@@ -25,7 +25,7 @@
     "title": "C04 - Programar em Linguagem Interpretada",
     "matriz": "63",
     "trimestre": "4º",
-    "status": "Validado"
+    "status": "Validado pela coordenação"
   },
   {
     "id": 5,
@@ -54,7 +54,7 @@
     "title": "C04 - Programar em Linguagem Interpretada",
     "matriz": "63",
     "trimestre": "4º",
-    "status": "Validado"
+    "status": "Validado pela coordenação"
   }
   ,
   {
@@ -62,7 +62,7 @@
     "title": "C04 - Programar em Linguagem Interpretada",
     "matriz": "63",
     "trimestre": "4º",
-    "status": "Validado"
+    "status": "Validado pela coordenação"
   }
   ,
   {
@@ -70,6 +70,6 @@
     "title": "C04 - Programar em Linguagem Interpretada",
     "matriz": "63",
     "trimestre": "4º",
-    "status": "Validado"
+    "status": "Validado pela coordenação"
   }
 ]

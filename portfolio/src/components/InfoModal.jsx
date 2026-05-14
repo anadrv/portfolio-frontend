@@ -6,10 +6,17 @@ import FilterInfo from "./FilterInfo";
 import PrimaryButton from "./PrimaryButton";
 import FilterSelect from "./FilterSelect";
 
-function InfoModal({ onClose, title, icon }) {
+function InfoModal({
+  onClose,
+  title,
+  icon,
+  matriz,
+  trimestre,
+}) {
   const [isEditing, setIsEditing] = useState(false);
 
-  const [trimestre, setTrimestre] = useState("1º Trimestre");
+  const [selectedTrimestre, setSelectedTrimestre] =
+    useState(trimestre);
 
   const [statuses, setStatuses] = useState({
     validado: true,
@@ -23,7 +30,7 @@ function InfoModal({ onClose, title, icon }) {
 
   function handleSave() {
     const validationErrors = validateSubject({
-      trimestre,
+      trimestre: selectedTrimestre,
       statuses,
     });
 
@@ -65,13 +72,13 @@ function InfoModal({ onClose, title, icon }) {
               <FilterSelect
                 label="Trimestre"
                 options={[
-                  "1º Trimestre",
-                  "2º Trimestre",
-                  "3º Trimestre",
-                  "4º Trimestre",
+                  "1º",
+                  "2º",
+                  "3º",
+                  "4º",
                 ]}
-                value={trimestre}
-                onChange={setTrimestre}
+                value={selectedTrimestre}
+                onChange={setSelectedTrimestre}
                 textSize="text-sm"
               />
 
@@ -82,12 +89,22 @@ function InfoModal({ onClose, title, icon }) {
               )}
             </div>
           ) : (
-            <FilterInfo>{trimestre}</FilterInfo>
+            <div className="flex gap-4">
+              <FilterInfo>
+                Matriz {matriz}
+              </FilterInfo>
+
+              <FilterInfo>
+                {selectedTrimestre} Trimestre
+              </FilterInfo>
+            </div>
           )}
         </section>
 
         <section className="mb-8">
-          <h3 className="text-sm font-semibold mb-3">Status</h3>
+          <h3 className="text-sm font-semibold mb-3">
+            Status
+          </h3>
 
           <div className="bg-white rounded-xl p-4 text-background flex flex-col gap-4">
             <label className="flex items-center gap-2 text-sm">
@@ -105,7 +122,11 @@ function InfoModal({ onClose, title, icon }) {
               )}
 
               <span
-                className={statuses.validado ? "text-accent" : "text-gray-400"}
+                className={
+                  statuses.validado
+                    ? "text-accent"
+                    : "text-gray-400"
+                }
               >
                 {statuses.validado ? "✓" : "X"}
               </span>
@@ -129,7 +150,9 @@ function InfoModal({ onClose, title, icon }) {
 
               <span
                 className={
-                  statuses.customizar ? "text-accent" : "text-gray-400"
+                  statuses.customizar
+                    ? "text-accent"
+                    : "text-gray-400"
                 }
               >
                 {statuses.customizar ? "✓" : "X"}
@@ -153,7 +176,11 @@ function InfoModal({ onClose, title, icon }) {
               )}
 
               <span
-                className={statuses.canvas ? "text-accent" : "text-gray-400"}
+                className={
+                  statuses.canvas
+                    ? "text-accent"
+                    : "text-gray-400"
+                }
               >
                 {statuses.canvas ? "✓" : "X"}
               </span>
@@ -177,7 +204,9 @@ function InfoModal({ onClose, title, icon }) {
 
               <span
                 className={
-                  statuses.integracao ? "text-accent" : "text-gray-400"
+                  statuses.integracao
+                    ? "text-accent"
+                    : "text-gray-400"
                 }
               >
                 {statuses.integracao ? "✓" : "X"}
@@ -198,7 +227,10 @@ function InfoModal({ onClose, title, icon }) {
                 Cancelar
               </button>
 
-              <PrimaryButton textSize="text-sm" onClick={handleSave}>
+              <PrimaryButton
+                textSize="text-sm"
+                onClick={handleSave}
+              >
                 Salvar alterações
               </PrimaryButton>
             </>

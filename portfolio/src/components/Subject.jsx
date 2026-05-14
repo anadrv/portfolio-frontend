@@ -1,10 +1,15 @@
 import { useState } from "react";
-import { Plus, ChevronDown } from "lucide-react";
+import { ChevronDown } from "lucide-react";
 
-import PlannerCard from "./PlannerCard";
-import TeachingPlan from "./TeachingPlan";
+import DocumentCard from "./DocumentCard";
 
-function Subject({ title }) {
+import plannerIcon from "../assets/icons/planner-icon.png";
+import plannerWhiteIcon from "../assets/icons/planner-white-icon.png";
+
+import teachingPlanIcon from "../assets/icons/planner-icon.png";
+import teachingWhitePlanIcon from "../assets/icons/planner-white-icon.png";
+
+function Subject({ title, matriz, trimestre, status }) {
   const [open, setOpen] = useState(false);
 
   return (
@@ -13,8 +18,6 @@ function Subject({ title }) {
         <h2 className="text-sm md:text-base font-semibold">{title}</h2>
 
         <div className="flex items-center gap-4">
-          
-
           <button
             aria-label={`Expandir ${title}`}
             onClick={() => setOpen(!open)}
@@ -30,8 +33,25 @@ function Subject({ title }) {
 
       {open && (
         <div className="flex flex-col gap-4 md:flex-row">
-          <PlannerCard />
-          <TeachingPlan />
+          <DocumentCard
+            title="PLANNER"
+            icon={plannerIcon}
+            whiteIcon={plannerWhiteIcon}
+            matriz={matriz}
+            trimestre={trimestre}
+            status={status}
+            accessLink="/planner"
+          />
+
+          <DocumentCard
+            title="PLANO DE ENSINO"
+            icon={teachingPlanIcon}
+            whiteIcon={teachingWhitePlanIcon}
+            matriz={matriz}
+            trimestre={trimestre}
+            status={status}
+            accessLink="/teaching-plan"
+          />
         </div>
       )}
     </article>
