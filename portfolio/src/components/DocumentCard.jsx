@@ -1,5 +1,6 @@
 import { useState } from "react";
 import InfoModal from "./InfoModal";
+import currentUser from "../mock/currentUser";
 
 function DocumentCard({
   title,
@@ -11,6 +12,14 @@ function DocumentCard({
   accessLink,
 }) {
   const [isModalOpen, setIsModalOpen] = useState(false);
+
+  const canEditInfo = currentUser.permissions.includes(
+    "editar_documentos"
+  );
+
+  const canValidate = currentUser.permissions.includes(
+    "validar_documentos"
+  );
 
   const statusColors = {
     "Validado pela coordenação": "bg-accent",
@@ -30,7 +39,9 @@ function DocumentCard({
               className="w-8 h-8 object-contain"
             />
 
-            <h1 className="text-lg font-semibold text-background">{title}</h1>
+            <h1 className="text-lg font-semibold text-background">
+              {title}
+            </h1>
           </div>
 
           <a
@@ -49,14 +60,20 @@ function DocumentCard({
               }`}
             ></span>
 
-            <h2 className="text-xs font-medium">{status}</h2>
+            <h2 className="text-xs font-medium">
+              {status}
+            </h2>
           </div>
 
           <button
             onClick={() => setIsModalOpen(true)}
             className="text-xs bg-highlight py-1 px-2 rounded font-normal transition-transform duration-300 hover:scale-105 cursor-pointer"
           >
-            Ver ou editar informações
+            {canValidate
+              ? "Ver ou editar informações"
+              : canEditInfo
+              ? "Ver informações"
+              : "Visualizar"}
           </button>
         </section>
 

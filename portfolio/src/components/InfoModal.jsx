@@ -1,10 +1,14 @@
 import { useState } from "react";
 import { Pencil } from "lucide-react";
+
 import validateSubject from "../validations/validateSubject";
 import showFeedback from "../utils/showFeedback";
+
 import FilterInfo from "./FilterInfo";
 import PrimaryButton from "./PrimaryButton";
 import FilterSelect from "./FilterSelect";
+
+import currentUser from "../mock/currentUser";
 
 function InfoModal({
   onClose,
@@ -28,6 +32,16 @@ function InfoModal({
   const [errors, setErrors] = useState({});
   const [successMessage, setSuccessMessage] = useState("");
 
+  const canEditInfo =
+    currentUser.permissions.includes(
+      "editar_informacoes"
+    );
+
+  const canEditStatus =
+    currentUser.permissions.includes(
+      "editar_status"
+    );
+
   function handleSave() {
     const validationErrors = validateSubject({
       trimestre: selectedTrimestre,
@@ -42,7 +56,10 @@ function InfoModal({
     setErrors({});
     setIsEditing(false);
 
-    showFeedback(setSuccessMessage, "Dados atualizados com sucesso!");
+    showFeedback(
+      setSuccessMessage,
+      "Dados atualizados com sucesso!"
+    );
   }
 
   return (
@@ -62,12 +79,14 @@ function InfoModal({
               className="w-8 h-8"
             />
 
-            <h2 className="text-xl font-bold">{title}</h2>
+            <h2 className="text-xl font-bold">
+              {title}
+            </h2>
           </div>
         </header>
 
         <section className="flex items-center gap-4 mb-6 justify-between">
-          {isEditing ? (
+          {isEditing && canEditInfo ? (
             <div className="w-full">
               <FilterSelect
                 label="Trimestre"
@@ -108,7 +127,7 @@ function InfoModal({
 
           <div className="bg-white rounded-xl p-4 text-background flex flex-col gap-4">
             <label className="flex items-center gap-2 text-sm">
-              {isEditing && (
+              {isEditing && canEditStatus && (
                 <input
                   type="checkbox"
                   checked={statuses.validado}
@@ -135,14 +154,15 @@ function InfoModal({
             </label>
 
             <label className="flex items-center gap-2 text-sm">
-              {isEditing && (
+              {isEditing && canEditStatus && (
                 <input
                   type="checkbox"
                   checked={statuses.customizar}
                   onChange={() =>
                     setStatuses({
                       ...statuses,
-                      customizar: !statuses.customizar,
+                      customizar:
+                        !statuses.customizar,
                     })
                   }
                 />
@@ -162,7 +182,7 @@ function InfoModal({
             </label>
 
             <label className="flex items-center gap-2 text-sm">
-              {isEditing && (
+              {isEditing && canEditStatus && (
                 <input
                   type="checkbox"
                   checked={statuses.canvas}
@@ -189,14 +209,15 @@ function InfoModal({
             </label>
 
             <label className="flex items-center gap-2 text-sm">
-              {isEditing && (
+              {isEditing && canEditStatus && (
                 <input
                   type="checkbox"
                   checked={statuses.integracao}
                   onChange={() =>
                     setStatuses({
                       ...statuses,
-                      integracao: !statuses.integracao,
+                      integracao:
+                        !statuses.integracao,
                     })
                   }
                 />
@@ -218,31 +239,39 @@ function InfoModal({
         </section>
 
         <footer className="flex items-center justify-between gap-4">
-          {isEditing ? (
-            <>
-              <button
-                onClick={() => setIsEditing(false)}
-                className="text-sm hover:underline underline-offset-4 transition cursor-pointer"
-              >
-                Cancelar
-              </button>
+          {(canEditInfo || canEditStatus) &&
+            (isEditing ? (
+              <>
+                <button
+                  onClick={() =>
+                    setIsEditing(false)
+                  }
+                  className="text-sm hover:underline underline-offset-4 transition cursor-pointer"
+                >
+                  Cancelar
+                </button>
 
-              <PrimaryButton
-                textSize="text-sm"
-                onClick={handleSave}
+                <PrimaryButton
+                  textSize="text-sm"
+                  onClick={handleSave}
+                >
+                  Salvar alterações
+                </PrimaryButton>
+              </>
+            ) : (
+              <button
+                onClick={() =>
+                  setIsEditing(true)
+                }
+                className="flex items-center justify-center gap-2 flex-1 text-sm border border-white py-2 rounded-lg hover:bg-white/10 transition cursor-pointer"
               >
-                Salvar alterações
-              </PrimaryButton>
-            </>
-          ) : (
-            <button
-              onClick={() => setIsEditing(true)}
-              className="flex items-center justify-center gap-2 flex-1 text-sm border border-white py-2 rounded-lg hover:bg-white/10 transition cursor-pointer"
-            >
-              <Pencil size={16} />
-              Editar status ou trimestre
-            </button>
-          )}
+                <Pencil size={16} />
+
+                {canEditInfo
+                  ? "Editar status ou trimestre"
+                  : "Editar status"}
+              </button>
+            ))}
         </footer>
 
         {successMessage && (
