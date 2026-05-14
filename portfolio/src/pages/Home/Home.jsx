@@ -2,7 +2,7 @@ import { useState } from "react";
 import Layout from "../../Layout/Layout";
 import FilterSelect from "../../components/FilterSelect";
 import CourseCard from "../../components/CourseCard";
-import CreateCourse from "../../components/CreateCourse";
+import CreateCourse from "../../components/CreateCourseModal";
 
 import adminIcon from "../../assets/icons/courses/admin.png";
 import adsIcon from "../../assets/icons/courses/ads.png";
