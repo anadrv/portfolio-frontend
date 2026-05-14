@@ -132,7 +132,7 @@ function Login() {
                       placeholder="Email"
                       value={formData.email}
                       onChange={handleChange}
-                      className="w-80 md:w-85 py-3 md:py-2 pl-5 pr-3 rounded-lg border border-gray-300 outline-none bg-white text-xl md:text-base md:placeholder-transparent"
+                      className="w-80 md:w-85 py-2 pl-5 pr-3 rounded-lg border border-gray-300 outline-none bg-white text-xl md:text-sm md:placeholder-transparent"
                     />
 
                   </div>
@@ -154,7 +154,7 @@ function Login() {
                       placeholder="Senha"
                       value={formData.password}
                       onChange={handleChange}
-                      className="w-80 md:w-85 py-3 md:py-2 pl-5 pr-3 rounded-lg border border-gray-300 outline-none bg-white text-xl md:text-base md:placeholder-transparent"
+                      className="w-80 md:w-85 py-2  pl-5 pr-3 rounded-lg border border-gray-300 outline-none bg-white text-xl md:text-sm md:placeholder-transparent"
                     />
 
                   </div>
@@ -179,7 +179,7 @@ function Login() {
 
                 <button
                   type="submit"
-                  className="w-80 md:w-85 bg-accent text-background text-xl md:text-base font-semibold py-3 md:py-2 rounded-lg mt-1"
+                  className="w-80 md:w-85 bg-accent text-background text-xl md:text-base font-semibold py-2 rounded-lg mt-1"
                 >
                   Login
                 </button>
