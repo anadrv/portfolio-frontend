@@ -123,12 +123,14 @@ A arquitetura do projeto foi organizada de forma modular para facilitar a manute
 
 O frontend foi desenvolvido utilizando componentes reutilizáveis e separação por responsabilidades.
 
-- Components: responsáveis pelos elementos reutilizáveis da interface.
-- Pages: representam as páginas principais da aplicação.
-- Routes: gerenciam a navegação entre páginas.
-- Data: armazena dados mockados utilizados durante o desenvolvimento.
-- Validations: realiza validações de formulários e entradas do usuário.
-- Utils: contém funções auxiliares reutilizáveis.
+```md
+- **Components:** responsáveis pelos elementos reutilizáveis da interface.
+- **Pages:** representam as páginas principais da aplicação.
+- **Routes:** gerenciam a navegação entre páginas.
+- **Data:** armazena dados mockados utilizados durante o desenvolvimento.
+- **Validations:** realiza validações de formulários e entradas do usuário.
+- **Utils:** contém funções auxiliares reutilizáveis.
+```
 
 ## 🚀 Como executar o projeto
 
@@ -160,8 +162,6 @@ http://localhost:5173/
 
 ## ✅ Conclusão
 
-O projeto propõe uma solução digital para auxiliar no gerenciamento do planner acadêmico e dos planos de ensino da instituição.
-
-A aplicação busca facilitar a organização, centralização e atualização das informações acadêmicas, oferecendo uma alternativa mais prática em relação ao modelo baseado em planilhas.
+O projeto propõe uma solução digital para auxiliar no gerenciamento do planner acadêmico e dos planos de ensino da instituição. A aplicação busca facilitar a organização, centralização e atualização das informações acadêmicas, oferecendo uma alternativa mais prática em relação ao modelo baseado em planilhas.
 
 Além disso, o sistema foi estruturado de forma modular, permitindo futuras expansões e melhorias conforme as necessidades da instituição.
