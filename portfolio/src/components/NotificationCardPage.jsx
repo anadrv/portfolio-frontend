@@ -5,21 +5,21 @@ function NotificationCardPage({ item, onDelete }) {
     <div
       className="
         bg-background-white
-        rounded-2xl
-        px-4 md:px-6
-        py-3 md:py-5
+        rounded-xl
+        px-3 md:px-6
+        py-2 md:py-5
         flex
         items-center
         justify-between
-        gap-3 md:gap-4
+        gap-2 md:gap-4
       "
     >
-      <div className="flex items-center gap-3 md:gap-4 flex-1 min-w-0">
+      <div className="flex items-center gap-2 md:gap-4 flex-1 min-w-0">
         <input
           type="checkbox"
           className="
-            w-4
-            h-4
+            w-3.5
+            h-3.5
             accent-blue-700
             cursor-pointer
             flex-shrink-0
@@ -28,8 +28,8 @@ function NotificationCardPage({ item, onDelete }) {
 
         <div
           className="
-            w-8
-            h-8
+            w-7
+            h-7
             md:w-10
             md:h-10
             rounded-full
@@ -41,7 +41,7 @@ function NotificationCardPage({ item, onDelete }) {
           "
         >
           <Bell
-            size={16}
+            size={13}
             className="text-background"
           />
         </div>
@@ -50,9 +50,9 @@ function NotificationCardPage({ item, onDelete }) {
           <span
             className="
               text-primary
-              text-[10px] md:text-xs
+              text-[9px] md:text-xs
               font-semibold
-              mb-1
+              mb-0.5
             "
           >
             {item.type}
@@ -62,7 +62,7 @@ function NotificationCardPage({ item, onDelete }) {
             className="
               text-primary
               font-bold
-              text-sm md:text-lg
+              text-xs md:text-lg
               leading-tight
             "
           >
@@ -72,9 +72,9 @@ function NotificationCardPage({ item, onDelete }) {
           <p
             className="
               text-primary
-              text-xs md:text-sm
+              text-[10px] md:text-sm
               font-medium
-              mt-1 md:mt-2
+              mt-0.5 md:mt-2
               break-words
             "
           >
@@ -92,7 +92,7 @@ function NotificationCardPage({ item, onDelete }) {
         "
       >
         <Trash2
-          size={18}
+          size={16}
           className="text-background"
         />
       </button>

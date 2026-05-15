@@ -54,22 +54,6 @@ function Notifications() {
       type: "PLANNER",
       status: "Não lidas",
     },
-    {
-      id: 7,
-      title: "Validado pelo coordenador",
-      course:
-        "CO2 - Programar em linguagem orientada a objetos básica",
-      type: "PLANNER",
-      status: "Validadas",
-    },
-    {
-      id: 8,
-      title: "Nova atividade disponível",
-      course:
-        "CO2 - Programar em linguagem orientada a objetos básica",
-      type: "PLANNER",
-      status: "Não lidas",
-    },
   ]);
 
   const handleDelete = (id) => {
@@ -87,14 +71,14 @@ function Notifications() {
 
   return (
     <Layout>
-      <div className="px-4 md:px-8 pt-6 pb-6">
-        <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-5 mb-6">
-          <h1 className="text-text text-3xl font-bold">
+      <div className="px-4 md:px-8 pt-4 pb-5">
+        <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4 mb-4">
+          <h1 className="text-text text-xl md:text-2xl font-bold">
             Notificações
           </h1>
 
-          <div className="flex flex-wrap items-center gap-3">
-            <span className="text-text text-base font-medium">
+          <div className="flex flex-wrap items-center gap-2">
+            <span className="text-text text-xs md:text-sm font-medium">
               Filtrar por:
             </span>
 
@@ -104,10 +88,10 @@ function Notifications() {
                   key={item}
                   onClick={() => setFilter(item)}
                   className={`
-                    px-5
-                    py-2
-                    rounded-lg
-                    text-sm
+                    px-3 md:px-4
+                    py-1
+                    rounded-md
+                    text-[11px] md:text-xs
                     font-semibold
                     transition
                     ${
@@ -128,11 +112,11 @@ function Notifications() {
           className="
             bg-primary
             rounded-2xl
-            p-5
+            p-4 md:p-5
             flex
             flex-col
-            gap-4
-            max-h-[500px]
+            gap-3
+            max-h-[520px]
             overflow-y-auto
             w-full
           "
