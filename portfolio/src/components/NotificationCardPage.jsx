@@ -5,13 +5,13 @@ function NotificationCardPage({ item, onDelete }) {
     <div
       className="
         bg-background-white
-        rounded-xl
-        px-4 md:px-5
-        py-4
+        rounded-2xl
+        px-4 md:px-6
+        py-3 md:py-5
         flex
         items-center
         justify-between
-        gap-4
+        gap-3 md:gap-4
       "
     >
       <div className="flex items-center gap-3 md:gap-4 flex-1 min-w-0">
@@ -28,8 +28,8 @@ function NotificationCardPage({ item, onDelete }) {
 
         <div
           className="
-            w-9
-            h-9
+            w-8
+            h-8
             md:w-10
             md:h-10
             rounded-full
@@ -50,8 +50,7 @@ function NotificationCardPage({ item, onDelete }) {
           <span
             className="
               text-primary
-              text-[10px]
-              md:text-[11px]
+              text-[10px] md:text-xs
               font-semibold
               mb-1
             "
@@ -63,8 +62,7 @@ function NotificationCardPage({ item, onDelete }) {
             className="
               text-primary
               font-bold
-              text-sm
-              md:text-lg
+              text-sm md:text-lg
               leading-tight
             "
           >
@@ -74,10 +72,9 @@ function NotificationCardPage({ item, onDelete }) {
           <p
             className="
               text-primary
-              text-xs
-              md:text-sm
+              text-xs md:text-sm
               font-medium
-              mt-2
+              mt-1 md:mt-2
               break-words
             "
           >
@@ -95,7 +92,7 @@ function NotificationCardPage({ item, onDelete }) {
         "
       >
         <Trash2
-          size={20}
+          size={18}
           className="text-background"
         />
       </button>

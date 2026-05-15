@@ -87,14 +87,14 @@ function Notifications() {
 
   return (
     <Layout>
-      <div className="px-4 md:px-8 pt-6">
-        <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-4">
-          <h1 className="text-text text-2xl md:text-3xl font-bold">
+      <div className="px-4 md:px-8 pt-6 pb-6">
+        <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-5 mb-6">
+          <h1 className="text-text text-3xl font-bold">
             Notificações
           </h1>
 
-          <div className="flex flex-wrap items-center gap-2 md:gap-3">
-            <span className="text-text text-sm">
+          <div className="flex flex-wrap items-center gap-3">
+            <span className="text-text text-base font-medium">
               Filtrar por:
             </span>
 
@@ -104,10 +104,10 @@ function Notifications() {
                   key={item}
                   onClick={() => setFilter(item)}
                   className={`
-                    px-3 md:px-4
-                    py-1
-                    rounded-md
-                    text-xs
+                    px-5
+                    py-2
+                    rounded-lg
+                    text-sm
                     font-semibold
                     transition
                     ${
@@ -128,16 +128,13 @@ function Notifications() {
           className="
             bg-primary
             rounded-2xl
-            p-3 md:p-4
+            p-5
             flex
             flex-col
-            gap-3
-            h-[420px]
-            md:h-[500px]
+            gap-4
+            max-h-[500px]
             overflow-y-auto
             w-full
-            md:w-[85%]
-            mx-auto
           "
         >
           {filteredNotifications.map((item) => (
