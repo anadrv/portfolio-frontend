@@ -123,14 +123,12 @@ A arquitetura do projeto foi organizada de forma modular para facilitar a manute
 
 O frontend foi desenvolvido utilizando componentes reutilizáveis e separação por responsabilidades.
 
-```md
 - **Components:** responsáveis pelos elementos reutilizáveis da interface.
 - **Pages:** representam as páginas principais da aplicação.
 - **Routes:** gerenciam a navegação entre páginas.
 - **Data:** armazena dados mockados utilizados durante o desenvolvimento.
 - **Validations:** realiza validações de formulários e entradas do usuário.
 - **Utils:** contém funções auxiliares reutilizáveis.
-```
 
 ## 🚀 Como executar o projeto
 
