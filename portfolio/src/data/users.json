@@ -11,8 +11,7 @@
       "validar_documentos",
       "liberar_customizacao",
       "marcar_integracao_rm",
-      "disponibilizar_canvas",
-      "visualizar_todos_cursos"
+      "disponibilizar_canvas"
     ]
   },
   {
@@ -21,10 +20,9 @@
     "email": "ena.shinonome@unifacisa.edu.br",
     "role": "Coordenador",
     "permissions": [
-      "editar_documentos",
-      "validar_documentos",
-      "liberar_customizacao",
-      "visualizar_curso"
+      "editar_status",
+      "validar_documentos"
+
     ]
   },
   {
@@ -33,9 +31,8 @@
     "email": "rui.kamishiro@unifacisa.edu.br",
     "role": "Professor",
     "permissions": [
-      "editar_documentos",
-      "preencher_documentos",
-      "visualizar_curso"
+        "marcar_como_concluido",
+        "visualizar_documentos"
     ]
   },
   {
@@ -44,7 +41,7 @@
     "email": "haruka.kiritani@unifacisa.edu.br",
     "role": "Equipe RM",
     "permissions": [
-      "visualizar_documentos",
+      "disponibilizar_canvas",
       "marcar_integracao_rm"
     ]
   },
@@ -54,8 +51,8 @@
     "email": "an.shiraishi@unifacisa.edu.br",
     "role": "Equipe Canvas",
     "permissions": [
-      "visualizar_documentos",
-      "disponibilizar_canvas"
+      "disponibilizar_canvas",
+      "marcar_integracao_rm"
     ]
   }
 ]
