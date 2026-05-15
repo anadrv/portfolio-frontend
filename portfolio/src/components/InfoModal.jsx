@@ -32,15 +32,18 @@ function InfoModal({
   const [errors, setErrors] = useState({});
   const [successMessage, setSuccessMessage] = useState("");
 
-  const canEditInfo =
-    currentUser.permissions.includes(
-      "editar_informacoes"
-    );
+ const canEditInfo =
+  currentUser.permissions.includes(
+    "editar_documentos"
+  );
 
-  const canEditStatus =
-    currentUser.permissions.includes(
-      "editar_status"
-    );
+const canEditStatus =
+  currentUser.permissions.includes(
+    "editar_status"
+  ) ||
+  currentUser.permissions.includes(
+    "validar_documentos"
+  );
 
   function handleSave() {
     const validationErrors = validateSubject({

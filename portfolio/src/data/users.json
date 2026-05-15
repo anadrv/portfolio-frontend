@@ -19,21 +19,14 @@
     "name": "Ena Shinonome",
     "email": "ena.shinonome@unifacisa.edu.br",
     "role": "Coordenador",
-    "permissions": [
-      "editar_status",
-      "validar_documentos"
-
-    ]
+    "permissions": ["editar_status", "validar_documentos"]
   },
   {
     "id": 3,
     "name": "Rui Kamishiro",
     "email": "rui.kamishiro@unifacisa.edu.br",
     "role": "Professor",
-    "permissions": [
-        "marcar_como_concluido",
-        "visualizar_documentos"
-    ]
+    "permissions": ["marcar_como_concluido", "visualizar_documentos"]
   },
   {
     "id": 4,
@@ -41,6 +34,7 @@
     "email": "haruka.kiritani@unifacisa.edu.br",
     "role": "Equipe RM",
     "permissions": [
+      "visualizar_documentos",
       "disponibilizar_canvas",
       "marcar_integracao_rm"
     ]
@@ -51,6 +45,7 @@
     "email": "an.shiraishi@unifacisa.edu.br",
     "role": "Equipe Canvas",
     "permissions": [
+      "visualizar_documentos",
       "disponibilizar_canvas",
       "marcar_integracao_rm"
     ]
