@@ -195,3 +195,29 @@ export async function updateFlagGestao(
     throw error;
   }
 }
+
+export async function createCompetency(data) {
+  const response = await fetch(`${API_URL}/academic-documents`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      name_competency: data.name_competency,
+      course_id: data.course_id,
+      code_competency: data.code_competency,
+
+      planner_link: data.planner_link,
+      teaching_plan_link: data.teaching_plan_link,
+
+      trimestre: data.trimestre,
+      matriz: data.matriz,
+    }),
+  });
+
+  if (!response.ok) {
+    throw new Error("Erro ao criar competência");
+  }
+
+  return response.json();
+}

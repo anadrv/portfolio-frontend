@@ -22,9 +22,10 @@ function Subjects() {
 
   const itemsPerPage = 5;
 
-  // 🔥 função de reload (centralizada)
+
   async function loadCompetencies(courseId = id) {
     const data = await getCompetenciesByCourse(courseId);
+    console.log("BACKEND DATA:", data);
     setSubjects([...data]);
   }
 
@@ -35,36 +36,39 @@ function Subjects() {
   }, [id]);
 
   const refresh = async () => {
-  setCurrentPage(1); // 🔥 volta pra primeira página
-  await loadCompetencies(id);
-};
+    setCurrentPage(1); 
+    await loadCompetencies(id);
+  };
 
-  // agrupamento
-const groupedSubjects = useMemo(() => {
-  return Object.values(
-    subjects.reduce((acc, item) => {
-      if (!acc[item.id_competency]) {
-        acc[item.id_competency] = {
-          id_competency: item.id_competency,
-          name_competency: item.name_competency,
-          code_competency: item.code_competency,
-          documents: [],
-        };
-      }
 
-      acc[item.id_competency].documents.push(item);
-      return acc;
-    }, {})
-  );
-}, [subjects]);
+  const groupedSubjects = useMemo(() => {
+    return Object.values(
+      subjects.reduce((acc, item) => {
+        if (!acc[item.id_competency]) {
+          acc[item.id_competency] = {
+            id_competency: item.id_competency,
+            name_competency: item.name_competency,
+            code_competency: item.code_competency,
+            documents: [],
+          };
+        }
+
+        acc[item.id_competency].documents.push(item);
+        return acc;
+      }, {}),
+    );
+  }, [subjects]);
 
   const filteredSubjects = groupedSubjects.filter((subject) => {
+    if (!subject.documents || subject.documents.length === 0) {
+      return true;
+    }
+
     return (
       (matriz === "" ||
         subject.documents.some((doc) => doc.matriz === matriz)) &&
       (trimestre === "" ||
         subject.documents.some((doc) => doc.trimestre === trimestre))
-         
     );
   });
 
@@ -73,7 +77,7 @@ const groupedSubjects = useMemo(() => {
 
   const currentSubjects = filteredSubjects.slice(
     startIndex,
-    startIndex + itemsPerPage
+    startIndex + itemsPerPage,
   );
 
   return (
@@ -117,19 +121,19 @@ const groupedSubjects = useMemo(() => {
               ]}
             />
 
-             <FilterSelect
-                label="Status"
-                options={[
-                  "Em andamento",
-                  "Validado pela coordenação",
-                  "Não avaliado",
-                  "Liberado para customizar",
-                  "Disponível no Canvas",
-                  "Integrado ao RM-Canvas",
-                ]}
-                value={status}
-                onChange={setStatus}
-              />
+            <FilterSelect
+              label="Status"
+              options={[
+                "Em andamento",
+                "Validado pela coordenação",
+                "Não avaliado",
+                "Liberado para customizar",
+                "Disponível no Canvas",
+                "Integrado ao RM-Canvas",
+              ]}
+              value={status}
+              onChange={setStatus}
+            />
           </div>
 
           <div className="bg-background-white rounded-lg mt-6 p-4 flex flex-col gap-4">
@@ -167,7 +171,7 @@ const groupedSubjects = useMemo(() => {
           </div>
         </section>
 
-         <aside
+        <aside
           aria-labelledby="notificacoes-title"
           className="hidden lg:block lg:mr-40"
         >
@@ -176,7 +180,10 @@ const groupedSubjects = useMemo(() => {
       </main>
 
       {isModalOpen && (
-        <CreateSubjectModal onClose={() => setIsModalOpen(false)} />
+        <CreateSubjectModal
+          onClose={() => setIsModalOpen(false)}
+          onSuccess={refresh}
+        />
       )}
     </Layout>
   );

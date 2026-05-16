@@ -1,20 +1,55 @@
 import { useEffect, useState } from "react";
 import { Pencil } from "lucide-react";
+
+import { getCourses } from "../services/courseService";
+import { createCompetency } from "../services/competencyService";
+
 import FilterSelect from "./FilterSelect";
 import PrimaryButton from "./PrimaryButton";
 import validateSubject from "../validations/validateSubject";
 
-function CreateSubjectModal({ onClose }) {
-  const [curso, setCurso] = useState("");
+function CreateSubjectModal({ onClose, onSuccess }) {
+  const [courses, setCourses] = useState([]);
+  const [cursoSelecionado, setCursoSelecionado] = useState("");
+
+  const [codigoCompetencia, setCodigoCompetencia] = useState("");
   const [trimestre, setTrimestre] = useState("");
   const [nomeCompetencia, setNomeCompetencia] = useState("");
   const [linkPlanner, setLinkPlanner] = useState("");
   const [teachingPlanLink, setTeachingPlanLink] = useState("");
-  const [errors, setErrors] = useState({});
 
-  function handleSave() {
+  const [errors, setErrors] = useState({});
+  const [successMessage, setSuccessMessage] = useState("");
+  const [errorMessage, setErrorMessage] = useState("");
+
+  useEffect(() => {
+    async function loadCourses() {
+      try {
+        const data = await getCourses();
+        setCourses(data);
+      } catch (err) {
+        console.error("Erro ao carregar cursos:", err);
+      }
+    }
+
+    loadCourses();
+  }, []);
+
+  useEffect(() => {
+    function handleKeyDown(e) {
+      if (e.key === "Escape") onClose();
+    }
+
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [onClose]);
+
+  async function handleSave() {
+    setSuccessMessage("");
+    setErrorMessage("");
+
     const validationErrors = validateSubject({
-      course: curso,
+      course: cursoSelecionado,
       trimester: trimestre,
       subjectName: nomeCompetencia,
       plannerLink: linkPlanner,
@@ -25,33 +60,36 @@ function CreateSubjectModal({ onClose }) {
     setErrors(validationErrors);
 
     if (Object.keys(validationErrors).length > 0) {
+      setErrorMessage("Preencha todos os campos obrigatórios");
       return;
     }
 
-    console.log({
-      course: curso,
-      trimester,
-      subjectName: nomeCompetencia,
-      plannerLink: linkPlanner,
-      teachingPlanLink,
-    });
+    try {
+      await createCompetency({
+        name_competency: nomeCompetencia,
+        course_id: cursoSelecionado,
+        code_competency: codigoCompetencia,
+
+        planner_link: linkPlanner,
+        teaching_plan_link: teachingPlanLink,
+
+        trimestre,
+        matriz: "Matriz - 62",
+      });
+
+      setSuccessMessage("Competência criada com sucesso!");
+      onSuccess?.();
+
+      setTimeout(() => {
+        onClose();
+      }, 800);
+    } catch (error) {
+      console.error(error);
+      setErrorMessage("Erro ao criar competência no servidor");
+    }
   }
 
-  useEffect(() => {
-    function handleKeyDown(e) {
-      if (e.key === "Escape") {
-        onClose();
-      }
-    }
-
-    window.addEventListener("keydown", handleKeyDown);
-    return () => window.removeEventListener("keydown", handleKeyDown);
-  }, [onClose]);
-
-  // Classes
   const inputClass = "w-full mt-1 p-2 rounded bg-white text-background text-sm";
-  const labelClass = "block text-md font-semibold";
-  const subLabelClass = "text-xs text-gray-200";
   const fieldWrapper = "mb-4";
   const errorClass = "text-red-200 text-xs mt-1";
 
@@ -62,136 +100,105 @@ function CreateSubjectModal({ onClose }) {
     >
       <article
         role="dialog"
-        aria-modal="true"
-        aria-labelledby="modal-title"
-        className="relative bg-background max-w-lg w-full m-4 md:m-0 rounded-lg p-6 md:p-12 text-white shadow-2xl"
+        className="bg-background max-w-lg w-full m-4 rounded-lg p-6 md:p-12 text-white"
         onClick={(e) => e.stopPropagation()}
       >
-        <h2
-          id="modal-title"
-          className="text-xl font-semibold mb-6 flex items-center gap-2"
-        >
+        <h2 className="text-xl font-semibold mb-6 flex items-center gap-2">
           <Pencil size={18} />
           CADASTRAR COMPETÊNCIA
         </h2>
 
-        {/* selects */}
-        <section className="flex gap-2 w-full mb-6 font-semibold">
-          <div className="flex-2">
+        {/* CURSO + TRIMESTRE */}
+        <section className="flex gap-2 mb-6">
+          <div className="flex-1">
             <FilterSelect
               label="Selecionar curso"
-              options={["Sistemas de Informação", "Arquitetura e Urbanismo"]}
-              value={curso}
-              onChange={setCurso}
+              options={courses.map((c) => ({
+                label: c.name_courses,
+                value: c.id_courses,
+              }))}
+              value={cursoSelecionado}
+              onChange={setCursoSelecionado}
             />
           </div>
 
           <div className="flex-1">
             <FilterSelect
               label="Trimestre"
-              options={["1º", "2º", "3º", "4º"]}
+              options={[
+                "1ª Trimestre",
+                "2ª Trimestre",
+                "3ª Trimestre",
+                "4ª Trimestre",
+              ]}
               value={trimestre}
               onChange={setTrimestre}
             />
           </div>
         </section>
 
-        {/* Nome da competência */}
+        {/* NOME COMPETÊNCIA */}
         <div className={fieldWrapper}>
-          <label htmlFor="competencia" className="block text-sm mb-2">
-            Nome da competência:
-          </label>
-
+          <label className="text-sm">Nome da competência</label>
           <input
-            id="competencia"
-            name="competencia"
-            type="text"
-            value={nomeCompetencia}
-            onChange={(e) => {
-              setNomeCompetencia(e.target.value);
-
-              setErrors((prev) => ({
-                ...prev,
-                subjectName: "",
-              }));
-            }}
             className={inputClass}
+            value={nomeCompetencia}
+            onChange={(e) => setNomeCompetencia(e.target.value)}
           />
-
           {errors.subjectName && (
             <p className={errorClass}>{errors.subjectName}</p>
           )}
         </div>
 
-        {/* Planner */}
+        {/* CÓDIGO */}
         <div className={fieldWrapper}>
-          <label htmlFor="planner" className={labelClass}>
-            Planner
-          </label>
-
-          <span className={subLabelClass}>Link de acesso:</span>
-
+          <label className="text-sm">Código da competência</label>
           <input
-            id="planner"
-            name="planner"
-            type="url"
+            className={inputClass}
+            value={codigoCompetencia}
+            onChange={(e) => setCodigoCompetencia(e.target.value)}
+          />
+        </div>
+
+        {/* PLANNER */}
+        <div className={fieldWrapper}>
+          <label className="text-sm">Planner</label>
+          <input
+            className={inputClass}
             value={linkPlanner}
-            onChange={(e) => {
-              setLinkPlanner(e.target.value);
-
-              setErrors((prev) => ({
-                ...prev,
-                plannerLink: "",
-              }));
-            }}
-            className={inputClass}
+            onChange={(e) => setLinkPlanner(e.target.value)}
           />
-
-          {errors.plannerLink && (
-            <p className={errorClass}>{errors.plannerLink}</p>
-          )}
         </div>
 
-        {/* Plano de ensino */}
+        {/* PLANO ENSINO */}
         <div className={fieldWrapper}>
-          <label htmlFor="plano" className={labelClass}>
-            Plano de ensino
-          </label>
-
-          <span className={subLabelClass}>Link de acesso:</span>
-
+          <label className="text-sm">Plano de ensino</label>
           <input
-            id="plano"
-            name="plano"
-            type="url"
-            value={teachingPlanLink}
-            onChange={(e) => {
-              setTeachingPlanLink(e.target.value);
-
-              setErrors((prev) => ({
-                ...prev,
-                teachingPlanLink: "",
-              }));
-            }}
             className={inputClass}
+            value={teachingPlanLink}
+            onChange={(e) => setTeachingPlanLink(e.target.value)}
           />
-
-          {errors.teachingPlanLink && (
-            <p className={errorClass}>{errors.teachingPlanLink}</p>
-          )}
         </div>
 
-        {/* ações */}
-        <div className="flex justify-between items-center mt-6">
-          <button onClick={onClose} className="text-sm hover:underline cursor-pointer">
+        {/* AÇÕES */}
+        <div className="flex justify-between mt-6">
+          <button onClick={onClose} className="hover:underline">
             Cancelar
           </button>
 
-          <PrimaryButton textSize="text-sm" onClick={handleSave}>
-            Confirmar
-          </PrimaryButton>
+          <PrimaryButton onClick={handleSave}>Confirmar</PrimaryButton>
         </div>
+        {successMessage && (
+        <p className="text-green-400 text-sm mt-4 text-center">
+          {successMessage}
+        </p>
+      )}
+
+      {errorMessage && (
+        <p className="text-red-400 text-sm mt-4 text-center">{errorMessage}</p>
+      )}
       </article>
+      
     </div>
   );
 }

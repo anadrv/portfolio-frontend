@@ -28,13 +28,7 @@ function validateSubject({
     errors.teachingPlanLink = "Informe o link do plano de ensino";
   }
 
-  const hasOneStatus = Object.values(statuses || {}).some(
-    (status) => status === true
-  );
-
-  if (!hasOneStatus) {
-    errors.status = "Selecione pelo menos um status";
-  }
+  
 
   return errors;
 }

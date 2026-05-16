@@ -20,11 +20,18 @@ function FilterSelect({
             {label}
           </option>
 
-          {options.filter(Boolean).map((option, index) => (
-            <option key={`${option}-${index}`} value={option}>
-              {option}
-            </option>
-          ))}
+          {options.map((option, index) => {
+            const isObject = typeof option === "object";
+
+            return (
+              <option
+                key={index}
+                value={isObject ? option.value : option}
+              >
+                {isObject ? option.label : option}
+              </option>
+            );
+          })}
         </select>
 
         <ChevronDown
