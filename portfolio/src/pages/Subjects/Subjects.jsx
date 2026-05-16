@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useMemo } from "react";
 import { useParams } from "react-router-dom";
 import { ChevronRight, ChevronLeft } from "lucide-react";
 
@@ -10,46 +10,70 @@ import FilterSelect from "../../components/FilterSelect";
 import CreateSubjectModal from "../../components/CreateSubjectModal";
 
 function Subjects() {
-  const { id } = useParams(); 
+  const { id } = useParams();
 
   const [matriz, setMatriz] = useState("");
   const [trimestre, setTrimestre] = useState("");
   const [status, setStatus] = useState("");
-  const [isModalOpen, setIsModalOpen] = useState(false);
 
+  const [isModalOpen, setIsModalOpen] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
   const [subjects, setSubjects] = useState([]);
 
   const itemsPerPage = 5;
 
+  // 🔥 função de reload (centralizada)
+  async function loadCompetencies(courseId = id) {
+    const data = await getCompetenciesByCourse(courseId);
+    setSubjects([...data]);
+  }
+
   useEffect(() => {
-    async function loadCompetencies() {
-      const data = await getCompetenciesByCourse(id); 
-
-      console.log(data);
-
-      setSubjects(data);
-    }
-
     if (id) {
-      loadCompetencies();
+      loadCompetencies(id);
     }
   }, [id]);
 
-  const filteredSubjects = subjects.filter((subject) => {
+  const refresh = async () => {
+  setCurrentPage(1); // 🔥 volta pra primeira página
+  await loadCompetencies(id);
+};
+
+  // agrupamento
+const groupedSubjects = useMemo(() => {
+  return Object.values(
+    subjects.reduce((acc, item) => {
+      if (!acc[item.id_competency]) {
+        acc[item.id_competency] = {
+          id_competency: item.id_competency,
+          name_competency: item.name_competency,
+          code_competency: item.code_competency,
+          documents: [],
+        };
+      }
+
+      acc[item.id_competency].documents.push(item);
+      return acc;
+    }, {})
+  );
+}, [subjects]);
+
+  const filteredSubjects = groupedSubjects.filter((subject) => {
     return (
-      (matriz === "" || subject.matriz === matriz) &&
-      (trimestre === "" || subject.trimestre === trimestre) &&
-      (status === "" || subject.status === status)
+      (matriz === "" ||
+        subject.documents.some((doc) => doc.matriz === matriz)) &&
+      (trimestre === "" ||
+        subject.documents.some((doc) => doc.trimestre === trimestre))
     );
   });
 
   const totalPages = Math.ceil(filteredSubjects.length / itemsPerPage);
-
   const startIndex = (currentPage - 1) * itemsPerPage;
-  const endIndex = startIndex + itemsPerPage;
 
-  const currentSubjects = filteredSubjects.slice(startIndex, endIndex);
+  const currentSubjects = filteredSubjects.slice(
+    startIndex,
+    startIndex + itemsPerPage
+  );
 
   return (
     <Layout>
@@ -60,16 +84,37 @@ function Subjects() {
       </header>
 
       <main className="flex gap-30 text-text text-lg font-semibold">
-        <section aria-labelledby="competencias-title" className="flex-1">
+        <section className="flex-1">
           <div className="flex justify-between mb-8">
-            <h2 id="competencias-title">Competências</h2>
+            <h2>Competências</h2>
 
             <button
               onClick={() => setIsModalOpen(true)}
-              className="bg-white p-2 px-4 text-background font-semibold text-sm rounded hover:bg-accent cursor-pointer"
+              className="bg-white p-2 px-4 text-background font-semibold text-sm rounded hover:bg-accent"
             >
               Adicionar nova competência
             </button>
+          </div>
+
+          <div className="flex gap-4 mb-6">
+            <FilterSelect
+              label="Matriz"
+              value={matriz}
+              onChange={setMatriz}
+              options={["Matriz - 62", "Matriz - 63"]}
+            />
+
+            <FilterSelect
+              label="Trimestre"
+              value={trimestre}
+              onChange={setTrimestre}
+              options={[
+                "1ª Trimestre",
+                "2ª Trimestre",
+                "3ª Trimestre",
+                "4ª Trimestre",
+              ]}
+            />
           </div>
 
           <div className="bg-background-white rounded-lg mt-6 p-4 flex flex-col gap-4">
@@ -77,41 +122,35 @@ function Subjects() {
               <Subject
                 key={subject.id_competency}
                 title={subject.name_competency}
-                matriz={subject.matriz}
-                trimestre={subject.trimestre}
-                status={subject.status}
+                code={subject.code_competency}
+                documents={subject.documents}
+                onRefresh={refresh}
               />
             ))}
           </div>
 
           <div className="flex items-center justify-end gap-4 mt-6 text-white">
             <button
-              onClick={() => setCurrentPage((prev) => prev - 1)}
+              onClick={() => setCurrentPage((p) => p - 1)}
               disabled={currentPage === 1}
-              className="p-2 rounded-full bg-primary disabled:opacity-40 disabled:cursor-not-allowed hover:scale-105 transition cursor-pointer"
+              className="p-2 rounded-full bg-primary"
             >
               <ChevronLeft size={18} />
             </button>
 
-            <span className="text-sm font-medium">
+            <span>
               Página {currentPage} de {totalPages}
             </span>
 
             <button
-              onClick={() => setCurrentPage((prev) => prev + 1)}
+              onClick={() => setCurrentPage((p) => p + 1)}
               disabled={currentPage === totalPages}
-              className="p-2 rounded-full bg-primary disabled:opacity-40 disabled:cursor-not-allowed hover:scale-105 transition cursor-pointer"
+              className="p-2 rounded-full bg-primary"
             >
               <ChevronRight size={18} />
             </button>
           </div>
         </section>
-        <aside
-          aria-labelledby="notificacoes-title"
-          className="hidden lg:block lg:mr-40"
-        >
-          <h2 id="notificacoes-title">Notificações</h2>
-        </aside>
       </main>
 
       {isModalOpen && (

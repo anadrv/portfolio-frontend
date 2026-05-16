@@ -1,69 +1,90 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Pencil } from "lucide-react";
 
-import validateSubject from "../validations/validateSubject";
+import {
+  updateTrimestre,
+  updateFlagCoordenacao,
+  updateFlagCustomizar,
+  updateFlagCanvas,
+  updateFlagGestao,
+} from "../services/competencyService";
+
 import showFeedback from "../utils/showFeedback";
 
 import FilterInfo from "./FilterInfo";
 import PrimaryButton from "./PrimaryButton";
 import FilterSelect from "./FilterSelect";
 
-import currentUser from "../mock/currentUser";
-
 function InfoModal({
+  id_academicD,
   onClose,
   title,
   icon,
   matriz,
   trimestre,
+
+  flag_validacao_coordenacao,
+  flag_liberado_customizar,
+  flag_disponivel_canva,
+  flag_integrado_rm,
+
+  reload,
 }) {
   const [isEditing, setIsEditing] = useState(false);
 
-  const [selectedTrimestre, setSelectedTrimestre] =
-    useState(trimestre);
-
-  const [statuses, setStatuses] = useState({
-    validado: true,
-    customizar: false,
-    canvas: false,
-    integracao: false,
-  });
+  const [selectedTrimestre, setSelectedTrimestre] = useState("");
+  const [statuses, setStatuses] = useState({});
 
   const [errors, setErrors] = useState({});
   const [successMessage, setSuccessMessage] = useState("");
 
- const canEditInfo =
-  currentUser.permissions.includes(
-    "editar_documentos"
-  );
+  // 🔥 SEMPRE sincroniza quando abrir modal OU mudar props
+  useEffect(() => {
+    setSelectedTrimestre(trimestre || "");
 
-const canEditStatus =
-  currentUser.permissions.includes(
-    "editar_status"
-  ) ||
-  currentUser.permissions.includes(
-    "validar_documentos"
-  );
-
-  function handleSave() {
-    const validationErrors = validateSubject({
-      trimestre: selectedTrimestre,
-      statuses,
+    setStatuses({
+      validado: !!flag_validacao_coordenacao,
+      customizar: !!flag_liberado_customizar,
+      canvas: !!flag_disponivel_canva,
+      integracao: !!flag_integrado_rm,
     });
+  }, [
+    trimestre,
+    flag_validacao_coordenacao,
+    flag_liberado_customizar,
+    flag_disponivel_canva,
+    flag_integrado_rm,
+    id_academicD, // 🔥 garante reset ao abrir outro item
+  ]);
 
-    if (Object.keys(validationErrors).length > 0) {
-      setErrors(validationErrors);
-      return;
+ async function handleSave() {
+  try {
+    await updateTrimestre(id_academicD, selectedTrimestre);
+
+    await updateFlagCoordenacao(id_academicD, statuses.validado);
+    await updateFlagCustomizar(id_academicD, statuses.customizar);
+    await updateFlagCanvas(id_academicD, statuses.canvas);
+    await updateFlagGestao(id_academicD, statuses.integracao);
+
+    setIsEditing(false);
+    setErrors({});
+
+    showFeedback(setSuccessMessage, "Dados atualizados com sucesso!");
+
+    // 🔥 FORÇA ATUALIZAÇÃO GLOBAL
+    if (reload) {
+      await reload();
     }
 
-    setErrors({});
-    setIsEditing(false);
+  
+    onClose?.();
+    window.location.reload();
 
-    showFeedback(
-      setSuccessMessage,
-      "Dados atualizados com sucesso!"
-    );
+  } catch (error) {
+    console.error("Erro ao salvar:", error);
+    setErrors({ save: "Erro ao salvar dados" });
   }
+}
 
   return (
     <div
@@ -76,28 +97,21 @@ const canEditStatus =
       >
         <header className="flex items-center justify-between mb-8 gap-6">
           <div className="flex items-center gap-3">
-            <img
-              src={icon}
-              alt={`Ícone do ${title}`}
-              className="w-8 h-8"
-            />
-
-            <h2 className="text-xl font-bold">
-              {title}
-            </h2>
+            <img src={icon} alt="" className="w-8 h-8" />
+            <h2 className="text-xl font-bold">{title}</h2>
           </div>
         </header>
 
         <section className="flex items-center gap-4 mb-6 justify-between">
-          {isEditing && canEditInfo ? (
+          {isEditing ? (
             <div className="w-full">
               <FilterSelect
                 label="Trimestre"
                 options={[
-                  "1º",
-                  "2º",
-                  "3º",
-                  "4º",
+                  "1ª Trimestre",
+                  "2ª Trimestre",
+                  "3ª Trimestre",
+                  "4ª Trimestre",
                 ]}
                 value={selectedTrimestre}
                 onChange={setSelectedTrimestre}
@@ -112,169 +126,117 @@ const canEditStatus =
             </div>
           ) : (
             <div className="flex gap-4">
-              <FilterInfo>
-                Matriz {matriz}
-              </FilterInfo>
-
-              <FilterInfo>
-                {selectedTrimestre} Trimestre
-              </FilterInfo>
+              <FilterInfo>{matriz}</FilterInfo>
+              <FilterInfo>{selectedTrimestre}</FilterInfo>
             </div>
           )}
         </section>
 
         <section className="mb-8">
-          <h3 className="text-sm font-semibold mb-3">
-            Status
-          </h3>
+          <h3 className="text-sm font-semibold mb-3">Status</h3>
 
           <div className="bg-white rounded-xl p-4 text-background flex flex-col gap-4">
             <label className="flex items-center gap-2 text-sm">
-              {isEditing && canEditStatus && (
+              {isEditing && (
                 <input
                   type="checkbox"
                   checked={statuses.validado}
                   onChange={() =>
-                    setStatuses({
-                      ...statuses,
-                      validado: !statuses.validado,
-                    })
+                    setStatuses((prev) => ({
+                      ...prev,
+                      validado: !prev.validado,
+                    }))
                   }
                 />
               )}
-
-              <span
-                className={
-                  statuses.validado
-                    ? "text-accent"
-                    : "text-gray-400"
-                }
-              >
+              <span className={statuses.validado ? "text-accent" : "text-gray-400"}>
                 {statuses.validado ? "✓" : "X"}
               </span>
-
               <p>Validado pela coordenação</p>
             </label>
 
             <label className="flex items-center gap-2 text-sm">
-              {isEditing && canEditStatus && (
+              {isEditing && (
                 <input
                   type="checkbox"
                   checked={statuses.customizar}
                   onChange={() =>
-                    setStatuses({
-                      ...statuses,
-                      customizar:
-                        !statuses.customizar,
-                    })
+                    setStatuses((prev) => ({
+                      ...prev,
+                      customizar: !prev.customizar,
+                    }))
                   }
                 />
               )}
-
-              <span
-                className={
-                  statuses.customizar
-                    ? "text-accent"
-                    : "text-gray-400"
-                }
-              >
+              <span className={statuses.customizar ? "text-accent" : "text-gray-400"}>
                 {statuses.customizar ? "✓" : "X"}
               </span>
-
               <p>Liberado para customizar</p>
             </label>
 
             <label className="flex items-center gap-2 text-sm">
-              {isEditing && canEditStatus && (
+              {isEditing && (
                 <input
                   type="checkbox"
                   checked={statuses.canvas}
                   onChange={() =>
-                    setStatuses({
-                      ...statuses,
-                      canvas: !statuses.canvas,
-                    })
+                    setStatuses((prev) => ({
+                      ...prev,
+                      canvas: !prev.canvas,
+                    }))
                   }
                 />
               )}
-
-              <span
-                className={
-                  statuses.canvas
-                    ? "text-accent"
-                    : "text-gray-400"
-                }
-              >
+              <span className={statuses.canvas ? "text-accent" : "text-gray-400"}>
                 {statuses.canvas ? "✓" : "X"}
               </span>
-
               <p>Disponível no Canvas</p>
             </label>
 
             <label className="flex items-center gap-2 text-sm">
-              {isEditing && canEditStatus && (
+              {isEditing && (
                 <input
                   type="checkbox"
                   checked={statuses.integracao}
                   onChange={() =>
-                    setStatuses({
-                      ...statuses,
-                      integracao:
-                        !statuses.integracao,
-                    })
+                    setStatuses((prev) => ({
+                      ...prev,
+                      integracao: !prev.integracao,
+                    }))
                   }
                 />
               )}
-
-              <span
-                className={
-                  statuses.integracao
-                    ? "text-accent"
-                    : "text-gray-400"
-                }
-              >
+              <span className={statuses.integracao ? "text-accent" : "text-gray-400"}>
                 {statuses.integracao ? "✓" : "X"}
               </span>
-
               <p>Integrado ao RM-Canvas</p>
             </label>
           </div>
         </section>
 
         <footer className="flex items-center justify-between gap-4">
-          {(canEditInfo || canEditStatus) &&
-            (isEditing ? (
-              <>
-                <button
-                  onClick={() =>
-                    setIsEditing(false)
-                  }
-                  className="text-sm hover:underline underline-offset-4 transition cursor-pointer"
-                >
-                  Cancelar
-                </button>
-
-                <PrimaryButton
-                  textSize="text-sm"
-                  onClick={handleSave}
-                >
-                  Salvar alterações
-                </PrimaryButton>
-              </>
-            ) : (
+          {isEditing ? (
+            <>
               <button
-                onClick={() =>
-                  setIsEditing(true)
-                }
-                className="flex items-center justify-center gap-2 flex-1 text-sm border border-white py-2 rounded-lg hover:bg-white/10 transition cursor-pointer"
+                onClick={() => setIsEditing(false)}
+                className="text-sm hover:underline"
               >
-                <Pencil size={16} />
-
-                {canEditInfo
-                  ? "Editar status ou trimestre"
-                  : "Editar status"}
+                Cancelar
               </button>
-            ))}
+
+              <PrimaryButton onClick={handleSave}>
+                Salvar alterações
+              </PrimaryButton>
+            </>
+          ) : (
+            <button
+              onClick={() => setIsEditing(true)}
+              className="flex items-center justify-center gap-2 flex-1 text-sm border border-white py-2 rounded-lg hover:bg-white/10"
+            >
+              <Pencil size={16} />
+              Editar informações
+            </button>
+          )}
         </footer>
 
         {successMessage && (
