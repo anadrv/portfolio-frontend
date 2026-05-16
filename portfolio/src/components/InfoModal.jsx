@@ -69,16 +69,14 @@ function InfoModal({
     setIsEditing(false);
     setErrors({});
 
-    showFeedback(setSuccessMessage, "Dados atualizados com sucesso!");
+   
 
-    // 🔥 FORÇA ATUALIZAÇÃO GLOBAL
-    if (reload) {
-      await reload();
-    }
+showFeedback(setSuccessMessage, "Dados atualizados com sucesso!");
 
-  
-    onClose?.();
-    window.location.reload();
+setTimeout(() => {
+  onClose?.();
+  window.location.reload();
+}, 1000);
 
   } catch (error) {
     console.error("Erro ao salvar:", error);

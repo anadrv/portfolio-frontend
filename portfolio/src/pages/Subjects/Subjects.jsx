@@ -64,6 +64,7 @@ const groupedSubjects = useMemo(() => {
         subject.documents.some((doc) => doc.matriz === matriz)) &&
       (trimestre === "" ||
         subject.documents.some((doc) => doc.trimestre === trimestre))
+         
     );
   });
 
@@ -115,6 +116,20 @@ const groupedSubjects = useMemo(() => {
                 "4ª Trimestre",
               ]}
             />
+
+             <FilterSelect
+                label="Status"
+                options={[
+                  "Em andamento",
+                  "Validado pela coordenação",
+                  "Não avaliado",
+                  "Liberado para customizar",
+                  "Disponível no Canvas",
+                  "Integrado ao RM-Canvas",
+                ]}
+                value={status}
+                onChange={setStatus}
+              />
           </div>
 
           <div className="bg-background-white rounded-lg mt-6 p-4 flex flex-col gap-4">
@@ -151,6 +166,13 @@ const groupedSubjects = useMemo(() => {
             </button>
           </div>
         </section>
+
+         <aside
+          aria-labelledby="notificacoes-title"
+          className="hidden lg:block lg:mr-40"
+        >
+          <h2 id="notificacoes-title">Notificações</h2>
+        </aside>
       </main>
 
       {isModalOpen && (
