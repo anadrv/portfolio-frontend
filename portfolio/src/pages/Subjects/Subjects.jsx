@@ -26,9 +26,7 @@ function Subjects() {
 
   const user = JSON.parse(localStorage.getItem("user"));
 
-const isAdminOrGestao =
-  user?.role === "ADMIN" ||
-  user?.role === "GESTAO";
+  const isAdminOrGestao = user?.role === "admin" || user?.role === "GESTAO";
 
   async function loadCompetencies(courseId = id) {
     const data = await getCompetenciesByCourse(courseId);
@@ -118,12 +116,14 @@ const isAdminOrGestao =
           <div className="flex justify-between mb-8">
             <h2>Competências</h2>
 
-            <button
-              onClick={() => setIsModalOpen(true)}
-              className="bg-white p-2 px-4 text-background font-semibold text-sm rounded hover:bg-accent"
-            >
-              Adicionar nova competência
-            </button>
+            {isAdminOrGestao && (
+              <button
+                onClick={() => setIsModalOpen(true)}
+                className="bg-white p-2 px-4 text-background font-semibold text-sm rounded hover:bg-accent"
+              >
+                Adicionar nova competência
+              </button>
+            )}
           </div>
 
           <div className="flex gap-4 mb-6">
