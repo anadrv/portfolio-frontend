@@ -3,6 +3,7 @@ import { useParams } from "react-router-dom";
 import { ChevronRight, ChevronLeft } from "lucide-react";
 
 import { getCompetenciesByCourse } from "../../services/competencyService";
+import { getCourses } from "../../services/courseService";
 
 import Subject from "../../components/Subject";
 import Layout from "../../Layout/Layout";
@@ -19,9 +20,9 @@ function Subjects() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
   const [subjects, setSubjects] = useState([]);
+  const [courseName, setCourseName] = useState("");
 
   const itemsPerPage = 5;
-
 
   async function loadCompetencies(courseId = id) {
     const data = await getCompetenciesByCourse(courseId);
@@ -35,11 +36,32 @@ function Subjects() {
     }
   }, [id]);
 
+  useEffect(() => {
+    async function loadCourseName() {
+      try {
+        const courses = await getCourses();
+
+        const currentCourse = courses.find(
+          (course) => String(course.id_courses) === String(id),
+        );
+
+        if (currentCourse) {
+          setCourseName(currentCourse.name_courses);
+        }
+      } catch (error) {
+        console.error("Erro ao carregar nome do curso:", error);
+      }
+    }
+
+    if (id) {
+      loadCourseName();
+    }
+  }, [id]);
+
   const refresh = async () => {
-    setCurrentPage(1); 
+    setCurrentPage(1);
     await loadCompetencies(id);
   };
-
 
   const groupedSubjects = useMemo(() => {
     return Object.values(
@@ -83,9 +105,7 @@ function Subjects() {
   return (
     <Layout>
       <header className="flex flex-col text-text font-semibold">
-        <h1 className="text-xl md:text-2xl font-semibold py-6">
-          Sistemas de Informações
-        </h1>
+        <h1 className="text-xl md:text-2xl font-semibold py-6">{courseName}</h1>
       </header>
 
       <main className="flex gap-30 text-text text-lg font-semibold">
