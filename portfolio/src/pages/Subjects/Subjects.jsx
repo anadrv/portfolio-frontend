@@ -24,9 +24,14 @@ function Subjects() {
 
   const itemsPerPage = 5;
 
+  const user = JSON.parse(localStorage.getItem("user"));
+
+const isAdminOrGestao =
+  user?.role === "ADMIN" ||
+  user?.role === "GESTAO";
+
   async function loadCompetencies(courseId = id) {
     const data = await getCompetenciesByCourse(courseId);
-    console.log("BACKEND DATA:", data);
     setSubjects([...data]);
   }
 

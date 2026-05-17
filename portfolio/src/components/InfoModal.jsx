@@ -9,6 +9,8 @@ import {
   updateFlagGestao,
 } from "../services/competencyService";
 
+import { hasPermission, hasRole } from "../utils/permissions";
+
 import showFeedback from "../utils/showFeedback";
 
 import FilterInfo from "./FilterInfo";
@@ -30,6 +32,7 @@ function InfoModal({
 
   reload,
 }) {
+  const isProfessor = hasRole("PROFESSOR");
   const [isEditing, setIsEditing] = useState(false);
 
   const [selectedTrimestre, setSelectedTrimestre] = useState("");
@@ -38,7 +41,6 @@ function InfoModal({
   const [errors, setErrors] = useState({});
   const [successMessage, setSuccessMessage] = useState("");
 
-  // 🔥 SEMPRE sincroniza quando abrir modal OU mudar props
   useEffect(() => {
     setSelectedTrimestre(trimestre || "");
 
@@ -54,35 +56,32 @@ function InfoModal({
     flag_liberado_customizar,
     flag_disponivel_canva,
     flag_integrado_rm,
-    id_academicD, // 🔥 garante reset ao abrir outro item
+    id_academicD,
   ]);
 
- async function handleSave() {
-  try {
-    await updateTrimestre(id_academicD, selectedTrimestre);
+  async function handleSave() {
+    try {
+      await updateTrimestre(id_academicD, selectedTrimestre);
 
-    await updateFlagCoordenacao(id_academicD, statuses.validado);
-    await updateFlagCustomizar(id_academicD, statuses.customizar);
-    await updateFlagCanvas(id_academicD, statuses.canvas);
-    await updateFlagGestao(id_academicD, statuses.integracao);
+      await updateFlagCoordenacao(id_academicD, statuses.validado);
+      await updateFlagCustomizar(id_academicD, statuses.customizar);
+      await updateFlagCanvas(id_academicD, statuses.canvas);
+      await updateFlagGestao(id_academicD, statuses.integracao);
 
-    setIsEditing(false);
-    setErrors({});
+      setIsEditing(false);
+      setErrors({});
 
-   
+      showFeedback(setSuccessMessage, "Dados atualizados com sucesso!");
 
-showFeedback(setSuccessMessage, "Dados atualizados com sucesso!");
-
-setTimeout(() => {
-  onClose?.();
-  window.location.reload();
-}, 1000);
-
-  } catch (error) {
-    console.error("Erro ao salvar:", error);
-    setErrors({ save: "Erro ao salvar dados" });
+      setTimeout(() => {
+        onClose?.();
+        window.location.reload();
+      }, 1000);
+    } catch (error) {
+      console.error("Erro ao salvar:", error);
+      setErrors({ save: "Erro ao salvar dados" });
+    }
   }
-}
 
   return (
     <div
@@ -101,7 +100,7 @@ setTimeout(() => {
         </header>
 
         <section className="flex items-center gap-4 mb-6 justify-between">
-          {isEditing ? (
+          {isEditing && !isProfessor ? (
             <div className="w-full">
               <FilterSelect
                 label="Trimestre"
@@ -117,9 +116,7 @@ setTimeout(() => {
               />
 
               {errors.trimestre && (
-                <p className="text-red-400 text-xs mt-2">
-                  {errors.trimestre}
-                </p>
+                <p className="text-red-400 text-xs mt-2">{errors.trimestre}</p>
               )}
             </div>
           ) : (
@@ -134,81 +131,139 @@ setTimeout(() => {
           <h3 className="text-sm font-semibold mb-3">Status</h3>
 
           <div className="bg-white rounded-xl p-4 text-background flex flex-col gap-4">
-            <label className="flex items-center gap-2 text-sm">
-              {isEditing && (
-                <input
-                  type="checkbox"
-                  checked={statuses.validado}
-                  onChange={() =>
-                    setStatuses((prev) => ({
-                      ...prev,
-                      validado: !prev.validado,
-                    }))
-                  }
-                />
-              )}
-              <span className={statuses.validado ? "text-accent" : "text-gray-400"}>
-                {statuses.validado ? "✓" : "X"}
-              </span>
-              <p>Validado pela coordenação</p>
-            </label>
+            {/* PROFESSOR */}
+            {isProfessor ? (
+              <label className="flex items-center gap-2 text-sm">
+                {isEditing && (
+                  <input
+                    type="checkbox"
+                    checked={statuses.integracao}
+                    onChange={() =>
+                      setStatuses((prev) => ({
+                        ...prev,
+                        integracao: !prev.integracao,
+                      }))
+                    }
+                  />
+                )}
 
-            <label className="flex items-center gap-2 text-sm">
-              {isEditing && (
-                <input
-                  type="checkbox"
-                  checked={statuses.customizar}
-                  onChange={() =>
-                    setStatuses((prev) => ({
-                      ...prev,
-                      customizar: !prev.customizar,
-                    }))
+                <span
+                  className={
+                    statuses.integracao ? "text-accent" : "text-gray-400"
                   }
-                />
-              )}
-              <span className={statuses.customizar ? "text-accent" : "text-gray-400"}>
-                {statuses.customizar ? "✓" : "X"}
-              </span>
-              <p>Liberado para customizar</p>
-            </label>
+                >
+                  {statuses.integracao ? "✓" : "X"}
+                </span>
 
-            <label className="flex items-center gap-2 text-sm">
-              {isEditing && (
-                <input
-                  type="checkbox"
-                  checked={statuses.canvas}
-                  onChange={() =>
-                    setStatuses((prev) => ({
-                      ...prev,
-                      canvas: !prev.canvas,
-                    }))
-                  }
-                />
-              )}
-              <span className={statuses.canvas ? "text-accent" : "text-gray-400"}>
-                {statuses.canvas ? "✓" : "X"}
-              </span>
-              <p>Disponível no Canvas</p>
-            </label>
+                <p>
+                  {statuses.integracao ? "Concluído" : "Marcar como concluído"}
+                </p>
+              </label>
+            ) : (
+              <>
+                {/* ADMIN / GESTÃO */}
 
-            <label className="flex items-center gap-2 text-sm">
-              {isEditing && (
-                <input
-                  type="checkbox"
-                  checked={statuses.integracao}
-                  onChange={() =>
-                    setStatuses((prev) => ({
-                      ...prev,
-                      integracao: !prev.integracao,
-                    }))
-                  }
-                />
-              )}
-              <span className={statuses.integracao ? "text-accent" : "text-gray-400"}>
-                {statuses.integracao ? "✓" : "X"}
-              </span>
-              <p>Integrado ao RM-Canvas</p>
-            </label>
+                <label className="flex items-center gap-2 text-sm">
+                  {isEditing && (
+                    <input
+                      type="checkbox"
+                      checked={statuses.validado}
+                      onChange={() =>
+                        setStatuses((prev) => ({
+                          ...prev,
+                          validado: !prev.validado,
+                        }))
+                      }
+                    />
+                  )}
+
+                  <span
+                    className={
+                      statuses.validado ? "text-accent" : "text-gray-400"
+                    }
+                  >
+                    {statuses.validado ? "✓" : "X"}
+                  </span>
+
+                  <p>Validado pela coordenação</p>
+                </label>
+
+                <label className="flex items-center gap-2 text-sm">
+                  {isEditing && (
+                    <input
+                      type="checkbox"
+                      checked={statuses.customizar}
+                      onChange={() =>
+                        setStatuses((prev) => ({
+                          ...prev,
+                          customizar: !prev.customizar,
+                        }))
+                      }
+                    />
+                  )}
+
+                  <span
+                    className={
+                      statuses.customizar ? "text-accent" : "text-gray-400"
+                    }
+                  >
+                    {statuses.customizar ? "✓" : "X"}
+                  </span>
+
+                  <p>Liberado para customizar</p>
+                </label>
+
+                <label className="flex items-center gap-2 text-sm">
+                  {isEditing && (
+                    <input
+                      type="checkbox"
+                      checked={statuses.canvas}
+                      onChange={() =>
+                        setStatuses((prev) => ({
+                          ...prev,
+                          canvas: !prev.canvas,
+                        }))
+                      }
+                    />
+                  )}
+
+                  <span
+                    className={
+                      statuses.canvas ? "text-accent" : "text-gray-400"
+                    }
+                  >
+                    {statuses.canvas ? "✓" : "X"}
+                  </span>
+
+                  <p>Disponível no Canvas</p>
+                </label>
+
+                <label className="flex items-center gap-2 text-sm">
+                  {isEditing && (
+                    <input
+                      type="checkbox"
+                      checked={statuses.integracao}
+                      onChange={() =>
+                        setStatuses((prev) => ({
+                          ...prev,
+                          integracao: !prev.integracao,
+                        }))
+                      }
+                    />
+                  )}
+
+                  <span
+                    className={
+                      statuses.integracao ? "text-accent" : "text-gray-400"
+                    }
+                  >
+                    {statuses.integracao ? "✓" : "X"}
+                  </span>
+
+                  <p>Integrado ao RM-Canvas</p>
+                </label>
+              </>
+            )}
           </div>
         </section>
 
@@ -232,7 +287,8 @@ setTimeout(() => {
               className="flex items-center justify-center gap-2 flex-1 text-sm border border-white py-2 rounded-lg hover:bg-white/10"
             >
               <Pencil size={16} />
-              Editar informações
+
+              {hasRole("PROFESSOR") ? "Editar status" : "Editar informações"}
             </button>
           )}
         </footer>
