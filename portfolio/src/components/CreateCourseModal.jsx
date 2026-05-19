@@ -3,6 +3,8 @@ import { motion } from "framer-motion";
 import FilterSelect from "./FilterSelect";
 import pencilIcon from "../assets/images/pencil.png";
 
+import { createCourse } from "../services/courseService";
+
 function CreateCourse({ onCancel, onSave }) {
   const [curso, setCurso] = useState("");
   const [matriz, setMatriz] = useState("");
@@ -49,14 +51,22 @@ function CreateCourse({ onCancel, onSave }) {
     return Object.keys(newErrors).length === 0;
   };
 
-  const handleSave = () => {
+  const handleSave = async () => {
     if (!validateForm()) return;
 
-    onSave?.({
-      curso,
-      matriz,
-      image,
-    });
+    try {
+      const newCourse = await createCourse({
+        curso,
+        matriz,
+        image,
+      });
+
+      console.log("Curso criado:", newCourse);
+
+      onSave?.(newCourse);
+    } catch (error) {
+      console.error("Erro ao criar curso:", error);
+    }
   };
 
   return (
@@ -65,17 +75,18 @@ function CreateCourse({ onCancel, onSave }) {
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.3 }}
       className="
-          bg-background
-          rounded-2xl
-          p-5 sm:p-8
-          w-[100%]
-          max-w-[370px]
-          sm:w-[400px]
-          overflow-hidden
-          flex
-          flex-col
-          gap-4
-        " >
+        bg-background
+        rounded-2xl
+        p-5 sm:p-8
+        w-[100%]
+        max-w-[370px]
+        sm:w-[400px]
+        overflow-hidden
+        flex
+        flex-col
+        gap-4
+      "
+    >
       <div className="flex items-center gap-4">
         <img src={pencilIcon} alt="pencil" className="w-5 h-5" />
 
@@ -115,7 +126,18 @@ function CreateCourse({ onCancel, onSave }) {
 
           <div
             onClick={() => fileInputRef.current.click()}
-            className="cursor-pointer rounded px-3 py-2 bg-white flex items-center justify-between w-full h-10"
+            className="
+              cursor-pointer
+              rounded
+              px-3
+              py-2
+              bg-white
+              flex
+              items-center
+              justify-between
+              w-full
+              h-10
+            "
           >
             <span className="text-gray-400 text-xs truncate">
               {image ? image.name : "Escolher imagem"}
@@ -168,13 +190,32 @@ function CreateCourse({ onCancel, onSave }) {
       </div>
 
       <div className="flex items-center justify-between mt-2">
-        <button onClick={onCancel} className="text-white text-sm hover:underline cursor-pointer">
+        <button
+          onClick={onCancel}
+          className="
+            text-white
+            text-sm
+            hover:underline
+            cursor-pointer
+          "
+        >
           Cancelar
         </button>
 
         <button
           onClick={handleSave}
-          className="bg-accent text-blue-900 font-medium text-sm px-5 py-2 rounded transition-colors hover:opacity-90 cursor-pointer"
+          className="
+            bg-accent
+            text-blue-900
+            font-medium
+            text-sm
+            px-5
+            py-2
+            rounded
+            transition-colors
+            hover:opacity-90
+            cursor-pointer
+          "
         >
           Salvar alterações
         </button>

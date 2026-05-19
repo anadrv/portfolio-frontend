@@ -1,8 +1,10 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Layout from "../../Layout/Layout";
 import FilterSelect from "../../components/FilterSelect";
 import CourseCard from "../../components/CourseCard";
 import CreateCourse from "../../components/CreateCourseModal";
+
+import { getCourses } from "../../services/courseService";
 
 import adminIcon from "../../assets/icons/courses/admin.png";
 import adsIcon from "../../assets/icons/courses/ads.png";
@@ -11,13 +13,11 @@ import dsgIcon from "../../assets/icons/courses/design.png";
 import lawIcon from "../../assets/icons/courses/law.png";
 import peIcon from "../../assets/icons/courses/physical-education.png";
 
-import coursesData from "../../data/courses.json";
-
 function Home() {
   const [matriz, setMatriz] = useState("");
   const [showCreate, setShowCreate] = useState(false);
 
-  const [courses, setCourses] = useState(coursesData);
+  const [courses, setCourses] = useState([]);
 
   const iconMap = {
     admin: adminIcon,
@@ -27,6 +27,26 @@ function Home() {
     law: lawIcon,
     "physical-education": peIcon,
   };
+
+  useEffect(() => {
+    async function loadCourses() {
+      try {
+        const data = await getCourses();
+        const formattedCourses = data.map((course) => ({
+          id: course.id_courses,
+          title: course.name_courses,
+          matriz: [course.matrix_courses],
+          image: {
+            preview: course.course_icon_url,
+          },
+        }));
+        setCourses(formattedCourses);
+      } catch (error) {
+        console.error("Erro ao carregar cursos:", error);
+      }
+    }
+    loadCourses();
+  }, []);
 
   const filteredCourses = courses.filter((course) => {
     return matriz === "" || course.matriz.includes(matriz);
@@ -79,8 +99,6 @@ function Home() {
               ))}
             </div>
           </div>
-
-         
         </div>
       </div>
 
@@ -94,14 +112,14 @@ function Home() {
               onCancel={() => setShowCreate(false)}
               onSave={(data) => {
                 const newCourse = {
-                  id: Date.now(),
-                  title: data.curso,
-                  matriz: [data.matriz],
-                  image: data.image,
+                  id: data.id_courses,
+                  title: data.name_courses,
+                  matriz: [data.matrix_courses],
+                  image: {
+                    preview: data.course_icon_url,
+                  },
                 };
-
                 setCourses((prev) => [...prev, newCourse]);
-
                 setShowCreate(false);
               }}
             />
