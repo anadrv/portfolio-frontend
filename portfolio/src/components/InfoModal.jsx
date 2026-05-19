@@ -72,11 +72,10 @@ function InfoModal({
       setErrors({});
 
       showFeedback(setSuccessMessage, "Dados atualizados com sucesso!");
-
-      setTimeout(() => {
-        onClose?.();
-        window.location.reload();
-      }, 1000);
+setTimeout(async () => {
+  await reload?.();
+  onClose?.();
+}, 1000);
     } catch (error) {
       console.error("Erro ao salvar:", error);
       setErrors({ save: "Erro ao salvar dados" });

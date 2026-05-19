@@ -9,12 +9,7 @@ import plannerWhiteIcon from "../assets/icons/planner-white-icon.png";
 import teachingPlanIcon from "../assets/icons/planner-icon.png";
 import teachingWhitePlanIcon from "../assets/icons/planner-white-icon.png";
 
-function Subject({
-  title,
-  code,
-  documents,
-  reload,
-}) {
+function Subject({ title, code, documents, reload, onRefresh }) {
   const [open, setOpen] = useState(false);
 
   function getDocumentIcon(type) {
@@ -46,9 +41,7 @@ function Subject({
           >
             <ChevronDown
               size={20}
-              className={`transition-transform ${
-                open ? "rotate-180" : ""
-              }`}
+              className={`transition-transform ${open ? "rotate-180" : ""}`}
             />
           </button>
         </div>
@@ -64,13 +57,13 @@ function Subject({
             })
             .map((doc) => {
               const { icon, whiteIcon } = getDocumentIcon(
-                doc.name_documentType
+                doc.name_documentType,
               );
 
               return (
                 <DocumentCard
                   key={doc.id_academicD}
-                  reload={reload}
+                  reload={onRefresh}
                   id_academicD={doc.id_academicD}
                   title={doc.name_documentType}
                   icon={icon}
