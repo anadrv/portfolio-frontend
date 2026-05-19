@@ -26,7 +26,7 @@ function Subjects() {
 
   const user = JSON.parse(localStorage.getItem("user"));
 
-  const isAdminOrGestao = user?.role === "admin" || user?.role === "GESTAO";
+  const isAdminOrGestao = user?.role === "ADMIN" || user?.role === "GESTAO";
 
   async function loadCompetencies(courseId = id) {
     const data = await getCompetenciesByCourse(courseId);
@@ -119,7 +119,7 @@ function Subjects() {
             {isAdminOrGestao && (
               <button
                 onClick={() => setIsModalOpen(true)}
-                className="bg-white p-2 px-4 text-background font-semibold text-sm rounded hover:bg-accent"
+                className="bg-white p-2 px-4 text-background font-semibold text-sm rounded hover:bg-accent cursor-pointer"
               >
                 Adicionar nova competência
               </button>

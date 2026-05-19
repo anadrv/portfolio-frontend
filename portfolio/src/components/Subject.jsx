@@ -26,6 +26,14 @@ function Subject({ title, code, documents, reload, onRefresh }) {
     };
   }
 
+  function getPriority(type) {
+    const t = type?.toUpperCase().trim();
+
+    if (t === "PLANNER") return 0;
+    if (t === "PLANO") return 1;
+    return 2;
+  }
+
   return (
     <article className="flex flex-col gap-4">
       <div className="bg-primary text-white rounded-lg px-6 py-4 flex items-center justify-between gap-2 shadow-[0_4px_0_#d1d5db]">
@@ -49,11 +57,12 @@ function Subject({ title, code, documents, reload, onRefresh }) {
 
       {open && (
         <div className="flex flex-col gap-4 md:flex-row">
-          {documents
-            ?.sort((a, b) => {
-              if (a.name_documentType === "PLANNER") return -1;
-              if (b.name_documentType === "PLANNER") return 1;
-              return 0;
+          {[...(documents || [])]
+            .sort((a, b) => {
+              return (
+                getPriority(a.name_documentType) -
+                getPriority(b.name_documentType)
+              );
             })
             .map((doc) => {
               const { icon, whiteIcon } = getDocumentIcon(
