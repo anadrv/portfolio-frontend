@@ -7,9 +7,14 @@ import logo from "../assets/icons/unifacisa-icon.png";
 function Menu() {
   const [open, setOpen] = useState(false);
   const [profileOpen, setProfileOpen] = useState(false);
+
   const navigate = useNavigate();
 
   const profileRef = useRef(null);
+
+  const user = JSON.parse(localStorage.getItem("user"));
+
+  const isProfessor = user?.role === "PROFESSOR";
 
   useEffect(() => {
     function handleClickOutside(event) {
@@ -43,13 +48,15 @@ function Menu() {
               alt="Logo do site"
               className="w-8 h-8 object-contain"
             />
-            <span className="hidden font-semibold text-xl font-sans md:hidden lg:block">Unifacisa</span>
+            <span className="hidden font-semibold text-xl font-sans md:hidden lg:block">
+              Unifacisa
+            </span>
           </NavLink>
         </h1>
 
         <div className="flex-1 max-w-lg px-6 md:px-4">
-  <SearchBar />
-</div>
+          <SearchBar />
+        </div>
 
         {/* DESKTOP MENU */}
         <ul className="hidden md:flex items-center font-semibold gap-10 md:gap-4 md:text-sm lg:text-lg lg:gap-10">
@@ -57,9 +64,11 @@ function Menu() {
             <NavLink to="/">Cursos</NavLink>
           </li>
 
-          <li>
-            <NavLink to="/notifications">Notificações</NavLink>
-          </li>
+          {!isProfessor && (
+            <li>
+              <NavLink to="/notifications">Notificações</NavLink>
+            </li>
+          )}
 
           <li className="relative" ref={profileRef}>
             <button
@@ -117,15 +126,17 @@ function Menu() {
               </NavLink>
             </li>
 
-            <li>
-              <NavLink
-                to="/notifications"
-                onClick={() => setOpen(false)}
-                className="block p-2 rounded hover:bg-white/20 transition"
-              >
-                Notificações
-              </NavLink>
-            </li>
+            {!isProfessor && (
+              <li>
+                <NavLink
+                  to="/notifications"
+                  onClick={() => setOpen(false)}
+                  className="block p-2 rounded hover:bg-white/20 transition"
+                >
+                  Notificações
+                </NavLink>
+              </li>
+            )}
 
             <li>
               <NavLink
