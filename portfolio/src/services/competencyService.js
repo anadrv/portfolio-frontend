@@ -221,3 +221,66 @@ export async function createCompetency(data) {
 
   return response.json();
 }
+
+export async function updateCompetencyCore(data) {
+  const response = await fetch(
+    `${API_URL}/academic-documents/${data.id_competency}`,
+    {
+      method: "PATCH",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        name_competency: data.name_competency,
+        course_id: data.course_id,
+        code_competency: data.code_competency,
+      }),
+    }
+  );
+
+  if (!response.ok) throw new Error(`Erro HTTP: ${response.status}`);
+
+  return response.json();
+}
+
+export async function updateCompetencyDocuments(data) {
+  const response = await fetch(
+    `${API_URL}/academic-documents/${data.id_competency}/documents`,
+    {
+      method: "PATCH",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        planner_link: data.planner_link,
+        teaching_plan_link: data.teaching_plan_link,
+        trimestre: data.trimestre,
+        matriz: data.matriz,
+      }),
+    }
+  );
+
+  if (!response.ok) throw new Error(`Erro HTTP: ${response.status}`);
+
+  return response.json();
+}
+
+
+export async function updateDriveLink(documentId, link) {
+  const response = await fetch(
+    `${API_URL}/academic-documents/${documentId}/drive-link`,
+    {
+      method: "PATCH",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ link }),
+    }
+  );
+
+  if (!response.ok) {
+    throw new Error(`Erro HTTP: ${response.status}`);
+  }
+
+  return response.json();
+}

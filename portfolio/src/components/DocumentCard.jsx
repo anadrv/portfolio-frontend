@@ -19,21 +19,29 @@ function DocumentCard({
 }) {
   const [isModalOpen, setIsModalOpen] = useState(false);
 
-  function getStatus() {
-    if (flag_validacao_coordenacao) return "Validado pela coordenação";
-    if (flag_integrado_rm) return "Integrado ao RM";
-    if (flag_disponivel_canva) return "Disponível no Canvas";
-    if (flag_liberado_customizar) return "Liberado para customizar";
-    return "Não avaliado";
-  }
+ function getStatus() {
+  if (flag_integrado_rm)
+    return "Integrado ao RM";
+
+  if (flag_disponivel_canva)
+    return "Disponível no Canvas";
+
+  if (flag_liberado_customizar)
+    return "Liberado para customizar";
+
+  if (flag_validacao_coordenacao)
+    return "Validado pela coordenação";
+
+  return "Não avaliado";
+}
 
   const status = getStatus();
 
   const statusColors = {
     "Validado pela coordenação": "bg-accent",
-    "Integrado ao RM": "bg-blue-500",
-    "Disponível no Canvas": "bg-purple-500",
-    "Liberado para customizar": "bg-orange-400",
+    "Integrado ao RM": "bg-accent",
+    "Disponível no Canvas": "bg-accent",
+    "Liberado para customizar": "bg-accent",
     "Não avaliado": "bg-gray-400",
   };
 

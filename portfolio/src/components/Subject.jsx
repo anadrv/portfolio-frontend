@@ -1,7 +1,8 @@
 import { useState } from "react";
-import { ChevronDown } from "lucide-react";
+import { ChevronDown, Pencil } from "lucide-react";
 
 import DocumentCard from "./DocumentCard";
+import CompetencyModal from "./CompetencyModal";
 
 import plannerIcon from "../assets/icons/planner-icon.png";
 import plannerWhiteIcon from "../assets/icons/planner-white-icon.png";
@@ -11,6 +12,8 @@ import teachingWhitePlanIcon from "../assets/icons/planner-white-icon.png";
 
 function Subject({ title, code, documents, reload, onRefresh }) {
   const [open, setOpen] = useState(false);
+  const [openEdit, setOpenEdit] = useState(false);
+  const [editingDoc, setEditingDoc] = useState(null);
 
   function getDocumentIcon(type) {
     if (type === "PLANNER") {
@@ -42,16 +45,31 @@ function Subject({ title, code, documents, reload, onRefresh }) {
         </h2>
 
         <div className="flex items-center gap-4">
-          <button
-            aria-label={`Expandir ${title}`}
-            onClick={() => setOpen(!open)}
-            className="p-2 rounded-full cursor-pointer hover:bg-white/20 transition"
-          >
-            <ChevronDown
-              size={20}
-              className={`transition-transform ${open ? "rotate-180" : ""}`}
-            />
-          </button>
+          <div className="flex items-center gap-2">
+            {/* Botão editar */}
+            <button
+              aria-label={`Editar ${title}`}
+              onClick={() => {
+                setEditingDoc(documents?.[0]); // <- documento padrão
+                setOpenEdit(true);
+              }}
+              className="p-2 rounded-full cursor-pointer hover:bg-white/20 transition"
+            >
+              <Pencil size={18} />
+            </button>
+
+            {/* Botão expandir */}
+            <button
+              aria-label={`Expandir ${title}`}
+              onClick={() => setOpen(!open)}
+              className="p-2 rounded-full cursor-pointer hover:bg-white/20 transition"
+            >
+              <ChevronDown
+                size={20}
+                className={`transition-transform ${open ? "rotate-180" : ""}`}
+              />
+            </button>
+          </div>
         </div>
       </div>
 
@@ -66,7 +84,7 @@ function Subject({ title, code, documents, reload, onRefresh }) {
             })
             .map((doc) => {
               const { icon, whiteIcon } = getDocumentIcon(
-                doc.name_documentType,
+                doc.name_documentType
               );
 
               return (
@@ -88,6 +106,18 @@ function Subject({ title, code, documents, reload, onRefresh }) {
               );
             })}
         </div>
+      )}
+
+      {openEdit && (
+        <CompetencyModal
+          mode="edit"
+          existingData={editingDoc}
+          onClose={() => {
+            setOpenEdit(false);
+            setEditingDoc(null);
+          }}
+          onSuccess={onRefresh}
+        />
       )}
     </article>
   );

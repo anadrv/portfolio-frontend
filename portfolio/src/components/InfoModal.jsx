@@ -271,7 +271,7 @@ setTimeout(async () => {
             <>
               <button
                 onClick={() => setIsEditing(false)}
-                className="text-sm hover:underline"
+                className="text-sm hover:underline cursor-pointer"
               >
                 Cancelar
               </button>
@@ -283,7 +283,7 @@ setTimeout(async () => {
           ) : (
             <button
               onClick={() => setIsEditing(true)}
-              className="flex items-center justify-center gap-2 flex-1 text-sm border border-white py-2 rounded-lg hover:bg-white/10"
+              className="flex items-center justify-center gap-2 flex-1 text-sm border border-white py-2 rounded-lg hover:bg-white/10 cursor-pointer"
             >
               <Pencil size={16} />
 
