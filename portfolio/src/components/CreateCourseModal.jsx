@@ -3,6 +3,8 @@ import { motion } from "framer-motion";
 import FilterSelect from "./FilterSelect";
 import pencilIcon from "../assets/images/pencil.png";
 
+import validateCourse from "../validations/validateCourse";
+
 import { createCourse } from "../services/courseService";
 
 function CreateCourse({ onCancel, onSave }) {
@@ -12,7 +14,19 @@ function CreateCourse({ onCancel, onSave }) {
 
   const [errors, setErrors] = useState({});
 
+  const [successMessage, setSuccessMessage] = useState("");
+  const [errorMessage, setErrorMessage] = useState("");
+
   const fileInputRef = useRef(null);
+
+  function clearFieldError(field) {
+    setErrors((prev) => ({
+      ...prev,
+      [field]: "",
+    }));
+
+    setErrorMessage("");
+  }
 
   const handleImageChange = (e) => {
     const file = e.target.files[0];
@@ -24,35 +38,26 @@ function CreateCourse({ onCancel, onSave }) {
         preview: URL.createObjectURL(file),
       });
 
-      setErrors((prev) => ({
-        ...prev,
-        image: "",
-      }));
+      clearFieldError("image");
     }
-  };
-
-  const validateForm = () => {
-    const newErrors = {};
-
-    if (!curso.trim()) {
-      newErrors.curso = "Digite o nome do curso";
-    }
-
-    if (!matriz) {
-      newErrors.matriz = "Selecione uma matriz";
-    }
-
-    if (!image) {
-      newErrors.image = "Selecione uma imagem";
-    }
-
-    setErrors(newErrors);
-
-    return Object.keys(newErrors).length === 0;
   };
 
   const handleSave = async () => {
-    if (!validateForm()) return;
+    setSuccessMessage("");
+    setErrorMessage("");
+
+    const validationErrors = validateCourse({
+      curso,
+      matriz,
+      image,
+    });
+
+    setErrors(validationErrors);
+
+    if (Object.keys(validationErrors).length > 0) {
+      setErrorMessage("Preencha todos os campos obrigatórios");
+      return;
+    }
 
     try {
       const newCourse = await createCourse({
@@ -63,9 +68,16 @@ function CreateCourse({ onCancel, onSave }) {
 
       console.log("Curso criado:", newCourse);
 
-      onSave?.(newCourse);
+      setSuccessMessage("Curso criado com sucesso!");
+
+      setTimeout(() => {
+        onSave?.(newCourse);
+        onCancel?.();
+      }, 1000);
     } catch (error) {
       console.error("Erro ao criar curso:", error);
+
+      setErrorMessage(error.message);
     }
   };
 
@@ -106,21 +118,27 @@ function CreateCourse({ onCancel, onSave }) {
           value={curso}
           onChange={(e) => {
             setCurso(e.target.value);
-
-            setErrors((prev) => ({
-              ...prev,
-              curso: "",
-            }));
+            clearFieldError("curso");
           }}
-          className="rounded px-3 py-2 bg-white text-sm text-gray-700 border-none outline-none w-full"
+          className="
+            rounded
+            px-3
+            py-2
+            bg-white
+            text-sm
+            text-gray-700
+            border-none
+            outline-none
+            w-full
+          "
         />
 
-        {errors.curso && (
-          <span className="text-red-300 text-xs">{errors.curso}</span>
-        )}
+        <span className="text-red-300 text-xs min-h-[16px]">
+          {errors.curso}
+        </span>
       </div>
 
-      <div className="flex items-end gap-3">
+      <div className="flex gap-3 items-start">
         <div className="flex-1 flex flex-col gap-1">
           <label className="text-white text-sm">Ícone do curso</label>
 
@@ -160,12 +178,12 @@ function CreateCourse({ onCancel, onSave }) {
             />
           </div>
 
-          {errors.image && (
-            <span className="text-red-300 text-xs">{errors.image}</span>
-          )}
+          <span className="text-red-300 text-xs min-h-[16px]">
+            {errors.image}
+          </span>
         </div>
 
-        <div className="flex-1">
+        <div className="flex-1 mt-6">
           <FilterSelect
             label="Matriz"
             options={["62", "63"]}
@@ -173,19 +191,13 @@ function CreateCourse({ onCancel, onSave }) {
             className="h-10"
             onChange={(value) => {
               setMatriz(value);
-
-              setErrors((prev) => ({
-                ...prev,
-                matriz: "",
-              }));
+              clearFieldError("matriz");
             }}
           />
 
-          {errors.matriz && (
-            <span className="text-red-300 text-xs block mt-1">
-              {errors.matriz}
-            </span>
-          )}
+          <span className="text-red-300 text-xs block mt-1 min-h-[16px]">
+            {errors.matriz}
+          </span>
         </div>
       </div>
 
@@ -220,6 +232,16 @@ function CreateCourse({ onCancel, onSave }) {
           Salvar alterações
         </button>
       </div>
+
+      {successMessage && (
+        <p className="text-green-400 text-sm mt-2 text-center">
+          {successMessage}
+        </p>
+      )}
+
+      {errorMessage && (
+        <p className="text-red-400 text-sm mt-2 text-center">{errorMessage}</p>
+      )}
     </motion.div>
   );
 }
