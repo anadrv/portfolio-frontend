@@ -52,6 +52,10 @@ function Home() {
     return matriz === "" || course.matriz.includes(matriz);
   });
 
+  const user = JSON.parse(localStorage.getItem("user"));
+
+  const isAdminOrNite = user?.role === "ADMIN" || user?.role === "NITE";
+
   return (
     <Layout>
       <div className="mt-5">
@@ -61,12 +65,14 @@ function Home() {
               <h1 className="text-2xl font-semibold">Cursos</h1>
 
               <div className="flex flex-col md:flex-row text-sm gap-3 md:gap-10 md:items-center">
-                <button
-                  onClick={() => setShowCreate(true)}
-                  className="bg-white py-2 px-4 w-full md:w-auto text-background font-semibold text-sm rounded whitespace-nowrap hover:bg-accent cursor-pointer transition"
-                >
-                  Adicionar novo curso
-                </button>
+                {isAdminOrNite && (
+                  <button
+                    onClick={() => setShowCreate(true)}
+                    className="bg-white py-2 px-4 w-full md:w-auto text-background font-semibold text-sm rounded whitespace-nowrap hover:bg-accent cursor-pointer transition"
+                  >
+                    Adicionar novo curso
+                  </button>
+                )}
 
                 <h4 className="whitespace-nowrap font-normal text-md">
                   Filtrar por:
@@ -82,7 +88,7 @@ function Home() {
             </header>
 
             <div
-              className="bg-background-white rounded-lg p-6 grid gap-3 w-full min-h-[500px] items-start content-start"
+              className="bg-background-white rounded-lg p-6 grid gap-3 w-full items-start content-start"
               style={{
                 gridTemplateColumns: "repeat(auto-fill, minmax(220px, 1fr))",
               }}
