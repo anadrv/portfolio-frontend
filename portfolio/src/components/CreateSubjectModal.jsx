@@ -144,10 +144,10 @@ function CreateSubjectModal({ onClose, onSuccess }) {
             <FilterSelect
               label="Trimestre"
               options={[
-                "1º Trimestre",
-                "2º Trimestre",
-                "3º Trimestre",
-                "4º Trimestre",
+                { label: "1° Trimestre", value: "1" },
+                { label: "2° Trimestre", value: "2" },
+                { label: "3° Trimestre", value: "3" },
+                { label: "4° Trimestre", value: "4" },
               ]}
               value={trimestre}
               onChange={(value) => {

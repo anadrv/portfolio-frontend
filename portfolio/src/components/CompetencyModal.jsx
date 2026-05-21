@@ -44,17 +44,17 @@ function CompetencyModal({
     loadCourses();
   }, []);
 
-  // preencher dados no EDIT
-useEffect(() => {
-  if (!isEdit || !existingData) return;
+  
+  useEffect(() => {
+    if (!isEdit || !existingData) return;
 
-  setCursoSelecionado(String(existingData.course_id || ""));
-  setCodigoCompetencia(existingData.code_competency || "");
-  setTrimestre(existingData.trimestre || "");
-  setNomeCompetencia(existingData.name_competency || "");
-  setLinkPlanner(existingData.planner_link || "");
-  setTeachingPlanLink(existingData.teaching_plan_link || "");
-}, [isEdit, existingData]);
+    setCursoSelecionado(String(existingData.course_id || ""));
+    setCodigoCompetencia(existingData.code_competency || "");
+    setTrimestre(existingData.trimestre || "");
+    setNomeCompetencia(existingData.name_competency || "");
+    setLinkPlanner(existingData.planner_link || "");
+    setTeachingPlanLink(existingData.teaching_plan_link || "");
+  }, [isEdit, existingData]);
 
   function resetForm() {
     setCursoSelecionado("");
@@ -65,91 +65,85 @@ useEffect(() => {
     setTeachingPlanLink("");
   }
 
+  async function handleSave() {
+    setSuccessMessage("");
+    setErrorMessage("");
 
-async function handleSave() {
-  setSuccessMessage("");
-  setErrorMessage("");
+    try {
+      if (isEdit) {
+        const id = existingData.id_competency;
 
-  try {
-    if (isEdit) {
-      const id = existingData.id_competency;
+        const promises = [];
 
-      const promises = [];
+        if (nomeCompetencia || cursoSelecionado || codigoCompetencia) {
+          promises.push(
+            updateCompetencyCore({
+              id_competency: id,
+              name_competency: nomeCompetencia,
+              course_id: cursoSelecionado,
+              code_competency: codigoCompetencia,
+            }),
+          );
+        }
 
-      if (nomeCompetencia || cursoSelecionado || codigoCompetencia) {
-        promises.push(
-          updateCompetencyCore({
-            id_competency: id,
-            name_competency: nomeCompetencia,
-            course_id: cursoSelecionado,
-            code_competency: codigoCompetencia,
-          })
-        );
+        if (trimestre) {
+          promises.push(updateTrimestre(id, trimestre));
+        }
+
+        if (linkPlanner) {
+          promises.push(updateFlagCustomizar(id, linkPlanner));
+        }
+
+        if (teachingPlanLink) {
+          promises.push(updateFlagCanvas(id, teachingPlanLink));
+        }
+
+        await Promise.all(promises);
+
+        setSuccessMessage("Competência atualizada com sucesso!");
+      } else {
+        const validationErrors = validateSubject({
+          course: cursoSelecionado,
+          trimester: trimestre,
+          subjectName: nomeCompetencia,
+          plannerLink: linkPlanner,
+          teachingPlanLink,
+          statuses: {},
+        });
+
+        setErrors(validationErrors);
+
+        if (Object.keys(validationErrors).length > 0) {
+          setErrorMessage("Preencha todos os campos obrigatórios");
+          return;
+        }
+
+        await createCompetency({
+          name_competency: nomeCompetencia,
+          course_id: cursoSelecionado,
+          code_competency: codigoCompetencia,
+          planner_link: linkPlanner,
+          teaching_plan_link: teachingPlanLink,
+          trimestre,
+          matriz: "Matriz - 62",
+        });
+
+        setSuccessMessage("Competência criada com sucesso!");
+        resetForm();
       }
 
-      
-      if (trimestre) {
-        promises.push(updateTrimestre(id, trimestre));
-      }
+      onSuccess?.();
 
-     
-      if (linkPlanner) {
-        promises.push(updateFlagCustomizar(id, linkPlanner));
-      }
-
-      if (teachingPlanLink) {
-        promises.push(updateFlagCanvas(id, teachingPlanLink));
-      }
-
-      await Promise.all(promises);
-
-      setSuccessMessage("Competência atualizada com sucesso!");
-    } else {
-
-      const validationErrors = validateSubject({
-        course: cursoSelecionado,
-        trimester: trimestre,
-        subjectName: nomeCompetencia,
-        plannerLink: linkPlanner,
-        teachingPlanLink,
-        statuses: {},
-      });
-
-      setErrors(validationErrors);
-
-      if (Object.keys(validationErrors).length > 0) {
-        setErrorMessage("Preencha todos os campos obrigatórios");
-        return;
-      }
-
-      await createCompetency({
-        name_competency: nomeCompetencia,
-        course_id: cursoSelecionado,
-        code_competency: codigoCompetencia,
-        planner_link: linkPlanner,
-        teaching_plan_link: teachingPlanLink,
-        trimestre,
-        matriz: "Matriz - 62",
-      });
-
-      setSuccessMessage("Competência criada com sucesso!");
-      resetForm();
+      setTimeout(() => {
+        onClose();
+      }, 800);
+    } catch (error) {
+      console.error(error);
+      setErrorMessage(
+        isEdit ? "Erro ao atualizar competência" : "Erro ao criar competência",
+      );
     }
-
-    onSuccess?.();
-
-    setTimeout(() => {
-      onClose();
-    }, 800);
-  } catch (error) {
-    console.error(error);
-    setErrorMessage(
-      isEdit
-        ? "Erro ao atualizar competência"
-        : "Erro ao criar competência"
-    );
   }
-}
 
   const inputClass = "w-full mt-1 p-2 rounded bg-white text-background text-sm";
   const fieldWrapper = "mb-4";
@@ -172,27 +166,29 @@ async function handleSave() {
 
         {/* CURSO + TRIMESTRE */}
         <section className="flex gap-2 mb-6">
-          <div className="flex-1">
-            <FilterSelect
-              label="Selecionar curso"
-              options={courses.map((c) => ({
-                label: c.name_courses,
-                value: c.id_courses,
-              }))}
-              value={String(cursoSelecionado)}
-              onChange={setCursoSelecionado}
-            />
-          </div>
+          {!isEdit && (
+            <div className="flex-1">
+              <FilterSelect
+                label="Selecionar curso"
+                options={courses.map((c) => ({
+                  label: c.name_courses,
+                  value: c.id_courses,
+                }))}
+                value={String(cursoSelecionado)}
+                onChange={setCursoSelecionado}
+              />
+            </div>
+          )}
 
           <div className="flex-1">
             <FilterSelect
               label="Trimestre"
               options={[
-                "1ª Trimestre",
-                "2ª Trimestre",
-                "3ª Trimestre",
-                "4ª Trimestre",
-              ]}
+  { label: "1º Trimestre", value: "1" },
+  { label: "2º Trimestre", value: "2" },
+  { label: "3º Trimestre", value: "3" },
+  { label: "4º Trimestre", value: "4" },
+]}
               value={trimestre}
               onChange={setTrimestre}
             />

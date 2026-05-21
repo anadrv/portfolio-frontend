@@ -120,7 +120,7 @@ setTimeout(async () => {
             </div>
           ) : (
             <div className="flex gap-4">
-              <FilterInfo>{matriz}</FilterInfo>
+              <FilterInfo>Matriz - {matriz}</FilterInfo>
               <FilterInfo>{selectedTrimestre}</FilterInfo>
             </div>
           )}

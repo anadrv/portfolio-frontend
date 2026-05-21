@@ -53,7 +53,7 @@ function Subject({ title, code, documents, reload, onRefresh }) {
             <button
               aria-label={`Editar ${title}`}
               onClick={() => {
-                setEditingDoc(documents?.[0]); // <- documento padrão
+                setEditingDoc(documents?.[0]); 
                 setOpenEdit(true);
               }}
               className="p-2 rounded-full cursor-pointer hover:bg-white/20 transition"
@@ -98,7 +98,7 @@ function Subject({ title, code, documents, reload, onRefresh }) {
                   title={doc.name_documentType}
                   icon={icon}
                   whiteIcon={whiteIcon}
-                  matriz={doc.matriz}
+                  matriz={doc.matriz_competency}
                   trimestre={doc.trimestre}
                   accessLink={doc.drive_link}
                   flag_validacao_coordenacao={doc.flag_validacao_coordenacao}

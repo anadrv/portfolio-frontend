@@ -233,7 +233,6 @@ export async function updateCompetencyCore(data) {
       },
       body: JSON.stringify({
         name_competency: data.name_competency,
-        course_id: data.course_id,
         code_competency: data.code_competency,
       }),
     }
@@ -256,7 +255,6 @@ export async function updateCompetencyDocuments(data) {
         planner_link: data.planner_link,
         teaching_plan_link: data.teaching_plan_link,
         trimestre: data.trimestre,
-        matriz: data.matriz,
       }),
     }
   );
