@@ -202,6 +202,7 @@ export async function createCompetency(data) {
     headers: {
       "Content-Type": "application/json",
     },
+
     body: JSON.stringify({
       name_competency: data.name_competency,
       course_id: data.course_id,
@@ -211,7 +212,7 @@ export async function createCompetency(data) {
       teaching_plan_link: data.teaching_plan_link,
 
       trimestre: data.trimestre,
-      matriz: data.matriz,
+      matriz_competency: data.matriz_competency,
     }),
   });
 

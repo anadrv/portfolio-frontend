@@ -6,7 +6,7 @@ import { createCompetency } from "../services/competencyService";
 
 import FilterSelect from "./FilterSelect";
 import PrimaryButton from "./PrimaryButton";
-import validateSubject from "../validations/validateSubject";
+import validateCompetency from "../validations/validateCompetency";
 
 function CreateSubjectModal({ onClose, onSuccess }) {
   const [courses, setCourses] = useState([]);
@@ -50,13 +50,14 @@ function CreateSubjectModal({ onClose, onSuccess }) {
     setSuccessMessage("");
     setErrorMessage("");
 
-    const validationErrors = validateSubject({
+    const validationErrors = validateCompetency({
       course: cursoSelecionado,
       trimester: trimestre,
+      matriz: matriz,
+      competencyCode: codigoCompetencia,
       subjectName: nomeCompetencia,
       plannerLink: linkPlanner,
       teachingPlanLink,
-      statuses: {},
     });
 
     setErrors(validationErrors);
@@ -76,7 +77,7 @@ function CreateSubjectModal({ onClose, onSuccess }) {
         teaching_plan_link: teachingPlanLink,
 
         trimestre,
-        matrix_competency: matriz,
+        matriz_competency: matriz,
       });
 
       setSuccessMessage("Competência criada com sucesso!");
@@ -84,17 +85,24 @@ function CreateSubjectModal({ onClose, onSuccess }) {
 
       setTimeout(() => {
         onClose();
-      }, 800);
+      }, 1000);
     } catch (error) {
       console.error(error);
       setErrorMessage("Erro ao criar competência no servidor");
     }
   }
 
+  function clearFieldError(field) {
+    setErrors((prev) => ({
+      ...prev,
+      [field]: "",
+    }));
+
+    setErrorMessage("");
+  }
+
   const inputClass = "w-full mt-1 p-2 rounded bg-white text-background text-sm";
-
   const fieldWrapper = "mb-4";
-
   const errorClass = "text-red-200 text-xs mt-1";
 
   return (
@@ -112,6 +120,7 @@ function CreateSubjectModal({ onClose, onSuccess }) {
           CADASTRAR COMPETÊNCIA
         </h2>
 
+        {/* CURSO */}
         <div className="flex-1 mb-2">
           <FilterSelect
             label="Selecionar curso"
@@ -120,10 +129,17 @@ function CreateSubjectModal({ onClose, onSuccess }) {
               value: c.id_courses,
             }))}
             value={cursoSelecionado}
-            onChange={setCursoSelecionado}
+            onChange={(value) => {
+              setCursoSelecionado(value);
+              clearFieldError("course");
+            }}
           />
+
+          {errors.course && <p className={errorClass}>{errors.course}</p>}
         </div>
+
         <section className="flex gap-2 mb-4">
+          {/* TRIMESTRE */}
           <div className="flex-1">
             <FilterSelect
               label="Trimestre"
@@ -134,8 +150,15 @@ function CreateSubjectModal({ onClose, onSuccess }) {
                 "4º Trimestre",
               ]}
               value={trimestre}
-              onChange={setTrimestre}
+              onChange={(value) => {
+                setTrimestre(value);
+                clearFieldError("trimester");
+              }}
             />
+
+            {errors.trimester && (
+              <p className={errorClass}>{errors.trimester}</p>
+            )}
           </div>
 
           {/* MATRIZ */}
@@ -147,8 +170,13 @@ function CreateSubjectModal({ onClose, onSuccess }) {
                 { label: "Matriz 63", value: "63" },
               ]}
               value={matriz}
-              onChange={setMatriz}
+              onChange={(value) => {
+                setMatriz(value);
+                clearFieldError("matriz");
+              }}
             />
+
+            {errors.matriz && <p className={errorClass}>{errors.matriz}</p>}
           </div>
         </section>
 
@@ -159,7 +187,10 @@ function CreateSubjectModal({ onClose, onSuccess }) {
           <input
             className={inputClass}
             value={nomeCompetencia}
-            onChange={(e) => setNomeCompetencia(e.target.value)}
+            onChange={(e) => {
+              setNomeCompetencia(e.target.value);
+              clearFieldError("subjectName");
+            }}
           />
 
           {errors.subjectName && (
@@ -174,10 +205,16 @@ function CreateSubjectModal({ onClose, onSuccess }) {
           <input
             className={inputClass}
             value={codigoCompetencia}
-            onChange={(e) => setCodigoCompetencia(e.target.value)}
+            onChange={(e) => {
+              setCodigoCompetencia(e.target.value);
+              clearFieldError("competencyCode");
+            }}
           />
-        </div>
 
+          {errors.competencyCode && (
+            <p className={errorClass}>{errors.competencyCode}</p>
+          )}
+        </div>
         {/* PLANNER */}
         <div className={fieldWrapper}>
           <label className="text-sm">Link do Planner:</label>
@@ -185,8 +222,15 @@ function CreateSubjectModal({ onClose, onSuccess }) {
           <input
             className={inputClass}
             value={linkPlanner}
-            onChange={(e) => setLinkPlanner(e.target.value)}
+            onChange={(e) => {
+              setLinkPlanner(e.target.value);
+              clearFieldError("plannerLink");
+            }}
           />
+
+          {errors.plannerLink && (
+            <p className={errorClass}>{errors.plannerLink}</p>
+          )}
         </div>
 
         {/* PLANO ENSINO */}
@@ -196,8 +240,15 @@ function CreateSubjectModal({ onClose, onSuccess }) {
           <input
             className={inputClass}
             value={teachingPlanLink}
-            onChange={(e) => setTeachingPlanLink(e.target.value)}
+            onChange={(e) => {
+              setTeachingPlanLink(e.target.value);
+              clearFieldError("teachingPlanLink");
+            }}
           />
+
+          {errors.teachingPlanLink && (
+            <p className={errorClass}>{errors.teachingPlanLink}</p>
+          )}
         </div>
 
         {/* AÇÕES */}

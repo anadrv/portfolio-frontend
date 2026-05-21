@@ -12,7 +12,7 @@ import {
 
 import FilterSelect from "./FilterSelect";
 import PrimaryButton from "./PrimaryButton";
-import validateSubject from "../validations/validateSubject";
+import validateSubject from "../validations/validateCompetency";
 
 function CompetencyModal({
   mode = "create",

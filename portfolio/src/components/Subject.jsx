@@ -39,7 +39,10 @@ function Subject({ title, code, documents, reload, onRefresh }) {
 
   return (
     <article className="flex flex-col gap-4">
-      <div className="bg-primary text-white rounded-lg px-6 py-4 flex items-center justify-between gap-2 shadow-[0_4px_0_#d1d5db]">
+      <div
+        onClick={() => setOpen(!open)}
+        className="bg-primary text-white rounded-lg px-6 py-4 flex items-center justify-between gap-2 shadow-[0_4px_0_#d1d5db] cursor-pointer"
+      >
         <h2 className="text-sm md:text-base font-semibold">
           {code} - {title}
         </h2>
@@ -84,7 +87,7 @@ function Subject({ title, code, documents, reload, onRefresh }) {
             })
             .map((doc) => {
               const { icon, whiteIcon } = getDocumentIcon(
-                doc.name_documentType
+                doc.name_documentType,
               );
 
               return (
