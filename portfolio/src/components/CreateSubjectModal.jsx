@@ -14,6 +14,7 @@ function CreateSubjectModal({ onClose, onSuccess }) {
 
   const [codigoCompetencia, setCodigoCompetencia] = useState("");
   const [trimestre, setTrimestre] = useState("");
+  const [matriz, setMatriz] = useState("");
   const [nomeCompetencia, setNomeCompetencia] = useState("");
   const [linkPlanner, setLinkPlanner] = useState("");
   const [teachingPlanLink, setTeachingPlanLink] = useState("");
@@ -41,6 +42,7 @@ function CreateSubjectModal({ onClose, onSuccess }) {
     }
 
     window.addEventListener("keydown", handleKeyDown);
+
     return () => window.removeEventListener("keydown", handleKeyDown);
   }, [onClose]);
 
@@ -74,7 +76,7 @@ function CreateSubjectModal({ onClose, onSuccess }) {
         teaching_plan_link: teachingPlanLink,
 
         trimestre,
-        matriz: "Matriz - 62",
+        matrix_competency: matriz,
       });
 
       setSuccessMessage("Competência criada com sucesso!");
@@ -90,7 +92,9 @@ function CreateSubjectModal({ onClose, onSuccess }) {
   }
 
   const inputClass = "w-full mt-1 p-2 rounded bg-white text-background text-sm";
+
   const fieldWrapper = "mb-4";
+
   const errorClass = "text-red-200 text-xs mt-1";
 
   return (
@@ -108,43 +112,56 @@ function CreateSubjectModal({ onClose, onSuccess }) {
           CADASTRAR COMPETÊNCIA
         </h2>
 
-        {/* CURSO + TRIMESTRE */}
-        <section className="flex gap-2 mb-6">
-          <div className="flex-1">
-            <FilterSelect
-              label="Selecionar curso"
-              options={courses.map((c) => ({
-                label: c.name_courses,
-                value: c.id_courses,
-              }))}
-              value={cursoSelecionado}
-              onChange={setCursoSelecionado}
-            />
-          </div>
-
+        <div className="flex-1 mb-2">
+          <FilterSelect
+            label="Selecionar curso"
+            options={courses.map((c) => ({
+              label: c.name_courses,
+              value: c.id_courses,
+            }))}
+            value={cursoSelecionado}
+            onChange={setCursoSelecionado}
+          />
+        </div>
+        <section className="flex gap-2 mb-4">
           <div className="flex-1">
             <FilterSelect
               label="Trimestre"
               options={[
-                "1ª Trimestre",
-                "2ª Trimestre",
-                "3ª Trimestre",
-                "4ª Trimestre",
+                "1º Trimestre",
+                "2º Trimestre",
+                "3º Trimestre",
+                "4º Trimestre",
               ]}
               value={trimestre}
               onChange={setTrimestre}
+            />
+          </div>
+
+          {/* MATRIZ */}
+          <div className="mb-2">
+            <FilterSelect
+              label="Matriz"
+              options={[
+                { label: "Matriz 62", value: "62" },
+                { label: "Matriz 63", value: "63" },
+              ]}
+              value={matriz}
+              onChange={setMatriz}
             />
           </div>
         </section>
 
         {/* NOME COMPETÊNCIA */}
         <div className={fieldWrapper}>
-          <label className="text-sm">Nome da competência</label>
+          <label className="text-sm">Nome da competência:</label>
+
           <input
             className={inputClass}
             value={nomeCompetencia}
             onChange={(e) => setNomeCompetencia(e.target.value)}
           />
+
           {errors.subjectName && (
             <p className={errorClass}>{errors.subjectName}</p>
           )}
@@ -152,7 +169,8 @@ function CreateSubjectModal({ onClose, onSuccess }) {
 
         {/* CÓDIGO */}
         <div className={fieldWrapper}>
-          <label className="text-sm">Código da competência</label>
+          <label className="text-sm">Código da competência:</label>
+
           <input
             className={inputClass}
             value={codigoCompetencia}
@@ -162,7 +180,8 @@ function CreateSubjectModal({ onClose, onSuccess }) {
 
         {/* PLANNER */}
         <div className={fieldWrapper}>
-          <label className="text-sm">Planner</label>
+          <label className="text-sm">Link do Planner:</label>
+
           <input
             className={inputClass}
             value={linkPlanner}
@@ -172,7 +191,8 @@ function CreateSubjectModal({ onClose, onSuccess }) {
 
         {/* PLANO ENSINO */}
         <div className={fieldWrapper}>
-          <label className="text-sm">Plano de ensino</label>
+          <label className="text-sm">Link do Plano de ensino:</label>
+
           <input
             className={inputClass}
             value={teachingPlanLink}
@@ -188,17 +208,19 @@ function CreateSubjectModal({ onClose, onSuccess }) {
 
           <PrimaryButton onClick={handleSave}>Confirmar</PrimaryButton>
         </div>
-        {successMessage && (
-        <p className="text-green-400 text-sm mt-4 text-center">
-          {successMessage}
-        </p>
-      )}
 
-      {errorMessage && (
-        <p className="text-red-400 text-sm mt-4 text-center">{errorMessage}</p>
-      )}
+        {successMessage && (
+          <p className="text-green-400 text-sm mt-4 text-center">
+            {successMessage}
+          </p>
+        )}
+
+        {errorMessage && (
+          <p className="text-red-400 text-sm mt-4 text-center">
+            {errorMessage}
+          </p>
+        )}
       </article>
-      
     </div>
   );
 }
