@@ -52,8 +52,8 @@ function CompetencyModal({
     setCodigoCompetencia(existingData.code_competency || "");
     setTrimestre(existingData.trimestre || "");
     setNomeCompetencia(existingData.name_competency || "");
-    setLinkPlanner(existingData.planner_link || "");
-    setTeachingPlanLink(existingData.teaching_plan_link || "");
+   setLinkPlanner(existingData.drive_link || "");
+setTeachingPlanLink(existingData.drive_link || "");
   }, [isEdit, existingData]);
 
   function resetForm() {
@@ -88,14 +88,6 @@ function CompetencyModal({
 
         if (trimestre) {
           promises.push(updateTrimestre(id, trimestre));
-        }
-
-        if (linkPlanner) {
-          promises.push(updateFlagCustomizar(id, linkPlanner));
-        }
-
-        if (teachingPlanLink) {
-          promises.push(updateFlagCanvas(id, teachingPlanLink));
         }
 
         await Promise.all(promises);
@@ -145,7 +137,7 @@ function CompetencyModal({
     }
   }
 
-  const inputClass = "w-full mt-1 p-2 rounded bg-white text-background text-sm";
+  const inputClass = "w-full mt-1 p-2 rounded bg-white text-background text-sm font-normal";
   const fieldWrapper = "mb-4";
   const errorClass = "text-red-200 text-xs mt-1";
 
@@ -197,7 +189,7 @@ function CompetencyModal({
 
         {/* NOME */}
         <div className={fieldWrapper}>
-          <label className="text-sm">Nome da competência</label>
+          <label className="text-sm font-normal">Nome da competência:</label>
           <input
             className={inputClass}
             value={nomeCompetencia}
@@ -207,7 +199,7 @@ function CompetencyModal({
 
         {/* CÓDIGO */}
         <div className={fieldWrapper}>
-          <label className="text-sm">Código da competência</label>
+          <label className="text-sm font-normal" >Código da competência:</label>
           <input
             className={inputClass}
             value={codigoCompetencia}
@@ -217,7 +209,7 @@ function CompetencyModal({
 
         {/* PLANNER */}
         <div className={fieldWrapper}>
-          <label className="text-sm">Planner</label>
+          <label className="text-sm font-normal">Link do Planner:</label>
           <input
             className={inputClass}
             value={linkPlanner}
@@ -227,7 +219,7 @@ function CompetencyModal({
 
         {/* PLANO ENSINO */}
         <div className={fieldWrapper}>
-          <label className="text-sm">Plano de ensino</label>
+          <label className="text-sm font-normal">Link do Plano de ensino:</label>
           <input
             className={inputClass}
             value={teachingPlanLink}
