@@ -283,3 +283,74 @@ export async function updateDriveLink(documentId, link) {
 
   return response.json();
 }
+
+
+export async function updateFlagPreenchido(
+  documentId,
+  status
+) {
+  try {
+    const response = await fetch(
+      `${API_URL}/academic-documents/${documentId}/flag/preenchido`,
+      {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          status,
+        }),
+      }
+    );
+
+    if (!response.ok) {
+      throw new Error(`Erro HTTP: ${response.status}`);
+    }
+
+    return await response.json();
+  } catch (error) {
+    console.error(
+      "Erro ao atualizar preenchimento:",
+      error
+    );
+
+    throw error;
+  }
+}
+
+
+// Flag necessita revisão
+export async function updateFlagNecessitaRevisao(
+  documentId,
+  status
+) {
+  try {
+    const response = await fetch(
+      `${API_URL}/academic-documents/${documentId}/flag/necessita-revisao`,
+      {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          status,
+        }),
+      }
+    );
+
+    if (!response.ok) {
+      throw new Error(`Erro HTTP: ${response.status}`);
+    }
+
+    return await response.json();
+
+  } catch (error) {
+
+    console.error(
+      "Erro ao atualizar revisão:",
+      error
+    );
+
+    throw error;
+  }
+}

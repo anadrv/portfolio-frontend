@@ -7,6 +7,8 @@ import {
   updateFlagCustomizar,
   updateFlagCanvas,
   updateFlagGestao,
+  updateFlagPreenchido,
+  updateFlagNecessitaRevisao,
 } from "../services/competencyService";
 
 import { hasPermission, hasRole } from "../utils/permissions";
@@ -25,6 +27,8 @@ function InfoModal({
   matriz,
   trimestre,
 
+  flag_preenchido,
+  flag_necessita_revisao,
   flag_validacao_coordenacao,
   flag_liberado_customizar,
   flag_disponivel_canva,
@@ -33,6 +37,7 @@ function InfoModal({
   reload,
 }) {
   const isProfessor = hasRole("PROFESSOR");
+
   const [isEditing, setIsEditing] = useState(false);
 
   const [selectedTrimestre, setSelectedTrimestre] = useState("");
@@ -45,6 +50,8 @@ function InfoModal({
     setSelectedTrimestre(trimestre || "");
 
     setStatuses({
+      preenchido: !!flag_preenchido,
+      revisao: !!flag_necessita_revisao,
       validado: !!flag_validacao_coordenacao,
       customizar: !!flag_liberado_customizar,
       canvas: !!flag_disponivel_canva,
@@ -52,6 +59,8 @@ function InfoModal({
     });
   }, [
     trimestre,
+    flag_preenchido,
+    flag_necessita_revisao,
     flag_validacao_coordenacao,
     flag_liberado_customizar,
     flag_disponivel_canva,
@@ -63,23 +72,56 @@ function InfoModal({
     try {
       await updateTrimestre(id_academicD, selectedTrimestre);
 
+      await updateFlagPreenchido(id_academicD, statuses.preenchido);
+
+      await updateFlagNecessitaRevisao(id_academicD, statuses.revisao);
+
       await updateFlagCoordenacao(id_academicD, statuses.validado);
+
       await updateFlagCustomizar(id_academicD, statuses.customizar);
+
       await updateFlagCanvas(id_academicD, statuses.canvas);
+
       await updateFlagGestao(id_academicD, statuses.integracao);
 
       setIsEditing(false);
       setErrors({});
 
       showFeedback(setSuccessMessage, "Dados atualizados com sucesso!");
-setTimeout(async () => {
-  await reload?.();
-  onClose?.();
-}, 1000);
+
+      setTimeout(async () => {
+        await reload?.();
+        onClose?.();
+      }, 1000);
     } catch (error) {
       console.error("Erro ao salvar:", error);
       setErrors({ save: "Erro ao salvar dados" });
     }
+  }
+
+  function renderStatus(key, label) {
+    return (
+      <label className="flex items-center gap-2 text-sm">
+        {isEditing && (
+          <input
+            type="checkbox"
+            checked={statuses[key]}
+            onChange={() =>
+              setStatuses((prev) => ({
+                ...prev,
+                [key]: !prev[key],
+              }))
+            }
+          />
+        )}
+
+        <span className={statuses[key] ? "text-accent" : "text-gray-400"}>
+          {statuses[key] ? "✓" : "X"}
+        </span>
+
+        <p>{label}</p>
+      </label>
+    );
   }
 
   return (
@@ -121,6 +163,7 @@ setTimeout(async () => {
           ) : (
             <div className="flex gap-4">
               <FilterInfo>Matriz - {matriz}</FilterInfo>
+
               <FilterInfo>{selectedTrimestre}</FilterInfo>
             </div>
           )}
@@ -130,137 +173,24 @@ setTimeout(async () => {
           <h3 className="text-sm font-semibold mb-3">Status</h3>
 
           <div className="bg-white rounded-xl p-4 text-background flex flex-col gap-4">
-            {/* PROFESSOR */}
             {isProfessor ? (
-              <label className="flex items-center gap-2 text-sm">
-                {isEditing && (
-                  <input
-                    type="checkbox"
-                    checked={statuses.integracao}
-                    onChange={() =>
-                      setStatuses((prev) => ({
-                        ...prev,
-                        integracao: !prev.integracao,
-                      }))
-                    }
-                  />
-                )}
+              <>
+                {renderStatus("preenchido", "Em preenchimento")}
 
-                <span
-                  className={
-                    statuses.integracao ? "text-accent" : "text-gray-400"
-                  }
-                >
-                  {statuses.integracao ? "✓" : "X"}
-                </span>
-
-                <p>
-                  {statuses.integracao ? "Concluído" : "Marcar como concluído"}
-                </p>
-              </label>
+                {renderStatus("integracao", "Concluído")}
+              </>
             ) : (
               <>
-                {/* ADMIN / GESTÃO */}
 
-                <label className="flex items-center gap-2 text-sm">
-                  {isEditing && (
-                    <input
-                      type="checkbox"
-                      checked={statuses.validado}
-                      onChange={() =>
-                        setStatuses((prev) => ({
-                          ...prev,
-                          validado: !prev.validado,
-                        }))
-                      }
-                    />
-                  )}
+                {renderStatus("revisao", "Necessita revisão")}
 
-                  <span
-                    className={
-                      statuses.validado ? "text-accent" : "text-gray-400"
-                    }
-                  >
-                    {statuses.validado ? "✓" : "X"}
-                  </span>
+                {renderStatus("validado", "Validado pela coordenação")}
 
-                  <p>Validado pela coordenação</p>
-                </label>
+                {renderStatus("customizar", "Liberado para customizar")}
 
-                <label className="flex items-center gap-2 text-sm">
-                  {isEditing && (
-                    <input
-                      type="checkbox"
-                      checked={statuses.customizar}
-                      onChange={() =>
-                        setStatuses((prev) => ({
-                          ...prev,
-                          customizar: !prev.customizar,
-                        }))
-                      }
-                    />
-                  )}
+                {renderStatus("canvas", "Disponível no Canvas")}
 
-                  <span
-                    className={
-                      statuses.customizar ? "text-accent" : "text-gray-400"
-                    }
-                  >
-                    {statuses.customizar ? "✓" : "X"}
-                  </span>
-
-                  <p>Liberado para customizar</p>
-                </label>
-
-                <label className="flex items-center gap-2 text-sm">
-                  {isEditing && (
-                    <input
-                      type="checkbox"
-                      checked={statuses.canvas}
-                      onChange={() =>
-                        setStatuses((prev) => ({
-                          ...prev,
-                          canvas: !prev.canvas,
-                        }))
-                      }
-                    />
-                  )}
-
-                  <span
-                    className={
-                      statuses.canvas ? "text-accent" : "text-gray-400"
-                    }
-                  >
-                    {statuses.canvas ? "✓" : "X"}
-                  </span>
-
-                  <p>Disponível no Canvas</p>
-                </label>
-
-                <label className="flex items-center gap-2 text-sm">
-                  {isEditing && (
-                    <input
-                      type="checkbox"
-                      checked={statuses.integracao}
-                      onChange={() =>
-                        setStatuses((prev) => ({
-                          ...prev,
-                          integracao: !prev.integracao,
-                        }))
-                      }
-                    />
-                  )}
-
-                  <span
-                    className={
-                      statuses.integracao ? "text-accent" : "text-gray-400"
-                    }
-                  >
-                    {statuses.integracao ? "✓" : "X"}
-                  </span>
-
-                  <p>Integrado ao RM-Canvas</p>
-                </label>
+                {renderStatus("integracao", "Integrado ao RM-Canvas")}
               </>
             )}
           </div>
