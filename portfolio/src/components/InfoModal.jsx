@@ -175,12 +175,15 @@ function InfoModal({
           <div className="bg-white rounded-xl p-4 text-background flex flex-col gap-4">
             {isProfessor ? (
               <>
-                {renderStatus("preenchido", "Em preenchimento")}
+                {renderStatus("preenchimento", "Em preenchimento")}
 
-                {renderStatus("integracao", "Concluído")}
+                {renderStatus("preenchido", "Preenchido")}
               </>
             ) : (
               <>
+                {renderStatus("preenchimento", "Em preenchimento")}
+
+                {renderStatus("preenchido", "Preenchido")}
 
                 {renderStatus("revisao", "Necessita revisão")}
 
