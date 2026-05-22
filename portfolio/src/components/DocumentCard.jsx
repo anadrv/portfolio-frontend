@@ -12,37 +12,47 @@ function DocumentCard({
   reload,
   onRefresh,
 
+  flag_preenchido,
   flag_validacao_coordenacao,
   flag_liberado_customizar,
   flag_disponivel_canva,
   flag_integrado_rm,
+  flag_necessita_revisao,
 }) {
   const [isModalOpen, setIsModalOpen] = useState(false);
 
- function getStatus() {
-  if (flag_integrado_rm)
-    return "Integrado ao RM";
+  function getStatus() {
+    if (flag_necessita_revisao)
+      return "Necessita revisão";
 
-  if (flag_disponivel_canva)
-    return "Disponível no Canvas";
+    if (flag_integrado_rm)
+      return "Integrado ao RM";
 
-  if (flag_liberado_customizar)
-    return "Liberado para customizar";
+    if (flag_disponivel_canva)
+      return "Disponível no Canvas";
 
-  if (flag_validacao_coordenacao)
-    return "Validado pela coordenação";
+    if (flag_liberado_customizar)
+      return "Liberado para customizar";
 
-  return "Não avaliado";
-}
+    if (flag_validacao_coordenacao)
+      return "Validado pela coordenação";
+
+    if (flag_preenchido)
+      return "Preenchido";
+
+    return "Em preenchimento";
+  }
 
   const status = getStatus();
 
   const statusColors = {
-    "Validado pela coordenação": "bg-accent",
+    "Necessita revisão": "bg-red-500",
+    "Validado pela coordenação": "bg-yellow-400",
     "Integrado ao RM": "bg-accent",
-    "Disponível no Canvas": "bg-accent",
-    "Liberado para customizar": "bg-accent",
-    "Não avaliado": "bg-gray-400",
+    "Disponível no Canvas": "bg-blue-500",
+    "Liberado para customizar": "bg-purple-500",
+    "Preenchido": "bg-accent",
+    "Em preenchimento": "bg-primary",
   };
 
   return (
@@ -98,10 +108,12 @@ function DocumentCard({
           icon={whiteIcon}
           matriz={matriz}
           trimestre={trimestre}
+          flag_preenchido={flag_preenchido}
           flag_validacao_coordenacao={flag_validacao_coordenacao}
           flag_liberado_customizar={flag_liberado_customizar}
           flag_disponivel_canva={flag_disponivel_canva}
           flag_integrado_rm={flag_integrado_rm}
+          flag_necessita_revisao={flag_necessita_revisao}
         />
       )}
     </article>
