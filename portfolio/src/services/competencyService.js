@@ -354,3 +354,39 @@ export async function updateFlagNecessitaRevisao(
     throw error;
   }
 }
+
+export async function updateFlagEmPreenchimento(
+  documentId,
+  status
+) {
+  try {
+
+    const response = await fetch(
+      `${API_URL}/academic-documents/${documentId}/flag/em-preenchimento`,
+      {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          status,
+        }),
+      }
+    );
+
+    if (!response.ok) {
+      throw new Error(`Erro HTTP: ${response.status}`);
+    }
+
+    return await response.json();
+
+  } catch (error) {
+
+    console.error(
+      "Erro ao atualizar em preenchimento:",
+      error
+    );
+
+    throw error;
+  }
+}

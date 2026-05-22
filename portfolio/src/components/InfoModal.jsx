@@ -9,6 +9,7 @@ import {
   updateFlagGestao,
   updateFlagPreenchido,
   updateFlagNecessitaRevisao,
+  updateFlagEmPreenchimento,
 } from "../services/competencyService";
 
 import { hasPermission, hasRole } from "../utils/permissions";
@@ -33,6 +34,7 @@ function InfoModal({
   flag_liberado_customizar,
   flag_disponivel_canva,
   flag_integrado_rm,
+  flag_em_preenchimento,
 
   reload,
 }) {
@@ -50,6 +52,7 @@ function InfoModal({
     setSelectedTrimestre(trimestre || "");
 
     setStatuses({
+      em_preenchimento: !!flag_em_preenchimento,
       preenchido: !!flag_preenchido,
       revisao: !!flag_necessita_revisao,
       validado: !!flag_validacao_coordenacao,
@@ -59,6 +62,7 @@ function InfoModal({
     });
   }, [
     trimestre,
+    flag_em_preenchimento,
     flag_preenchido,
     flag_necessita_revisao,
     flag_validacao_coordenacao,
@@ -71,6 +75,8 @@ function InfoModal({
   async function handleSave() {
     try {
       await updateTrimestre(id_academicD, selectedTrimestre);
+
+      await updateFlagEmPreenchimento(id_academicD, statuses.em_preenchimento);
 
       await updateFlagPreenchido(id_academicD, statuses.preenchido);
 
@@ -175,14 +181,13 @@ function InfoModal({
           <div className="bg-white rounded-xl p-4 text-background flex flex-col gap-4">
             {isProfessor ? (
               <>
-                {renderStatus("preenchimento", "Em preenchimento")}
+                {renderStatus("em_preenchimento", "Em andamento")}
 
                 {renderStatus("preenchido", "Preenchido")}
               </>
             ) : (
               <>
-                {renderStatus("preenchimento", "Em preenchimento")}
-
+                {renderStatus("em_preenchimento", "Em andamento")}
                 {renderStatus("preenchido", "Preenchido")}
 
                 {renderStatus("revisao", "Necessita revisão")}
