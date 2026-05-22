@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { ChevronDown, Pencil } from "lucide-react";
+import { hasRole } from "../utils/permissions";
 
 import DocumentCard from "./DocumentCard";
 import CompetencyModal from "./CompetencyModal";
@@ -14,6 +15,7 @@ function Subject({ title, code, documents, reload, onRefresh }) {
   const [open, setOpen] = useState(false);
   const [openEdit, setOpenEdit] = useState(false);
   const [editingDoc, setEditingDoc] = useState(null);
+  const isProfessor = hasRole("PROFESSOR");
 
   function getDocumentIcon(type) {
     if (type === "PLANNER") {
@@ -49,19 +51,21 @@ function Subject({ title, code, documents, reload, onRefresh }) {
 
         <div className="flex items-center gap-4">
           <div className="flex items-center gap-2">
-            {/* Botão editar */}
-            <button
-              aria-label={`Editar ${title}`}
-              onClick={() => {
-                setEditingDoc(documents?.[0]); 
-                setOpenEdit(true);
-              }}
-              className="p-2 rounded-full cursor-pointer hover:bg-white/20 transition"
-            >
-              <Pencil size={18} />
-            </button>
+            {/* editar */}
+            {!isProfessor && (
+              <button
+                aria-label={`Editar ${title}`}
+                onClick={() => {
+                  setEditingDoc(documents?.[0]);
+                  setOpenEdit(true);
+                }}
+                className="p-2 rounded-full cursor-pointer hover:bg-white/20 transition"
+              >
+                <Pencil size={18} />
+              </button>
+            )}
 
-            {/* Botão expandir */}
+            {/* expandir */}
             <button
               aria-label={`Expandir ${title}`}
               onClick={() => setOpen(!open)}

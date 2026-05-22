@@ -106,29 +106,44 @@ function InfoModal({
   }
 
   function renderStatus(key, label) {
-    return (
-      <label className="flex items-center gap-2 text-sm">
-        {isEditing && (
-          <input
-            type="checkbox"
-            checked={statuses[key]}
-            onChange={() =>
-              setStatuses((prev) => ({
-                ...prev,
-                [key]: !prev[key],
-              }))
-            }
-          />
-        )}
+  const editableByProfessor = [
+    "em_preenchimento",
+    "preenchido",
+  ];
 
-        <span className={statuses[key] ? "text-accent" : "text-gray-400"}>
-          {statuses[key] ? "✓" : "X"}
-        </span>
+  const canEdit =
+    !isProfessor ||
+    editableByProfessor.includes(key);
 
-        <p>{label}</p>
-      </label>
-    );
-  }
+  return (
+    <label className="flex items-center gap-2 text-sm">
+      {isEditing && canEdit && (
+        <input
+          type="checkbox"
+          checked={statuses[key]}
+          onChange={() =>
+            setStatuses((prev) => ({
+              ...prev,
+              [key]: !prev[key],
+            }))
+          }
+        />
+      )}
+
+      <span
+        className={
+          statuses[key]
+            ? "text-accent"
+            : "text-gray-400"
+        }
+      >
+        {statuses[key] ? "✓" : "X"}
+      </span>
+
+      <p>{label}</p>
+    </label>
+  );
+}
 
   return (
     <div
@@ -178,30 +193,31 @@ function InfoModal({
         <section className="mb-8">
           <h3 className="text-sm font-semibold mb-3">Status</h3>
 
-          <div className="bg-white rounded-xl p-4 text-background flex flex-col gap-4">
-            {isProfessor ? (
-              <>
-                {renderStatus("em_preenchimento", "Em andamento")}
+         <div className="bg-white rounded-xl p-4 text-background flex flex-col gap-4">
+  {isProfessor && isEditing ? (
+    <>
+      {renderStatus("em_preenchimento", "Em andamento")}
 
-                {renderStatus("preenchido", "Preenchido")}
-              </>
-            ) : (
-              <>
-                {renderStatus("em_preenchimento", "Em andamento")}
-                {renderStatus("preenchido", "Preenchido")}
+      {renderStatus("preenchido", "Preenchido")}
+    </>
+  ) : (
+    <>
+      {renderStatus("em_preenchimento", "Em andamento")}
 
-                {renderStatus("revisao", "Necessita revisão")}
+      {renderStatus("preenchido", "Preenchido")}
 
-                {renderStatus("validado", "Validado pela coordenação")}
+      {renderStatus("revisao", "Necessita revisão")}
 
-                {renderStatus("customizar", "Liberado para customizar")}
+      {renderStatus("validado", "Validado pela coordenação")}
 
-                {renderStatus("canvas", "Disponível no Canvas")}
+      {renderStatus("customizar", "Liberado para customizar")}
 
-                {renderStatus("integracao", "Integrado ao RM-Canvas")}
-              </>
-            )}
-          </div>
+      {renderStatus("canvas", "Disponível no Canvas")}
+
+      {renderStatus("integracao", "Integrado ao RM-Canvas")}
+    </>
+  )}
+</div>
         </section>
 
         <footer className="flex items-center justify-between gap-4">
