@@ -105,6 +105,9 @@ function Subject({ title, code, documents, reload, onRefresh }) {
                   matriz={doc.matriz_competency}
                   trimestre={doc.trimestre}
                   accessLink={doc.drive_link}
+                  flag_em_preenchimento={doc.flag_em_preenchimento}
+                  flag_preenchido={doc.flag_preenchido}
+                  flag_necessita_revisao={doc.flag_necessita_revisao}
                   flag_validacao_coordenacao={doc.flag_validacao_coordenacao}
                   flag_liberado_customizar={doc.flag_liberado_customizar}
                   flag_disponivel_canva={doc.flag_disponivel_canva}
