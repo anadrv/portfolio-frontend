@@ -93,16 +93,20 @@ function Home() {
                 gridTemplateColumns: "repeat(auto-fill, minmax(220px, 1fr))",
               }}
             >
-              {filteredCourses.map((course) => (
-                <CourseCard
-                  key={course.id}
-                  title={course.title}
-                  icons={[
-                    course.image ? course.image.preview : iconMap[course.icon],
-                  ]}
-                  link={`/course/${course.id}`}
-                />
-              ))}
+              {[...filteredCourses]
+                .sort((a, b) => a.title.localeCompare(b.title))
+                .map((course) => (
+                  <CourseCard
+                    key={course.id}
+                    title={course.title}
+                    icons={[
+                      course.image
+                        ? course.image.preview
+                        : iconMap[course.icon],
+                    ]}
+                    link={`/course/${course.id}`}
+                  />
+                ))}
             </div>
           </div>
         </div>
