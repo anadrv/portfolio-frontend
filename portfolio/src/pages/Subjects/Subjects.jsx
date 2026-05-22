@@ -85,18 +85,89 @@ function Subjects() {
   }, [subjects]);
 
   const filteredSubjects = groupedSubjects.filter((subject) => {
-    if (!subject.documents || subject.documents.length === 0) {
-      return true;
-    }
+  if (!subject.documents || subject.documents.length === 0) {
+    return true;
+  }
 
-    return (
-      (matriz === "" ||
-        subject.documents.some((doc) => doc.matriz === matriz)) &&
-      (trimestre === "" ||
-        subject.documents.some((doc) => doc.trimestre === trimestre))
-    );
-  });
+  return (
+    (matriz === "" ||
+      subject.documents.some(
+        (doc) => doc.matriz_competency === matriz
+      )) &&
 
+    (trimestre === "" ||
+      subject.documents.some(
+        (doc) => doc.trimestre === trimestre
+      )) &&
+
+    (status === "" ||
+      subject.documents.some((doc) => {
+        if (
+          status === "Em andamento" &&
+          doc.flag_em_preenchimento
+        ) {
+          return true;
+        }
+
+        if (
+          status === "Preenchido" &&
+          doc.flag_preenchido
+        ) {
+          return true;
+        }
+
+        if (
+          status === "Necessita revisão" &&
+          doc.flag_necessita_revisao
+        ) {
+          return true;
+        }
+
+        if (
+          status === "Validado pela coordenação" &&
+          doc.flag_validacao_coordenacao
+        ) {
+          return true;
+        }
+
+        if (
+          status === "Liberado para customizar" &&
+          doc.flag_liberado_customizar
+        ) {
+          return true;
+        }
+
+        if (
+          status === "Disponível no Canvas" &&
+          doc.flag_disponivel_canva
+        ) {
+          return true;
+        }
+
+        if (
+          status === "Integrado ao RM-Canvas" &&
+          doc.flag_integrado_rm
+        ) {
+          return true;
+        }
+
+        if (
+          status === "Não preenchido" &&
+          !doc.flag_em_preenchimento &&
+          !doc.flag_preenchido &&
+          !doc.flag_necessita_revisao &&
+          !doc.flag_validacao_coordenacao &&
+          !doc.flag_liberado_customizar &&
+          !doc.flag_disponivel_canva &&
+          !doc.flag_integrado_rm
+        ) {
+          return true;
+        }
+
+        return false;
+      }))
+  );
+});
   const totalPages = Math.ceil(filteredSubjects.length / itemsPerPage);
   const startIndex = (currentPage - 1) * itemsPerPage;
 
@@ -104,6 +175,13 @@ function Subjects() {
     startIndex,
     startIndex + itemsPerPage,
   );
+
+  function clearFilters() {
+    setMatriz("");
+    setTrimestre("");
+    setStatus("");
+    setCurrentPage(1);
+  }
 
   return (
     <Layout>
@@ -124,6 +202,12 @@ function Subjects() {
                 Adicionar nova competência
               </button>
             )}
+            <button
+              onClick={clearFilters}
+              className="font-normal text-sm hover:underline cursor-pointer"
+            >
+              Limpar filtros
+            </button>
           </div>
 
           <div className="flex gap-4 mb-6">
@@ -149,9 +233,11 @@ function Subjects() {
             <FilterSelect
               label="Status"
               options={[
+                "Não preenchido",
                 "Em andamento",
+                "Preenchido",
+                "Necessita revisão",
                 "Validado pela coordenação",
-                "Não avaliado",
                 "Liberado para customizar",
                 "Disponível no Canvas",
                 "Integrado ao RM-Canvas",

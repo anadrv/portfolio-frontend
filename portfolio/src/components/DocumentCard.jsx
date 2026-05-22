@@ -89,7 +89,7 @@ function DocumentCard({
           onClick={() => setIsModalOpen(true)}
           className="text-xs bg-highlight py-1 px-2 rounded font-normal transition-transform duration-300 hover:scale-105 cursor-pointer"
         >
-          Ver ou editar informações
+          Ver ou editar Status e Trimestre
         </button>
       </section>
 
