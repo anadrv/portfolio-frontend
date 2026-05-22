@@ -1,4 +1,4 @@
-# 📚 Planner Acadêmico – Plataforma de Organização de Planos de Ensino
+# 📚 Portfólio Acadêmico – Plataforma de Organização do Planner e Planos de Ensino
 
 Projeto desenvolvido para auxiliar no gerenciamento do planner acadêmico e dos planos de ensino da instituição.
 
