@@ -84,90 +84,52 @@ function Subjects() {
     );
   }, [subjects]);
 
-  const filteredSubjects = groupedSubjects.filter((subject) => {
-  if (!subject.documents || subject.documents.length === 0) {
-    return true;
+  const statusRules = {
+    "Em andamento": (doc) => doc.flag_em_preenchimento,
+
+    Preenchido: (doc) => doc.flag_preenchido,
+
+    "Necessita revisão": (doc) => doc.flag_necessita_revisao,
+
+    "Validado pela coordenação": (doc) => doc.flag_validacao_coordenacao,
+
+    "Liberado para customizar": (doc) => doc.flag_liberado_customizar,
+
+    "Disponível no Canvas": (doc) => doc.flag_disponivel_canva,
+
+    "Integrado ao RM-Canvas": (doc) => doc.flag_integrado_rm,
+
+    "Não preenchido": (doc) =>
+      !doc.flag_em_preenchimento &&
+      !doc.flag_preenchido &&
+      !doc.flag_necessita_revisao &&
+      !doc.flag_validacao_coordenacao &&
+      !doc.flag_liberado_customizar &&
+      !doc.flag_disponivel_canva &&
+      !doc.flag_integrado_rm,
+  };
+
+  function matchStatus(doc, status) {
+    if (!status) return true;
+
+    const rule = statusRules[status];
+    if (!rule) return true;
+
+    return rule(doc);
   }
 
-  return (
-    (matriz === "" ||
-      subject.documents.some(
-        (doc) => doc.matriz_competency === matriz
-      )) &&
+  const filteredSubjects = groupedSubjects.filter((subject) => {
+    if (!subject.documents?.length) return true;
 
-    (trimestre === "" ||
-      subject.documents.some(
-        (doc) => doc.trimestre === trimestre
-      )) &&
-
-    (status === "" ||
-      subject.documents.some((doc) => {
-        if (
-          status === "Em andamento" &&
-          doc.flag_em_preenchimento
-        ) {
-          return true;
-        }
-
-        if (
-          status === "Preenchido" &&
-          doc.flag_preenchido
-        ) {
-          return true;
-        }
-
-        if (
-          status === "Necessita revisão" &&
-          doc.flag_necessita_revisao
-        ) {
-          return true;
-        }
-
-        if (
-          status === "Validado pela coordenação" &&
-          doc.flag_validacao_coordenacao
-        ) {
-          return true;
-        }
-
-        if (
-          status === "Liberado para customizar" &&
-          doc.flag_liberado_customizar
-        ) {
-          return true;
-        }
-
-        if (
-          status === "Disponível no Canvas" &&
-          doc.flag_disponivel_canva
-        ) {
-          return true;
-        }
-
-        if (
-          status === "Integrado ao RM-Canvas" &&
-          doc.flag_integrado_rm
-        ) {
-          return true;
-        }
-
-        if (
-          status === "Não preenchido" &&
-          !doc.flag_em_preenchimento &&
-          !doc.flag_preenchido &&
-          !doc.flag_necessita_revisao &&
-          !doc.flag_validacao_coordenacao &&
-          !doc.flag_liberado_customizar &&
-          !doc.flag_disponivel_canva &&
-          !doc.flag_integrado_rm
-        ) {
-          return true;
-        }
-
-        return false;
-      }))
-  );
-});
+    return (
+      (matriz === "" ||
+        subject.documents.some((doc) => doc.matriz_competency === matriz)) &&
+      (trimestre === "" ||
+        subject.documents.some((doc) => doc.trimestre === trimestre)) &&
+      (status === "" ||
+        subject.documents.some((doc) => matchStatus(doc, status)))
+    );
+  });
   const totalPages = Math.ceil(filteredSubjects.length / itemsPerPage);
   const startIndex = (currentPage - 1) * itemsPerPage;
 
