@@ -1,11 +1,12 @@
 import { useState, useRef } from "react";
 import { motion } from "framer-motion";
 import FilterSelect from "./FilterSelect";
-import pencilIcon from "../assets/images/pencil.png";
+import { Pencil } from "lucide-react";
 
 import validateCourse from "../validations/validateCourse";
 
 import { createCourse } from "../services/courseService";
+import PrimaryButton from "./PrimaryButton";
 
 function CreateCourse({ onCancel, onSave }) {
   const [curso, setCurso] = useState("");
@@ -99,15 +100,10 @@ function CreateCourse({ onCancel, onSave }) {
         gap-4
       "
     >
-      <div className="flex items-center gap-4">
-        <img src={pencilIcon} alt="pencil" className="w-5 h-5" />
+      <div className="flex items-center gap-2">
+        <Pencil size={18} className="text-white" />
 
-        <h2
-          style={{ fontFamily: "Poppins, sans-serif" }}
-          className="text-white font-bold text-xl"
-        >
-          CADASTRO
-        </h2>
+        <h2 className="text-xl font-semibold text-white">CADASTRAR CURSO</h2>
       </div>
 
       <div className="flex flex-col gap-1">
@@ -213,24 +209,12 @@ function CreateCourse({ onCancel, onSave }) {
         >
           Cancelar
         </button>
-
-        <button
+        <PrimaryButton
           onClick={handleSave}
-          className="
-            bg-accent
-            text-blue-900
-            font-medium
-            text-sm
-            px-5
-            py-2
-            rounded
-            transition-colors
-            hover:opacity-90
-            cursor-pointer
-          "
+          className="px-8 py-2.5 text-sm font-medium"
         >
-          Salvar alterações
-        </button>
+          Confirmar
+        </PrimaryButton>{" "}
       </div>
 
       {successMessage && (
