@@ -35,7 +35,9 @@ function DocumentCard({
 
     if (flag_preenchido) return "Preenchido";
 
-    return "Em andamento";
+    if (flag_em_preenchimento) return "Em andamento";
+
+    return "Não preenchido";
   }
 
   const status = getStatus();
@@ -48,6 +50,7 @@ function DocumentCard({
     "Liberado para customizar": "bg-purple-500",
     Preenchido: "bg-accent",
     "Em andamento": "bg-primary",
+    "Não preenchido": "bg-gray-400"
   };
 
   return (
