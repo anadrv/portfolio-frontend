@@ -8,6 +8,7 @@ import {
   updateFlagCustomizar,
   updateFlagCanvas,
   updateCompetencyCore,
+  updateCompetencyDocuments,
 } from "../services/competencyService";
 
 import FilterSelect from "./FilterSelect";
@@ -44,16 +45,20 @@ function CompetencyModal({
     loadCourses();
   }, []);
 
-  
   useEffect(() => {
     if (!isEdit || !existingData) return;
 
     setCursoSelecionado(String(existingData.course_id || ""));
+
     setCodigoCompetencia(existingData.code_competency || "");
+
     setTrimestre(existingData.trimestre || "");
+
     setNomeCompetencia(existingData.name_competency || "");
-   setLinkPlanner(existingData.drive_link || "");
-setTeachingPlanLink(existingData.drive_link || "");
+
+    setLinkPlanner(existingData.planner_link || "");
+
+    setTeachingPlanLink(existingData.teaching_plan_link || "");
   }, [isEdit, existingData]);
 
   function resetForm() {
@@ -75,20 +80,23 @@ setTeachingPlanLink(existingData.drive_link || "");
 
         const promises = [];
 
-        if (nomeCompetencia || cursoSelecionado || codigoCompetencia) {
-          promises.push(
-            updateCompetencyCore({
-              id_competency: id,
-              name_competency: nomeCompetencia,
-              course_id: cursoSelecionado,
-              code_competency: codigoCompetencia,
-            }),
-          );
-        }
+        promises.push(
+          updateCompetencyCore({
+            id_competency: id,
+            name_competency: nomeCompetencia,
+            course_id: cursoSelecionado,
+            code_competency: codigoCompetencia,
+          }),
+        );
 
-        if (trimestre) {
-          promises.push(updateTrimestre(id, trimestre));
-        }
+        promises.push(
+          updateCompetencyDocuments({
+            id_competency: id,
+            planner_link: linkPlanner,
+            teaching_plan_link: teachingPlanLink,
+            trimestre,
+          }),
+        );
 
         await Promise.all(promises);
 
@@ -107,6 +115,7 @@ setTeachingPlanLink(existingData.drive_link || "");
 
         if (Object.keys(validationErrors).length > 0) {
           setErrorMessage("Preencha todos os campos obrigatórios");
+
           return;
         }
 
@@ -117,10 +126,11 @@ setTeachingPlanLink(existingData.drive_link || "");
           planner_link: linkPlanner,
           teaching_plan_link: teachingPlanLink,
           trimestre,
-          matriz: "Matriz - 62",
+          matriz_competency: "Matriz - 62",
         });
 
         setSuccessMessage("Competência criada com sucesso!");
+
         resetForm();
       }
 
@@ -131,13 +141,15 @@ setTeachingPlanLink(existingData.drive_link || "");
       }, 800);
     } catch (error) {
       console.error(error);
+
       setErrorMessage(
         isEdit ? "Erro ao atualizar competência" : "Erro ao criar competência",
       );
     }
   }
 
-  const inputClass = "w-full mt-1 p-2 rounded bg-white text-background text-sm font-normal";
+  const inputClass =
+    "w-full mt-1 p-2 rounded bg-white text-background text-sm font-normal";
   const fieldWrapper = "mb-4";
   const errorClass = "text-red-200 text-xs mt-1";
 
@@ -171,20 +183,6 @@ setTeachingPlanLink(existingData.drive_link || "");
               />
             </div>
           )}
-
-          <div className="flex-1">
-            <FilterSelect
-              label="Trimestre"
-              options={[
-  { label: "1º Trimestre", value: "1" },
-  { label: "2º Trimestre", value: "2" },
-  { label: "3º Trimestre", value: "3" },
-  { label: "4º Trimestre", value: "4" },
-]}
-              value={trimestre}
-              onChange={setTrimestre}
-            />
-          </div>
         </section>
 
         {/* NOME */}
@@ -199,7 +197,7 @@ setTeachingPlanLink(existingData.drive_link || "");
 
         {/* CÓDIGO */}
         <div className={fieldWrapper}>
-          <label className="text-sm font-normal" >Código da competência:</label>
+          <label className="text-sm font-normal">Código da competência:</label>
           <input
             className={inputClass}
             value={codigoCompetencia}
@@ -219,7 +217,9 @@ setTeachingPlanLink(existingData.drive_link || "");
 
         {/* PLANO ENSINO */}
         <div className={fieldWrapper}>
-          <label className="text-sm font-normal">Link do Plano de ensino:</label>
+          <label className="text-sm font-normal">
+            Link do Plano de ensino:
+          </label>
           <input
             className={inputClass}
             value={teachingPlanLink}
