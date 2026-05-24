@@ -1,6 +1,7 @@
 import { Bell, Trash2 } from "lucide-react";
 
 function NotificationCardPage({ item, onDelete }) {
+
   return (
     <div
       className="
@@ -8,12 +9,14 @@ function NotificationCardPage({ item, onDelete }) {
         rounded-xl px-6
         py-5
         flex items-center justify-between gap-2 md:gap-4
-      
       "
     >
       <div className="flex items-center gap-2 md:gap-4 flex-1 min-w-0">
+
         <input
           type="checkbox"
+          checked={item.is_read}
+          readOnly
           className="w-3.5 h-3.5 cursor-pointer shrink-0"
         />
 
@@ -25,17 +28,23 @@ function NotificationCardPage({ item, onDelete }) {
             shrink-0
           "
         >
-          <Bell size={13} className="text-background" />
+          <Bell
+            size={13}
+            className="text-background"
+          />
         </div>
 
-        <div className="flex flex-col  gap-2 min-w-0 text-background">
+        <div className="flex flex-col gap-2 min-w-0 text-background">
+
           <span className="text-[12px] md:text-xs font-semibold">
-            {item.type}
+            Notificação
           </span>
 
           <h2
-            className="font-bold
-              text-md md:text-lg"
+            className="
+              font-bold
+              text-md md:text-lg
+            "
           >
             {item.title}
           </h2>
@@ -44,22 +53,28 @@ function NotificationCardPage({ item, onDelete }) {
             className="
               text-xs md:text-sm
               font-medium
-              mt-0.5 md:mt-2"
+              mt-0.5 md:mt-2
+            "
           >
-            {item.course}
+            {item.message}
           </p>
         </div>
       </div>
 
       <button
-        onClick={() => onDelete(item.id)}
+        onClick={() =>
+          onDelete(item.id_notification)
+        }
         className="
           hover:scale-110
           transition
           shrink-0
         "
       >
-        <Trash2 size={16} className="text-background" />
+        <Trash2
+          size={16}
+          className="text-background"
+        />
       </button>
     </div>
   );
