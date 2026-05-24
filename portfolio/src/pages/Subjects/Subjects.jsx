@@ -164,13 +164,10 @@ function Subjects() {
                 Adicionar nova competência
               </button>
             )}
-            <button
-              onClick={clearFilters}
-              className="font-normal text-sm hover:underline cursor-pointer"
-            >
-              Limpar filtros
-            </button>
+            
           </div>
+
+          
 
           <div className="flex gap-4 mb-6">
             <FilterSelect
@@ -207,6 +204,12 @@ function Subjects() {
               value={status}
               onChange={setStatus}
             />
+            <button
+              onClick={clearFilters}
+              className="font-normal min-w-30 text-sm hover:underline cursor-pointer"
+            >
+              Limpar filtros
+            </button>
           </div>
 
           <div className="bg-background-white rounded-lg mt-6 p-4 flex flex-col gap-4">

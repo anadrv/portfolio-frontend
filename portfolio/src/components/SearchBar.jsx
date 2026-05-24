@@ -13,7 +13,7 @@ function SearchBar() {
   async function handleSearch(value) {
     setSearch(value);
 
-    if (!value.trim()) {
+    if (value.trim().length < 2) {
       setResults({ courses: [], competencies: [] });
       return;
     }
@@ -60,7 +60,7 @@ function SearchBar() {
       </div>
 
       {hasResults && isFocused && (
-        <div className="absolute mt-2 w-full bg-blue-400 rounded-lg shadow-xl overflow-hidden z-50">
+        <div className="absolute mt-2 w-full rounded-lg shadow-xl overflow-hidden z-50">
           {results.courses.length > 0 && (
             <div>
               <div className="px-5 py-3 bg-background">
@@ -73,11 +73,13 @@ function SearchBar() {
                 <button
                   key={course.id_courses}
                   onMouseDown={() => navigate(`/course/${course.id_courses}`)}
-                  className="w-full text-left px-5 py-4 flex items-center bg-blue-400 hover:bg-blue-500 transition group"
+                  className="w-full text-left px-5 py-4 flex items-center text-background bg-white hover:bg-primary hover:text-white transition cursor-pointer group"
                 >
-                  <span className="text-base font-medium text-white transition">
-                    {course.name_courses}
-                  </span>
+                  <div className="group-hover:text-white">
+                    <span className="text-base font-medium transition">
+                      {course.name_courses}
+                    </span>
+                  </div>
                 </button>
               ))}
             </div>
@@ -97,13 +99,13 @@ function SearchBar() {
                   onMouseDown={() =>
                     navigate(`/course/${competency.id_courses}`)
                   }
-                  className="w-full text-left px-5 py-4 flex items-center bg-blue-400 hover:bg-blue-500 transition group"
+                  className="w-full text-left px-5 py-4 flex items-center text-background bg-white hover:text-white hover:bg-primary transition group cursor-pointer"
                 >
-                  <div className="flex flex-col w-full">
-                    <span className="text-base font-medium text-white transition">
+                  <div className="flex flex-col w-full group-hover:text-white">
+                    <span className="text-base font-medium transition">
                       {competency.name_competency}
                     </span>
-                    <span className="text-sm text-blue-100">
+                    <span className="text-sm hover:text-white">
                       {competency.name_courses}
                     </span>
                   </div>
