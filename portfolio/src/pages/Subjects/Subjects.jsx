@@ -34,11 +34,15 @@ function Subjects() {
   }
 
   useEffect(() => {
-    if (id) {
-      loadCompetencies(id);
-    }
-  }, [id]);
+    if (!id) return;
 
+    async function fetchCompetencies() {
+      const data = await getCompetenciesByCourse(id);
+      setSubjects([...data]);
+    }
+
+    fetchCompetencies();
+  }, [id]);
   useEffect(() => {
     async function loadCourseName() {
       try {
@@ -164,10 +168,7 @@ function Subjects() {
                 Adicionar nova competência
               </button>
             )}
-            
           </div>
-
-          
 
           <div className="flex gap-4 mb-6">
             <FilterSelect
