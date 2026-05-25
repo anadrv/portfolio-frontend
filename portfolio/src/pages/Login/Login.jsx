@@ -1,6 +1,10 @@
+import {
+  loginMicrosoft as loginMicrosoftService
+} from "../../services/userService";
 import { useState, useContext } from "react";
 import { AuthContext } from "../../context/AuthContext";
 import { useNavigate } from "react-router-dom";
+import { useMsal } from "@azure/msal-react";
 import bgImage from "../../assets/images/bg-image.png";
 import unifacisa from "../../assets/images/name-image.png";
 import logo from "../../assets/icons/unifacisa-icon.png";
@@ -15,7 +19,10 @@ function Login() {
   });
 
   const navigate = useNavigate();
+
   const { login } = useContext(AuthContext);
+
+  const { instance } = useMsal();
 
   function handleChange(e) {
     const { name, value } = e.target;
@@ -26,6 +33,58 @@ function Login() {
     }));
   }
 
+  async function loginMicrosoft() {
+  try {
+    const response =
+      await instance.loginPopup({
+        scopes: ["User.Read"],
+      });
+
+    console.log(
+      "Microsoft:",
+      response
+    );
+
+    const backendResponse =
+      await loginMicrosoftService(
+        response.accessToken
+      );
+
+    console.log(
+      "Backend:",
+      backendResponse
+    );
+
+    login({
+      token: backendResponse.token,
+
+      user: {
+        name: response.account.name,
+        email: response.account.username,
+      },
+    });
+
+    localStorage.setItem(
+      "token",
+      backendResponse.token
+    );
+
+    alert(
+      "Login Microsoft realizado com sucesso!"
+    );
+
+    navigate("/");
+
+  } catch (error) {
+
+    console.log(error);
+
+    alert(
+      "Erro ao fazer login com Microsoft"
+    );
+  }
+}
+
   function handleSubmit(e) {
     e.preventDefault();
 
@@ -35,6 +94,8 @@ function Login() {
     }
 
     login({
+      token: "token-local",
+
       user: {
         email: formData.email,
       },
@@ -59,7 +120,7 @@ function Login() {
         <img
           src={unifacisa}
           alt="Unifacisa"
-          className="hidden md:block absolute top-13 left-20 w-56 z-20"
+          className="hidden md:block absolute top-13 left-20 w-53 z-20"
         />
 
         <div className="min-h-screen flex items-center justify-center px-0 md:px-6">
@@ -98,10 +159,10 @@ function Login() {
                 <img
                   src={logo}
                   alt="Unifacisa"
-                  className="w-12 ml-25"
+                  className="w-8 ml-30 mt-3"
                 />
 
-                <span className="font-semibold text-3xl text-white font-sans mt-2 ml-2">
+                <span className="font-semibold text-2xl text-white font-sans mt-4 ml-2">
                   Unifacisa
                 </span>
 
@@ -118,7 +179,7 @@ function Login() {
 
                 <div>
 
-                  <label className="hidden md:block text-sm text-white mb-2">
+                  <label className="block text-base md:text-sm text-white mb-2">
                     E-mail:
                   </label>
 
@@ -129,7 +190,6 @@ function Login() {
                     <input
                       type="email"
                       name="email"
-                      placeholder="Email"
                       value={formData.email}
                       onChange={handleChange}
                       className="w-80 md:w-85 py-2 pl-5 pr-3 rounded-lg border border-gray-300 outline-none bg-white text-xl md:text-sm md:placeholder-transparent"
@@ -140,7 +200,7 @@ function Login() {
 
                 <div>
 
-                  <label className="hidden md:block text-sm text-white mb-2">
+                  <label className="block text-base md:text-sm text-white mb-2">
                     Senha:
                   </label>
 
@@ -151,10 +211,9 @@ function Login() {
                     <input
                       type="password"
                       name="password"
-                      placeholder="Senha"
                       value={formData.password}
                       onChange={handleChange}
-                      className="w-80 md:w-85 py-2  pl-5 pr-3 rounded-lg border border-gray-300 outline-none bg-white text-xl md:text-sm md:placeholder-transparent"
+                      className="w-80 md:w-85 py-2 pl-5 pr-3 rounded-lg border border-gray-300 outline-none bg-white text-xl md:text-sm md:placeholder-transparent"
                     />
 
                   </div>
@@ -170,7 +229,7 @@ function Login() {
 
                   <label
                     htmlFor="remember"
-                    className="text-white text-sm"
+                    className="text-white text-base md:text-sm"
                   >
                     Continuar conectado(a)
                   </label>
@@ -184,12 +243,24 @@ function Login() {
                   Login
                 </button>
 
-                <a
-                  href="#"
-                  className="text-white text-sm ml-23 md:ml-0 md:text-center mt-1 hover:underline"
-                >
-                  Esqueceu a senha?
-                </a>
+                <div className="flex flex-col gap-1">
+                  <a
+  href="#"
+  onClick={(e) => {
+    e.preventDefault();
+    loginMicrosoft();
+  }}
+  className="text-white text-base md:text-sm ml-20 md:ml-0 md:text-center hover:underline"
+>
+  Entrar com Microsoft
+</a>
+                  <a
+                    href="#"
+                    className="text-white text-base md:text-sm ml-20 md:ml-0 md:text-center hover:underline"
+                  >
+                    Esqueceu a senha?
+                  </a>
+                </div>
 
               </form>
             </div>
