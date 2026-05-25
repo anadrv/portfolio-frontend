@@ -107,7 +107,8 @@ function Login() {
   }
 
   return (
-    <div className="relative min-h-screen w-full bg-sky-200 overflow-hidden">
+
+    <div className="relative min-h-screen w-full bg-sky-200 overflow-x-hidden">
 
       <img
         src={bgImage}
@@ -125,7 +126,7 @@ function Login() {
 
         <div className="min-h-screen flex items-center justify-center px-0 md:px-6">
 
-          <div className="bg-background w-full max-w-3xl rounded-none md:rounded-3xl shadow-2xl p-6 md:p-12 flex flex-col md:flex-row min-h-screen md:min-h-0 md:mt-5">
+          <div className="bg-background w-full max-w-3xl mx-auto rounded-none md:rounded-3xl shadow-2xl p-6 md:p-12 flex flex-col md:flex-row min-h-screen md:min-h-0 md:mt-5">
 
             <div className="hidden md:flex w-1/2 items-center justify-center relative">
 
@@ -154,15 +155,15 @@ function Login() {
 
             <div className="w-full md:w-1/2 flex flex-col justify-center">
 
-              <div className="md:hidden flex mb-10">
+              <div className="md:hidden flex justify-center items-center gap-2 mb-10">
 
                 <img
                   src={logo}
                   alt="Unifacisa"
-                  className="w-8 ml-30 mt-3"
+                  className="w-8"
                 />
 
-                <span className="font-semibold text-2xl text-white font-sans mt-4 ml-2">
+                <span className="font-semibold text-2xl text-white font-sans">
                   Unifacisa
                 </span>
 
@@ -173,7 +174,7 @@ function Login() {
               </h1>
 
               <form
-                className="w-full flex flex-col gap-4 md:gap-3 ml-8 md:ml-0 mt-10 md:mt-0"
+                className="w-full flex flex-col gap-4 md:gap-3 mt-10 md:mt-0"
                 onSubmit={handleSubmit}
               >
 
@@ -183,7 +184,7 @@ function Login() {
                     E-mail:
                   </label>
 
-                  <div className="relative">
+                  <div className="relative max-w-[340px] md:max-w-none mx-auto md:mx-0">
 
                     <div className="absolute left-0 top-0 h-full w-3 bg-primary rounded-l-lg"></div>
 
@@ -192,7 +193,7 @@ function Login() {
                       name="email"
                       value={formData.email}
                       onChange={handleChange}
-                      className="w-80 md:w-85 py-2 pl-5 pr-3 rounded-lg border border-gray-300 outline-none bg-white text-xl md:text-sm md:placeholder-transparent"
+                      className="w-full md:w-85 py-2 pl-5 pr-3 rounded-lg border border-gray-300 outline-none bg-white text-xl md:text-sm md:placeholder-transparent"
                     />
 
                   </div>
@@ -204,7 +205,7 @@ function Login() {
                     Senha:
                   </label>
 
-                  <div className="relative">
+                  <div className="relative max-w-[340px] md:max-w-none mx-auto md:mx-0">
 
                     <div className="absolute left-0 top-0 h-full w-3 bg-primary rounded-l-lg"></div>
 
@@ -213,13 +214,13 @@ function Login() {
                       name="password"
                       value={formData.password}
                       onChange={handleChange}
-                      className="w-80 md:w-85 py-2 pl-5 pr-3 rounded-lg border border-gray-300 outline-none bg-white text-xl md:text-sm md:placeholder-transparent"
+                      className="w-full md:w-85 py-2 pl-5 pr-3 rounded-lg border border-gray-300 outline-none bg-white text-xl md:text-sm md:placeholder-transparent"
                     />
 
                   </div>
                 </div>
 
-                <div className="flex items-center gap-2 mt-1">
+                <div className="flex items-center gap-2 mt-1 max-w-[340px] mx-auto md:mx-0 w-full">
 
                   <input
                     type="checkbox"
@@ -238,30 +239,31 @@ function Login() {
 
                 <button
                   type="submit"
-                  className="w-80 md:w-85 bg-accent text-background text-xl md:text-base font-semibold py-2 rounded-lg mt-1"
+                  className="w-full max-w-[340px] md:w-85 mx-auto md:mx-0 bg-accent text-background text-xl md:text-base font-semibold py-2 rounded-lg mt-1"
                 >
                   Login
                 </button>
+                <div className="flex flex-col gap-1 text-center">
 
-                <div className="flex flex-col gap-1">
                   <a
                     href="#"
                     onClick={(e) => {
                       e.preventDefault();
                       loginMicrosoft();
                     }}
-                    className="text-white text-base md:text-sm ml-20 md:ml-0 md:text-center hover:underline"
+                    className="text-white text-base md:text-xs hover:underline"
                   >
                     Entrar com Microsoft
                   </a>
+
                   <a
                     href="#"
-                    className="text-white text-base md:text-sm ml-20 md:ml-0 md:text-center hover:underline"
+                    className="text-white text-base md:text-xs hover:underline"
                   >
                     Esqueceu a senha?
                   </a>
-                </div>
 
+                </div>
               </form>
             </div>
           </div>
