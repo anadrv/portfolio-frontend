@@ -26,7 +26,7 @@ function Subjects() {
 
   const user = JSON.parse(localStorage.getItem("user"));
 
-  const isAdminOrGestao = user?.role === "admin" || user?.role === "GESTAO";
+  const isAdminOrGestao = user?.role === "ADMIN" || user?.role === "GESTAO";
 
   async function loadCompetencies(courseId = id) {
     const data = await getCompetenciesByCourse(courseId);
@@ -34,11 +34,15 @@ function Subjects() {
   }
 
   useEffect(() => {
-    if (id) {
-      loadCompetencies(id);
-    }
-  }, [id]);
+    if (!id) return;
 
+    async function fetchCompetencies() {
+      const data = await getCompetenciesByCourse(id);
+      setSubjects([...data]);
+    }
+
+    fetchCompetencies();
+  }, [id]);
   useEffect(() => {
     async function loadCourseName() {
       try {
@@ -84,19 +88,52 @@ function Subjects() {
     );
   }, [subjects]);
 
+  const statusRules = {
+    "Em andamento": (doc) => doc.flag_em_preenchimento,
+
+    Preenchido: (doc) => doc.flag_preenchido,
+
+    "Necessita revisão": (doc) => doc.flag_necessita_revisao,
+
+    "Validado pela coordenação": (doc) => doc.flag_validacao_coordenacao,
+
+    "Liberado para customizar": (doc) => doc.flag_liberado_customizar,
+
+    "Disponível no Canvas": (doc) => doc.flag_disponivel_canva,
+
+    "Integrado ao RM-Canvas": (doc) => doc.flag_integrado_rm,
+
+    "Não preenchido": (doc) =>
+      !doc.flag_em_preenchimento &&
+      !doc.flag_preenchido &&
+      !doc.flag_necessita_revisao &&
+      !doc.flag_validacao_coordenacao &&
+      !doc.flag_liberado_customizar &&
+      !doc.flag_disponivel_canva &&
+      !doc.flag_integrado_rm,
+  };
+
+  function matchStatus(doc, status) {
+    if (!status) return true;
+
+    const rule = statusRules[status];
+    if (!rule) return true;
+
+    return rule(doc);
+  }
+
   const filteredSubjects = groupedSubjects.filter((subject) => {
-    if (!subject.documents || subject.documents.length === 0) {
-      return true;
-    }
+    if (!subject.documents?.length) return true;
 
     return (
       (matriz === "" ||
-        subject.documents.some((doc) => doc.matriz === matriz)) &&
+        subject.documents.some((doc) => doc.matriz_competency === matriz)) &&
       (trimestre === "" ||
-        subject.documents.some((doc) => doc.trimestre === trimestre))
+        subject.documents.some((doc) => doc.trimestre === trimestre)) &&
+      (status === "" ||
+        subject.documents.some((doc) => matchStatus(doc, status)))
     );
   });
-
   const totalPages = Math.ceil(filteredSubjects.length / itemsPerPage);
   const startIndex = (currentPage - 1) * itemsPerPage;
 
@@ -104,6 +141,13 @@ function Subjects() {
     startIndex,
     startIndex + itemsPerPage,
   );
+
+  function clearFilters() {
+    setMatriz("");
+    setTrimestre("");
+    setStatus("");
+    setCurrentPage(1);
+  }
 
   return (
     <Layout>
@@ -119,7 +163,7 @@ function Subjects() {
             {isAdminOrGestao && (
               <button
                 onClick={() => setIsModalOpen(true)}
-                className="bg-white p-2 px-4 text-background font-semibold text-sm rounded hover:bg-accent"
+                className="bg-white p-2 px-4 text-background font-semibold text-sm rounded hover:bg-accent cursor-pointer"
               >
                 Adicionar nova competência
               </button>
@@ -149,9 +193,11 @@ function Subjects() {
             <FilterSelect
               label="Status"
               options={[
+                "Não preenchido",
                 "Em andamento",
+                "Preenchido",
+                "Necessita revisão",
                 "Validado pela coordenação",
-                "Não avaliado",
                 "Liberado para customizar",
                 "Disponível no Canvas",
                 "Integrado ao RM-Canvas",
@@ -159,6 +205,12 @@ function Subjects() {
               value={status}
               onChange={setStatus}
             />
+            <button
+              onClick={clearFilters}
+              className="font-normal min-w-30 text-sm hover:underline cursor-pointer"
+            >
+              Limpar filtros
+            </button>
           </div>
 
           <div className="bg-background-white rounded-lg mt-6 p-4 flex flex-col gap-4">

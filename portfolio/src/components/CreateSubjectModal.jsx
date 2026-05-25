@@ -6,7 +6,7 @@ import { createCompetency } from "../services/competencyService";
 
 import FilterSelect from "./FilterSelect";
 import PrimaryButton from "./PrimaryButton";
-import validateSubject from "../validations/validateSubject";
+import validateCompetency from "../validations/validateCompetency";
 
 function CreateSubjectModal({ onClose, onSuccess }) {
   const [courses, setCourses] = useState([]);
@@ -14,6 +14,7 @@ function CreateSubjectModal({ onClose, onSuccess }) {
 
   const [codigoCompetencia, setCodigoCompetencia] = useState("");
   const [trimestre, setTrimestre] = useState("");
+  const [matriz, setMatriz] = useState("");
   const [nomeCompetencia, setNomeCompetencia] = useState("");
   const [linkPlanner, setLinkPlanner] = useState("");
   const [teachingPlanLink, setTeachingPlanLink] = useState("");
@@ -41,6 +42,7 @@ function CreateSubjectModal({ onClose, onSuccess }) {
     }
 
     window.addEventListener("keydown", handleKeyDown);
+
     return () => window.removeEventListener("keydown", handleKeyDown);
   }, [onClose]);
 
@@ -48,13 +50,14 @@ function CreateSubjectModal({ onClose, onSuccess }) {
     setSuccessMessage("");
     setErrorMessage("");
 
-    const validationErrors = validateSubject({
+    const validationErrors = validateCompetency({
       course: cursoSelecionado,
       trimester: trimestre,
+      matriz: matriz,
+      competencyCode: codigoCompetencia,
       subjectName: nomeCompetencia,
       plannerLink: linkPlanner,
       teachingPlanLink,
-      statuses: {},
     });
 
     setErrors(validationErrors);
@@ -74,7 +77,7 @@ function CreateSubjectModal({ onClose, onSuccess }) {
         teaching_plan_link: teachingPlanLink,
 
         trimestre,
-        matriz: "Matriz - 62",
+        matriz_competency: matriz,
       });
 
       setSuccessMessage("Competência criada com sucesso!");
@@ -82,11 +85,20 @@ function CreateSubjectModal({ onClose, onSuccess }) {
 
       setTimeout(() => {
         onClose();
-      }, 800);
+      }, 1000);
     } catch (error) {
       console.error(error);
       setErrorMessage("Erro ao criar competência no servidor");
     }
+  }
+
+  function clearFieldError(field) {
+    setErrors((prev) => ({
+      ...prev,
+      [field]: "",
+    }));
+
+    setErrorMessage("");
   }
 
   const inputClass = "w-full mt-1 p-2 rounded bg-white text-background text-sm";
@@ -108,43 +120,79 @@ function CreateSubjectModal({ onClose, onSuccess }) {
           CADASTRAR COMPETÊNCIA
         </h2>
 
-        {/* CURSO + TRIMESTRE */}
-        <section className="flex gap-2 mb-6">
-          <div className="flex-1">
-            <FilterSelect
-              label="Selecionar curso"
-              options={courses.map((c) => ({
-                label: c.name_courses,
-                value: c.id_courses,
-              }))}
-              value={cursoSelecionado}
-              onChange={setCursoSelecionado}
-            />
-          </div>
+        {/* CURSO */}
+        <div className="flex-1 mb-2">
+          <FilterSelect
+            label="Selecionar curso"
+            options={courses.map((c) => ({
+              label: c.name_courses,
+              value: c.id_courses,
+            }))}
+            value={cursoSelecionado}
+            onChange={(value) => {
+              setCursoSelecionado(value);
+              clearFieldError("course");
+            }}
+          />
 
+          {errors.course && <p className={errorClass}>{errors.course}</p>}
+        </div>
+
+        <section className="flex gap-2 mb-4">
+          {/* TRIMESTRE */}
           <div className="flex-1">
             <FilterSelect
               label="Trimestre"
               options={[
-                "1ª Trimestre",
-                "2ª Trimestre",
-                "3ª Trimestre",
-                "4ª Trimestre",
+                { label: "1° Trimestre", value: "1" },
+                { label: "2° Trimestre", value: "2" },
+                { label: "3° Trimestre", value: "3" },
+                { label: "4° Trimestre", value: "4" },
               ]}
               value={trimestre}
-              onChange={setTrimestre}
+              onChange={(value) => {
+                setTrimestre(value);
+                clearFieldError("trimester");
+              }}
             />
+
+            {errors.trimester && (
+              <p className={errorClass}>{errors.trimester}</p>
+            )}
+          </div>
+
+          {/* MATRIZ */}
+          <div className="mb-2">
+            <FilterSelect
+              label="Matriz"
+              options={[
+                { label: "Matriz 62", value: "62" },
+                { label: "Matriz 63", value: "63" },
+              ]}
+              value={matriz}
+              onChange={(value) => {
+                setMatriz(value);
+                clearFieldError("matriz");
+              }}
+            />
+
+            {errors.matriz && <p className={errorClass}>{errors.matriz}</p>}
           </div>
         </section>
 
         {/* NOME COMPETÊNCIA */}
         <div className={fieldWrapper}>
-          <label className="text-sm">Nome da competência</label>
+          <label className="text-sm">Nome da competência:</label>
+
           <input
             className={inputClass}
             value={nomeCompetencia}
-            onChange={(e) => setNomeCompetencia(e.target.value)}
+            onChange={(e) => {
+              setNomeCompetencia(e.target.value);
+              clearFieldError("subjectName");
+            }}
           />
+
           {errors.subjectName && (
             <p className={errorClass}>{errors.subjectName}</p>
           )}
@@ -152,32 +200,55 @@ function CreateSubjectModal({ onClose, onSuccess }) {
 
         {/* CÓDIGO */}
         <div className={fieldWrapper}>
-          <label className="text-sm">Código da competência</label>
+          <label className="text-sm">Código da competência:</label>
+
           <input
             className={inputClass}
             value={codigoCompetencia}
-            onChange={(e) => setCodigoCompetencia(e.target.value)}
+            onChange={(e) => {
+              setCodigoCompetencia(e.target.value);
+              clearFieldError("competencyCode");
+            }}
           />
-        </div>
 
+          {errors.competencyCode && (
+            <p className={errorClass}>{errors.competencyCode}</p>
+          )}
+        </div>
         {/* PLANNER */}
         <div className={fieldWrapper}>
-          <label className="text-sm">Planner</label>
+          <label className="text-sm">Link do Planner:</label>
+
           <input
             className={inputClass}
             value={linkPlanner}
-            onChange={(e) => setLinkPlanner(e.target.value)}
+            onChange={(e) => {
+              setLinkPlanner(e.target.value);
+              clearFieldError("plannerLink");
+            }}
           />
+
+          {errors.plannerLink && (
+            <p className={errorClass}>{errors.plannerLink}</p>
+          )}
         </div>
 
         {/* PLANO ENSINO */}
         <div className={fieldWrapper}>
-          <label className="text-sm">Plano de ensino</label>
+          <label className="text-sm">Link do Plano de ensino:</label>
+
           <input
             className={inputClass}
             value={teachingPlanLink}
-            onChange={(e) => setTeachingPlanLink(e.target.value)}
+            onChange={(e) => {
+              setTeachingPlanLink(e.target.value);
+              clearFieldError("teachingPlanLink");
+            }}
           />
+
+          {errors.teachingPlanLink && (
+            <p className={errorClass}>{errors.teachingPlanLink}</p>
+          )}
         </div>
 
         {/* AÇÕES */}
@@ -188,17 +259,19 @@ function CreateSubjectModal({ onClose, onSuccess }) {
 
           <PrimaryButton onClick={handleSave}>Confirmar</PrimaryButton>
         </div>
-        {successMessage && (
-        <p className="text-green-400 text-sm mt-4 text-center">
-          {successMessage}
-        </p>
-      )}
 
-      {errorMessage && (
-        <p className="text-red-400 text-sm mt-4 text-center">{errorMessage}</p>
-      )}
+        {successMessage && (
+          <p className="text-green-400 text-sm mt-4 text-center">
+            {successMessage}
+          </p>
+        )}
+
+        {errorMessage && (
+          <p className="text-red-400 text-sm mt-4 text-center">
+            {errorMessage}
+          </p>
+        )}
       </article>
-      
     </div>
   );
 }

@@ -7,6 +7,9 @@ import {
   updateFlagCustomizar,
   updateFlagCanvas,
   updateFlagGestao,
+  updateFlagPreenchido,
+  updateFlagNecessitaRevisao,
+  updateFlagEmPreenchimento,
 } from "../services/competencyService";
 
 import { hasPermission, hasRole } from "../utils/permissions";
@@ -25,14 +28,18 @@ function InfoModal({
   matriz,
   trimestre,
 
+  flag_preenchido,
+  flag_necessita_revisao,
   flag_validacao_coordenacao,
   flag_liberado_customizar,
   flag_disponivel_canva,
   flag_integrado_rm,
+  flag_em_preenchimento,
 
   reload,
 }) {
   const isProfessor = hasRole("PROFESSOR");
+
   const [isEditing, setIsEditing] = useState(false);
 
   const [selectedTrimestre, setSelectedTrimestre] = useState("");
@@ -45,6 +52,9 @@ function InfoModal({
     setSelectedTrimestre(trimestre || "");
 
     setStatuses({
+      em_preenchimento: !!flag_em_preenchimento,
+      preenchido: !!flag_preenchido,
+      revisao: !!flag_necessita_revisao,
       validado: !!flag_validacao_coordenacao,
       customizar: !!flag_liberado_customizar,
       canvas: !!flag_disponivel_canva,
@@ -52,6 +62,9 @@ function InfoModal({
     });
   }, [
     trimestre,
+    flag_em_preenchimento,
+    flag_preenchido,
+    flag_necessita_revisao,
     flag_validacao_coordenacao,
     flag_liberado_customizar,
     flag_disponivel_canva,
@@ -63,9 +76,18 @@ function InfoModal({
     try {
       await updateTrimestre(id_academicD, selectedTrimestre);
 
+      await updateFlagEmPreenchimento(id_academicD, statuses.em_preenchimento);
+
+      await updateFlagPreenchido(id_academicD, statuses.preenchido);
+
+      await updateFlagNecessitaRevisao(id_academicD, statuses.revisao);
+
       await updateFlagCoordenacao(id_academicD, statuses.validado);
+
       await updateFlagCustomizar(id_academicD, statuses.customizar);
+
       await updateFlagCanvas(id_academicD, statuses.canvas);
+
       await updateFlagGestao(id_academicD, statuses.integracao);
 
       setIsEditing(false);
@@ -73,15 +95,55 @@ function InfoModal({
 
       showFeedback(setSuccessMessage, "Dados atualizados com sucesso!");
 
-      setTimeout(() => {
+      setTimeout(async () => {
+        await reload?.();
         onClose?.();
-        window.location.reload();
       }, 1000);
     } catch (error) {
       console.error("Erro ao salvar:", error);
       setErrors({ save: "Erro ao salvar dados" });
     }
   }
+
+  function renderStatus(key, label) {
+  const editableByProfessor = [
+    "em_preenchimento",
+    "preenchido",
+  ];
+
+  const canEdit =
+    !isProfessor ||
+    editableByProfessor.includes(key);
+
+  return (
+    <label className="flex items-center gap-2 text-sm">
+      {isEditing && canEdit && (
+        <input
+          type="checkbox"
+          checked={statuses[key]}
+          onChange={() =>
+            setStatuses((prev) => ({
+              ...prev,
+              [key]: !prev[key],
+            }))
+          }
+        />
+      )}
+
+      <span
+        className={
+          statuses[key]
+            ? "text-accent"
+            : "text-gray-400"
+        }
+      >
+        {statuses[key] ? "✓" : "X"}
+      </span>
+
+      <p>{label}</p>
+    </label>
+  );
+}
 
   return (
     <div
@@ -121,7 +183,8 @@ function InfoModal({
             </div>
           ) : (
             <div className="flex gap-4">
-              <FilterInfo>{matriz}</FilterInfo>
+              <FilterInfo>Matriz - {matriz}</FilterInfo>
+
               <FilterInfo>{selectedTrimestre}</FilterInfo>
             </div>
           )}
@@ -130,141 +193,31 @@ function InfoModal({
         <section className="mb-8">
           <h3 className="text-sm font-semibold mb-3">Status</h3>
 
-          <div className="bg-white rounded-xl p-4 text-background flex flex-col gap-4">
-            {/* PROFESSOR */}
-            {isProfessor ? (
-              <label className="flex items-center gap-2 text-sm">
-                {isEditing && (
-                  <input
-                    type="checkbox"
-                    checked={statuses.integracao}
-                    onChange={() =>
-                      setStatuses((prev) => ({
-                        ...prev,
-                        integracao: !prev.integracao,
-                      }))
-                    }
-                  />
-                )}
+         <div className="bg-white rounded-xl p-4 text-background flex flex-col gap-4">
+  {isProfessor && isEditing ? (
+    <>
+      {renderStatus("em_preenchimento", "Em andamento")}
 
-                <span
-                  className={
-                    statuses.integracao ? "text-accent" : "text-gray-400"
-                  }
-                >
-                  {statuses.integracao ? "✓" : "X"}
-                </span>
+      {renderStatus("preenchido", "Preenchido")}
+    </>
+  ) : (
+    <>
+      {renderStatus("em_preenchimento", "Em andamento")}
 
-                <p>
-                  {statuses.integracao ? "Concluído" : "Marcar como concluído"}
-                </p>
-              </label>
-            ) : (
-              <>
-                {/* ADMIN / GESTÃO */}
+      {renderStatus("preenchido", "Preenchido")}
 
-                <label className="flex items-center gap-2 text-sm">
-                  {isEditing && (
-                    <input
-                      type="checkbox"
-                      checked={statuses.validado}
-                      onChange={() =>
-                        setStatuses((prev) => ({
-                          ...prev,
-                          validado: !prev.validado,
-                        }))
-                      }
-                    />
-                  )}
+      {renderStatus("revisao", "Necessita revisão")}
 
-                  <span
-                    className={
-                      statuses.validado ? "text-accent" : "text-gray-400"
-                    }
-                  >
-                    {statuses.validado ? "✓" : "X"}
-                  </span>
+      {renderStatus("validado", "Validado pela coordenação")}
 
-                  <p>Validado pela coordenação</p>
-                </label>
+      {renderStatus("customizar", "Liberado para customizar")}
 
-                <label className="flex items-center gap-2 text-sm">
-                  {isEditing && (
-                    <input
-                      type="checkbox"
-                      checked={statuses.customizar}
-                      onChange={() =>
-                        setStatuses((prev) => ({
-                          ...prev,
-                          customizar: !prev.customizar,
-                        }))
-                      }
-                    />
-                  )}
+      {renderStatus("canvas", "Disponível no Canvas")}
 
-                  <span
-                    className={
-                      statuses.customizar ? "text-accent" : "text-gray-400"
-                    }
-                  >
-                    {statuses.customizar ? "✓" : "X"}
-                  </span>
-
-                  <p>Liberado para customizar</p>
-                </label>
-
-                <label className="flex items-center gap-2 text-sm">
-                  {isEditing && (
-                    <input
-                      type="checkbox"
-                      checked={statuses.canvas}
-                      onChange={() =>
-                        setStatuses((prev) => ({
-                          ...prev,
-                          canvas: !prev.canvas,
-                        }))
-                      }
-                    />
-                  )}
-
-                  <span
-                    className={
-                      statuses.canvas ? "text-accent" : "text-gray-400"
-                    }
-                  >
-                    {statuses.canvas ? "✓" : "X"}
-                  </span>
-
-                  <p>Disponível no Canvas</p>
-                </label>
-
-                <label className="flex items-center gap-2 text-sm">
-                  {isEditing && (
-                    <input
-                      type="checkbox"
-                      checked={statuses.integracao}
-                      onChange={() =>
-                        setStatuses((prev) => ({
-                          ...prev,
-                          integracao: !prev.integracao,
-                        }))
-                      }
-                    />
-                  )}
-
-                  <span
-                    className={
-                      statuses.integracao ? "text-accent" : "text-gray-400"
-                    }
-                  >
-                    {statuses.integracao ? "✓" : "X"}
-                  </span>
-
-                  <p>Integrado ao RM-Canvas</p>
-                </label>
-              </>
-            )}
-          </div>
+      {renderStatus("integracao", "Integrado ao RM-Canvas")}
+    </>
+  )}
+</div>
         </section>
 
         <footer className="flex items-center justify-between gap-4">
@@ -272,7 +225,7 @@ function InfoModal({
             <>
               <button
                 onClick={() => setIsEditing(false)}
-                className="text-sm hover:underline"
+                className="text-sm hover:underline cursor-pointer"
               >
                 Cancelar
               </button>
@@ -284,7 +237,7 @@ function InfoModal({
           ) : (
             <button
               onClick={() => setIsEditing(true)}
-              className="flex items-center justify-center gap-2 flex-1 text-sm border border-white py-2 rounded-lg hover:bg-white/10"
+              className="flex items-center justify-center gap-2 flex-1 text-sm border border-white py-2 rounded-lg hover:bg-white/10 cursor-pointer"
             >
               <Pencil size={16} />
 

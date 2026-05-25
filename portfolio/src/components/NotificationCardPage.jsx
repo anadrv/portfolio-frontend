@@ -1,66 +1,83 @@
-import { Bell, Trash2 } from "lucide-react";
+import { Bell, Check, Trash2 } from "lucide-react";
 
-function NotificationCardPage({ item, onDelete }) {
+function NotificationCardPage({
+  item,
+  onDelete,
+  onRead,
+}) {
   return (
-    <div
-      className="
-        bg-background-white
-        rounded-xl px-6
-        py-5
-        flex items-center justify-between gap-2 md:gap-4
-      
-      "
-    >
-      <div className="flex items-center gap-2 md:gap-4 flex-1 min-w-0">
-        <input
-          type="checkbox"
-          className="w-3.5 h-3.5 cursor-pointer shrink-0"
+    <div className="bg-background-white rounded-xl p-6 flex items-center justify-between gap-2 md:gap-4">
+      <div className="flex gap-2 md:gap-4 flex-1 min-w-0">
+        
+        <Bell
+          size={16}
+          className={`
+            mt-1.5 shrink-0
+            ${
+              item.is_read
+                ? "text-gray-400"
+                : "text-background"
+            }
+          `}
         />
 
-        <div
-          className="
-            w-7 h-7 md:w-10 md:h-10 rounded-full
-            flex items-center
-            justify-center
-            shrink-0
-          "
-        >
-          <Bell size={13} className="text-background" />
-        </div>
-
-        <div className="flex flex-col  gap-2 min-w-0 text-background">
-          <span className="text-[12px] md:text-xs font-semibold">
-            {item.type}
-          </span>
-
-          <h2
-            className="font-bold
-              text-md md:text-lg"
-          >
+        <div className="flex flex-col gap-2 min-w-0 text-background">
+          
+          <h2 className="font-bold text-md md:text-lg flex items-center gap-4">
             {item.title}
           </h2>
 
-          <p
+          <div
             className="
               text-xs md:text-sm
-              font-medium
-              mt-0.5 md:mt-2"
-          >
-            {item.course}
-          </p>
+              font-medium mt-0.5 md:mt-2 flex flex-col gap-1">
+            <p>{item.message}</p>
+
+            <p className="mt-2 font-normal text-gray-400">
+              Competência:
+              {" "}
+              {item.name_competency}
+            </p>
+
+            <p className="font-normal text-gray-400">
+              Curso:{" "}{item.name_courses}
+            </p>
+
+          </div>
         </div>
       </div>
 
-      <button
-        onClick={() => onDelete(item.id)}
-        className="
-          hover:scale-110
-          transition
-          shrink-0
-        "
-      >
-        <Trash2 size={16} className="text-background" />
-      </button>
+      <div className="flex items-center gap-3 shrink-0">
+
+        {!item.is_read && (
+          <button
+            onClick={() =>
+              onRead(item.id_notification)
+            }
+            className="
+              hover:scale-110 not-first:transition cursor-pointer"
+            title="Marcar como lida"
+          >
+            <Check
+              size={17}
+              className="text-green-600"
+            />
+          </button>
+        )}
+
+        <button
+          onClick={() =>
+            onDelete(item.id_notification)
+          }
+          className="
+            hover:scale-110 transition shrink-0">
+          <Trash2
+            size={16}
+            className=" text-background cursor-pointer"
+            title="Excluir"
+          />
+        </button>
+      </div>
     </div>
   );
 }

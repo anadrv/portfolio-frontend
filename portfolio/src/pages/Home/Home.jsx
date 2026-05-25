@@ -1,8 +1,10 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Layout from "../../Layout/Layout";
 import FilterSelect from "../../components/FilterSelect";
 import CourseCard from "../../components/CourseCard";
 import CreateCourse from "../../components/CreateCourseModal";
+
+import { getCourses } from "../../services/courseService";
 
 import adminIcon from "../../assets/icons/courses/admin.png";
 import adsIcon from "../../assets/icons/courses/ads.png";
@@ -11,13 +13,11 @@ import dsgIcon from "../../assets/icons/courses/design.png";
 import lawIcon from "../../assets/icons/courses/law.png";
 import peIcon from "../../assets/icons/courses/physical-education.png";
 
-import coursesData from "../../data/courses.json";
-
 function Home() {
   const [matriz, setMatriz] = useState("");
   const [showCreate, setShowCreate] = useState(false);
 
-  const [courses, setCourses] = useState(coursesData);
+  const [courses, setCourses] = useState([]);
 
   const iconMap = {
     admin: adminIcon,
@@ -28,9 +28,33 @@ function Home() {
     "physical-education": peIcon,
   };
 
+  useEffect(() => {
+    async function loadCourses() {
+      try {
+        const data = await getCourses();
+        const formattedCourses = data.map((course) => ({
+          id: course.id_courses,
+          title: course.name_courses,
+          matriz: [course.matrix_courses],
+          image: {
+            preview: course.course_icon_url,
+          },
+        }));
+        setCourses(formattedCourses);
+      } catch (error) {
+        console.error("Erro ao carregar cursos:", error);
+      }
+    }
+    loadCourses();
+  }, []);
+
   const filteredCourses = courses.filter((course) => {
     return matriz === "" || course.matriz.includes(matriz);
   });
+
+  const user = JSON.parse(localStorage.getItem("user"));
+
+  const isAdminOrNite = user?.role === "ADMIN" || user?.role === "NITE";
 
   return (
     <Layout>
@@ -41,12 +65,14 @@ function Home() {
               <h1 className="text-2xl font-semibold">Cursos</h1>
 
               <div className="flex flex-col md:flex-row text-sm gap-3 md:gap-10 md:items-center">
-                <button
-                  onClick={() => setShowCreate(true)}
-                  className="bg-white py-2 px-4 w-full md:w-auto text-background font-semibold text-sm rounded whitespace-nowrap hover:bg-accent cursor-pointer transition"
-                >
-                  Adicionar novo curso
-                </button>
+                {isAdminOrNite && (
+                  <button
+                    onClick={() => setShowCreate(true)}
+                    className="bg-white py-2 px-4 w-full md:w-auto text-background font-semibold text-sm rounded whitespace-nowrap hover:bg-accent cursor-pointer transition"
+                  >
+                    Adicionar novo curso
+                  </button>
+                )}
 
                 <h4 className="whitespace-nowrap font-normal text-md">
                   Filtrar por:
@@ -62,25 +88,27 @@ function Home() {
             </header>
 
             <div
-              className="bg-background-white rounded-lg p-6 grid gap-3 w-full min-h-[500px] items-start content-start"
+              className="bg-background-white rounded-lg p-6 grid gap-3 w-full items-start content-start"
               style={{
                 gridTemplateColumns: "repeat(auto-fill, minmax(220px, 1fr))",
               }}
             >
-              {filteredCourses.map((course) => (
-                <CourseCard
-                  key={course.id}
-                  title={course.title}
-                  icons={[
-                    course.image ? course.image.preview : iconMap[course.icon],
-                  ]}
-                  link={`/course/${course.id}`}
-                />
-              ))}
+              {[...filteredCourses]
+                .sort((a, b) => a.title.localeCompare(b.title))
+                .map((course) => (
+                  <CourseCard
+                    key={course.id}
+                    title={course.title}
+                    icons={[
+                      course.image
+                        ? course.image.preview
+                        : iconMap[course.icon],
+                    ]}
+                    link={`/course/${course.id}`}
+                  />
+                ))}
             </div>
           </div>
-
-         
         </div>
       </div>
 
@@ -94,14 +122,14 @@ function Home() {
               onCancel={() => setShowCreate(false)}
               onSave={(data) => {
                 const newCourse = {
-                  id: Date.now(),
-                  title: data.curso,
-                  matriz: [data.matriz],
-                  image: data.image,
+                  id: data.id_courses,
+                  title: data.name_courses,
+                  matriz: [data.matrix_courses],
+                  image: {
+                    preview: data.course_icon_url,
+                  },
                 };
-
                 setCourses((prev) => [...prev, newCourse]);
-
                 setShowCreate(false);
               }}
             />

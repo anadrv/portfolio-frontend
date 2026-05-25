@@ -12,29 +12,45 @@ function DocumentCard({
   reload,
   onRefresh,
 
+  flag_em_preenchimento,
+  flag_preenchido,
   flag_validacao_coordenacao,
   flag_liberado_customizar,
   flag_disponivel_canva,
   flag_integrado_rm,
+  flag_necessita_revisao,
 }) {
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   function getStatus() {
-    if (flag_validacao_coordenacao) return "Validado pela coordenação";
+    if (flag_necessita_revisao) return "Necessita revisão";
+
     if (flag_integrado_rm) return "Integrado ao RM";
+
     if (flag_disponivel_canva) return "Disponível no Canvas";
+
     if (flag_liberado_customizar) return "Liberado para customizar";
-    return "Não avaliado";
+
+    if (flag_validacao_coordenacao) return "Validado pela coordenação";
+
+    if (flag_preenchido) return "Preenchido";
+
+    if (flag_em_preenchimento) return "Em andamento";
+
+    return "Não preenchido";
   }
 
   const status = getStatus();
 
   const statusColors = {
+    "Necessita revisão": "bg-red-500",
     "Validado pela coordenação": "bg-accent",
-    "Integrado ao RM": "bg-blue-500",
-    "Disponível no Canvas": "bg-purple-500",
-    "Liberado para customizar": "bg-orange-400",
-    "Não avaliado": "bg-gray-400",
+    "Integrado ao RM": "bg-accent",
+    "Disponível no Canvas": "bg-blue-500",
+    "Liberado para customizar": "bg-purple-500",
+    Preenchido: "bg-accent",
+    "Em andamento": "bg-primary",
+    "Não preenchido": "bg-gray-400"
   };
 
   return (
@@ -47,9 +63,7 @@ function DocumentCard({
             className="w-8 h-8 object-contain"
           />
 
-          <h1 className="text-lg font-semibold text-background">
-            {title}
-          </h1>
+          <h1 className="text-lg font-semibold text-background">{title}</h1>
         </div>
 
         <a
@@ -68,16 +82,14 @@ function DocumentCard({
             className={`w-3 h-3 rounded-full ${statusColors[status]}`}
           ></span>
 
-          <h2 className="text-xs font-medium">
-            {status}
-          </h2>
+          <h2 className="text-xs font-medium">{status}</h2>
         </div>
 
         <button
           onClick={() => setIsModalOpen(true)}
           className="text-xs bg-highlight py-1 px-2 rounded font-normal transition-transform duration-300 hover:scale-105 cursor-pointer"
         >
-          Ver ou editar informações
+          Ver ou editar Status e Trimestre
         </button>
       </section>
 
@@ -90,10 +102,15 @@ function DocumentCard({
           icon={whiteIcon}
           matriz={matriz}
           trimestre={trimestre}
+          flag_preenchido={flag_preenchido}
           flag_validacao_coordenacao={flag_validacao_coordenacao}
           flag_liberado_customizar={flag_liberado_customizar}
           flag_disponivel_canva={flag_disponivel_canva}
           flag_integrado_rm={flag_integrado_rm}
+          flag_necessita_revisao={flag_necessita_revisao}
+          flag_em_preenchimento={flag_em_preenchimento}
+          flag_preenchido={flag_preenchido}
+          flag_necessita_revisao={flag_necessita_revisao}
         />
       )}
     </article>

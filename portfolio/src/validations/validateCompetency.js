@@ -1,10 +1,11 @@
-function validateSubject({
+function validateCompetency({
   course,
   trimester,
+  matriz,
+  competencyCode,
   subjectName,
   plannerLink,
   teachingPlanLink,
-  statuses,
 }) {
   const errors = {};
 
@@ -14,6 +15,14 @@ function validateSubject({
 
   if (!trimester) {
     errors.trimester = "Selecione um trimestre";
+  }
+
+  if (!matriz) {
+    errors.matriz = "Selecione uma matriz";
+  }
+
+  if (!competencyCode || competencyCode.trim() === "") {
+    errors.competencyCode = "Informe o código da competência";
   }
 
   if (!subjectName || subjectName.trim() === "") {
@@ -28,9 +37,7 @@ function validateSubject({
     errors.teachingPlanLink = "Informe o link do plano de ensino";
   }
 
-  
-
   return errors;
 }
 
-export default validateSubject;
+export default validateCompetency;
