@@ -34,56 +34,56 @@ function Login() {
   }
 
   async function loginMicrosoft() {
-  try {
-    const response =
-      await instance.loginPopup({
-        scopes: ["User.Read"],
-      });
+    try {
+      const response =
+        await instance.loginPopup({
+          scopes: ["User.Read"],
+        });
 
-    console.log(
-      "Microsoft:",
-      response
-    );
-
-    const backendResponse =
-      await loginMicrosoftService(
-        response.accessToken
+      console.log(
+        "Microsoft:",
+        response
       );
 
-    console.log(
-      "Backend:",
-      backendResponse
-    );
+      const backendResponse =
+        await loginMicrosoftService(
+          response.accessToken
+        );
 
-    login({
-      token: backendResponse.token,
+      console.log(
+        "Backend:",
+        backendResponse
+      );
 
-      user: {
-        name: response.account.name,
-        email: response.account.username,
-      },
-    });
+      login({
+        token: backendResponse.token,
 
-    localStorage.setItem(
-      "token",
-      backendResponse.token
-    );
+        user: {
+          name: response.account.name,
+          email: response.account.username,
+        },
+      });
 
-    alert(
-      "Login Microsoft realizado com sucesso!"
-    );
+      localStorage.setItem(
+        "token",
+        backendResponse.token
+      );
 
-    navigate("/");
+      alert(
+        "Login Microsoft realizado com sucesso!"
+      );
 
-  } catch (error) {
+      navigate("/");
 
-    console.log(error);
+    } catch (error) {
 
-    alert(
-      "Erro ao fazer login com Microsoft"
-    );
+      console.log(error);
+
+      alert(
+        "Erro ao fazer login com Microsoft"
+      );
+    }
   }
-}
 
   function handleSubmit(e) {
     e.preventDefault();
@@ -245,15 +245,15 @@ function Login() {
 
                 <div className="flex flex-col gap-1">
                   <a
-  href="#"
-  onClick={(e) => {
-    e.preventDefault();
-    loginMicrosoft();
-  }}
-  className="text-white text-base md:text-sm ml-20 md:ml-0 md:text-center hover:underline"
->
-  Entrar com Microsoft
-</a>
+                    href="#"
+                    onClick={(e) => {
+                      e.preventDefault();
+                      loginMicrosoft();
+                    }}
+                    className="text-white text-base md:text-sm ml-20 md:ml-0 md:text-center hover:underline"
+                  >
+                    Entrar com Microsoft
+                  </a>
                   <a
                     href="#"
                     className="text-white text-base md:text-sm ml-20 md:ml-0 md:text-center hover:underline"
