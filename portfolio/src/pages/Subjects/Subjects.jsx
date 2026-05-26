@@ -70,23 +70,28 @@ function Subjects() {
     await loadCompetencies(id);
   };
 
-  const groupedSubjects = useMemo(() => {
-    return Object.values(
-      subjects.reduce((acc, item) => {
-        if (!acc[item.id_competency]) {
-          acc[item.id_competency] = {
-            id_competency: item.id_competency,
-            name_competency: item.name_competency,
-            code_competency: item.code_competency,
-            documents: [],
-          };
-        }
+ const groupedSubjects = useMemo(() => {
+  const grouped = Object.values(
+    subjects.reduce((acc, item) => {
+      if (!acc[item.id_competency]) {
+        acc[item.id_competency] = {
+          id_competency: item.id_competency,
+          name_competency: item.name_competency,
+          code_competency: item.code_competency,
+          documents: [],
+        };
+      }
 
-        acc[item.id_competency].documents.push(item);
-        return acc;
-      }, {}),
-    );
-  }, [subjects]);
+      acc[item.id_competency].documents.push(item);
+
+      return acc;
+    }, {}),
+  );
+
+  return grouped.sort((a, b) =>
+    a.code_competency.localeCompare(b.code_competency)
+  );
+}, [subjects]);
 
   const statusRules = {
     "Em andamento": (doc) => doc.flag_em_preenchimento,
