@@ -57,7 +57,7 @@ function Subject({ title, code, documents, reload, onRefresh }) {
         <div className="flex items-center gap-4">
           <div className="flex items-center gap-2">
             {/* editar */}
-            {!canEdit && (
+            {canEdit && (
               <button
                 aria-label={`Editar ${title}`}
                 onClick={() => {

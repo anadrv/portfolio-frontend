@@ -6,8 +6,6 @@ import SearchBar from "./SearchBar";
 
 import logo from "../assets/icons/unifacisa-icon.png";
 
-
-
 function Menu() {
   const [open, setOpen] = useState(false);
   const [profileOpen, setProfileOpen] = useState(false);
@@ -18,48 +16,36 @@ function Menu() {
 
   const user = JSON.parse(localStorage.getItem("user"));
 
-  const isProfessor = user?.role === "PROFESSOR";
+  const isProfessor = user?.role === "TEACHER";
 
   useEffect(() => {
     function handleClickOutside(event) {
-      if (
-        profileRef.current &&
-        !profileRef.current.contains(event.target)
-      ) {
+      if (profileRef.current && !profileRef.current.contains(event.target)) {
         setProfileOpen(false);
       }
     }
 
-    document.addEventListener(
-      "mousedown",
-      handleClickOutside
-    );
+    document.addEventListener("mousedown", handleClickOutside);
 
     return () => {
-      document.removeEventListener(
-        "mousedown",
-        handleClickOutside
-      );
+      document.removeEventListener("mousedown", handleClickOutside);
     };
   }, []);
 
-function handleLogout() {
-  localStorage.removeItem("token");
-  localStorage.removeItem("user");
+  function handleLogout() {
+    localStorage.removeItem("token");
+    localStorage.removeItem("user");
 
-  sessionStorage.clear();
+    sessionStorage.clear();
 
-  window.location.href = "/login";
-}
+    window.location.href = "/login";
+  }
   return (
     <header className="bg-primary text-white rounded-lg relative">
       <nav className="w-full px-8 py-5 flex items-center justify-between">
         {/* Logo */}
         <h1 className="text-lg font-bold">
-          <NavLink
-            to="/"
-            className="flex items-center gap-2"
-          >
+          <NavLink to="/" className="flex items-center gap-2">
             <img
               src={logo}
               alt="Logo do site"
@@ -84,20 +70,13 @@ function handleLogout() {
 
           {!isProfessor && (
             <li>
-              <NavLink to="/notifications">
-                Notificações
-              </NavLink>
+              <NavLink to="/notifications">Notificações</NavLink>
             </li>
           )}
 
-          <li
-            className="relative"
-            ref={profileRef}
-          >
+          <li className="relative" ref={profileRef}>
             <button
-              onClick={() =>
-                setProfileOpen(!profileOpen)
-              }
+              onClick={() => setProfileOpen(!profileOpen)}
               className="p-2 rounded-full hover:bg-white/20 transition flex items-center cursor-pointer"
             >
               <User size={24} />
@@ -106,9 +85,7 @@ function handleLogout() {
             {profileOpen && (
               <div className="absolute -right-8 top-16 w-56 rounded-lg bg-white p-1 shadow-lg text-background z-20">
                 <div className="p-2 border-b border-primary mb-2">
-                  <p className="text-sm">
-                    Olá, {user?.name || "Usuário"}!
-                  </p>
+                  <p className="text-sm">Olá, {user?.name || "Usuário"}!</p>
                 </div>
 
                 <button
