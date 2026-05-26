@@ -118,12 +118,8 @@ localStorage.setItem("user", JSON.stringify(userData));
     navigate("/");
   }
 
-<<<<<<< Updated upstream
    return (
 
-=======
-  return (
->>>>>>> Stashed changes
     <div className="relative min-h-screen w-full bg-sky-200 overflow-x-hidden">
 
       <img
