@@ -1,11 +1,8 @@
 const API_URL = "http://localhost:3000";
 
 // Login Microsoft
-export async function loginMicrosoft(
-  microsoftToken
-) {
+export async function loginMicrosoft(data) {
   try {
-
     const response = await fetch(
       `${API_URL}/auth/login`,
       {
@@ -13,8 +10,9 @@ export async function loginMicrosoft(
 
         headers: {
           "Content-Type": "application/json",
-          Authorization: `Bearer ${microsoftToken}`,
         },
+
+        body: JSON.stringify(data),
       }
     );
 

@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { ChevronDown, Pencil } from "lucide-react";
-import { hasRole } from "../utils/permissions";
+import { hasPermission } from "../utils/permissions";
 
 import DocumentCard from "./DocumentCard";
 import CompetencyModal from "./CompetencyModal";
@@ -15,7 +15,12 @@ function Subject({ title, code, documents, reload, onRefresh }) {
   const [open, setOpen] = useState(false);
   const [openEdit, setOpenEdit] = useState(false);
   const [editingDoc, setEditingDoc] = useState(null);
-  const isProfessor = hasRole("PROFESSOR");
+
+  const canEdit = hasPermission("CRIAR_COMPETENCIA");
+
+  console.log("USER:", JSON.parse(localStorage.getItem("user")));
+  console.log("permissions:", JSON.parse(localStorage.getItem("user"))?.permissions);
+  console.log("canEdit:", canEdit);
 
   function getDocumentIcon(type) {
     if (type === "PLANNER") {
@@ -52,7 +57,7 @@ function Subject({ title, code, documents, reload, onRefresh }) {
         <div className="flex items-center gap-4">
           <div className="flex items-center gap-2">
             {/* editar */}
-            {!isProfessor && (
+            {!canEdit && (
               <button
                 aria-label={`Editar ${title}`}
                 onClick={() => {

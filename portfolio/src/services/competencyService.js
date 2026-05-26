@@ -1,13 +1,20 @@
 const API_URL = "http://localhost:3000";
 
+function getAuthHeaders() {
+  const token = localStorage.getItem("token");
+
+  return {
+    "Content-Type": "application/json",
+    Authorization: `Bearer ${token}`,
+  };
+}
+
 export async function getCompetenciesByCourse(courseId) {
   try {
     const response = await fetch(
       `${API_URL}/competency/course/${courseId}`,
       {
-        headers: {
-          "Content-Type": "application/json",
-        },
+        headers: getAuthHeaders(),
       }
     );
 
@@ -16,7 +23,9 @@ export async function getCompetenciesByCourse(courseId) {
     }
 
     return await response.json();
+
   } catch (error) {
+
     console.error(
       "Erro ao buscar competências:",
       error
@@ -32,13 +41,14 @@ export async function updateTrimestre(
   trimestre
 ) {
   try {
+
     const response = await fetch(
       `${API_URL}/academic-documents/${documentId}/trimestre`,
       {
         method: "PATCH",
-        headers: {
-          "Content-Type": "application/json",
-        },
+
+        headers: getAuthHeaders(),
+
         body: JSON.stringify({
           trimestre,
         }),
@@ -50,7 +60,9 @@ export async function updateTrimestre(
     }
 
     return await response.json();
+
   } catch (error) {
+
     console.error(
       "Erro ao atualizar trimestre:",
       error
@@ -66,13 +78,14 @@ export async function updateFlagCoordenacao(
   status
 ) {
   try {
+
     const response = await fetch(
       `${API_URL}/academic-documents/${documentId}/flag/coordenacao`,
       {
         method: "PATCH",
-        headers: {
-          "Content-Type": "application/json",
-        },
+
+        headers: getAuthHeaders(),
+
         body: JSON.stringify({
           status,
         }),
@@ -84,7 +97,9 @@ export async function updateFlagCoordenacao(
     }
 
     return await response.json();
+
   } catch (error) {
+
     console.error(
       "Erro ao atualizar coordenação:",
       error
@@ -100,13 +115,14 @@ export async function updateFlagCustomizar(
   status
 ) {
   try {
+
     const response = await fetch(
       `${API_URL}/academic-documents/${documentId}/flag/customizar`,
       {
         method: "PATCH",
-        headers: {
-          "Content-Type": "application/json",
-        },
+
+        headers: getAuthHeaders(),
+
         body: JSON.stringify({
           status,
         }),
@@ -118,7 +134,9 @@ export async function updateFlagCustomizar(
     }
 
     return await response.json();
+
   } catch (error) {
+
     console.error(
       "Erro ao atualizar customização:",
       error
@@ -134,13 +152,14 @@ export async function updateFlagCanvas(
   status
 ) {
   try {
+
     const response = await fetch(
       `${API_URL}/academic-documents/${documentId}/flag/canvas`,
       {
         method: "PATCH",
-        headers: {
-          "Content-Type": "application/json",
-        },
+
+        headers: getAuthHeaders(),
+
         body: JSON.stringify({
           status,
         }),
@@ -152,7 +171,9 @@ export async function updateFlagCanvas(
     }
 
     return await response.json();
+
   } catch (error) {
+
     console.error(
       "Erro ao atualizar canvas:",
       error
@@ -168,13 +189,14 @@ export async function updateFlagGestao(
   status
 ) {
   try {
+
     const response = await fetch(
       `${API_URL}/academic-documents/${documentId}/flag/gestao`,
       {
         method: "PATCH",
-        headers: {
-          "Content-Type": "application/json",
-        },
+
+        headers: getAuthHeaders(),
+
         body: JSON.stringify({
           status,
         }),
@@ -186,7 +208,9 @@ export async function updateFlagGestao(
     }
 
     return await response.json();
+
   } catch (error) {
+
     console.error(
       "Erro ao atualizar integração RM:",
       error
@@ -197,24 +221,27 @@ export async function updateFlagGestao(
 }
 
 export async function createCompetency(data) {
-  const response = await fetch(`${API_URL}/academic-documents`, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
 
-    body: JSON.stringify({
-      name_competency: data.name_competency,
-      course_id: data.course_id,
-      code_competency: data.code_competency,
+  const response = await fetch(
+    `${API_URL}/academic-documents`,
+    {
+      method: "POST",
 
-      planner_link: data.planner_link,
-      teaching_plan_link: data.teaching_plan_link,
+      headers: getAuthHeaders(),
 
-      trimestre: data.trimestre,
-      matriz_competency: data.matriz_competency,
-    }),
-  });
+      body: JSON.stringify({
+        name_competency: data.name_competency,
+        course_id: data.course_id,
+        code_competency: data.code_competency,
+
+        planner_link: data.planner_link,
+        teaching_plan_link: data.teaching_plan_link,
+
+        trimestre: data.trimestre,
+        matriz_competency: data.matriz_competency,
+      }),
+    }
+  );
 
   if (!response.ok) {
     throw new Error("Erro ao criar competência");
@@ -223,80 +250,19 @@ export async function createCompetency(data) {
   return response.json();
 }
 
-export async function updateCompetencyCore(data) {
-  const response = await fetch(
-    `${API_URL}/academic-documents/${data.id_competency}`,
-    {
-      method: "PATCH",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        name_competency: data.name_competency,
-        code_competency: data.code_competency,
-      }),
-    }
-  );
-
-  if (!response.ok) throw new Error(`Erro HTTP: ${response.status}`);
-
-  return response.json();
-}
-
-export async function updateCompetencyDocuments(data) {
-  const response = await fetch(
-    `${API_URL}/academic-documents/${data.id_competency}/documents`,
-    {
-      method: "PATCH",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        planner_link: data.planner_link,
-        teaching_plan_link: data.teaching_plan_link,
-        trimestre: data.trimestre,
-      }),
-    }
-  );
-
-  if (!response.ok) throw new Error(`Erro HTTP: ${response.status}`);
-
-  return response.json();
-}
-
-
-export async function updateDriveLink(documentId, link) {
-  const response = await fetch(
-    `${API_URL}/academic-documents/${documentId}/drive-link`,
-    {
-      method: "PATCH",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ link }),
-    }
-  );
-
-  if (!response.ok) {
-    throw new Error(`Erro HTTP: ${response.status}`);
-  }
-
-  return response.json();
-}
-
-
 export async function updateFlagPreenchido(
   documentId,
   status
 ) {
   try {
+
     const response = await fetch(
       `${API_URL}/academic-documents/${documentId}/flag/preenchido`,
       {
         method: "PATCH",
-        headers: {
-          "Content-Type": "application/json",
-        },
+
+        headers: getAuthHeaders(),
+
         body: JSON.stringify({
           status,
         }),
@@ -308,7 +274,9 @@ export async function updateFlagPreenchido(
     }
 
     return await response.json();
+
   } catch (error) {
+
     console.error(
       "Erro ao atualizar preenchimento:",
       error
@@ -318,20 +286,20 @@ export async function updateFlagPreenchido(
   }
 }
 
-
 // Flag necessita revisão
 export async function updateFlagNecessitaRevisao(
   documentId,
   status
 ) {
   try {
+
     const response = await fetch(
       `${API_URL}/academic-documents/${documentId}/flag/necessita-revisao`,
       {
         method: "PATCH",
-        headers: {
-          "Content-Type": "application/json",
-        },
+
+        headers: getAuthHeaders(),
+
         body: JSON.stringify({
           status,
         }),
@@ -365,9 +333,9 @@ export async function updateFlagEmPreenchimento(
       `${API_URL}/academic-documents/${documentId}/flag/em-preenchimento`,
       {
         method: "PATCH",
-        headers: {
-          "Content-Type": "application/json",
-        },
+
+        headers: getAuthHeaders(),
+
         body: JSON.stringify({
           status,
         }),
@@ -389,4 +357,73 @@ export async function updateFlagEmPreenchimento(
 
     throw error;
   }
+}
+
+export async function updateCompetencyCore(data) {
+
+  const response = await fetch(
+    `${API_URL}/academic-documents/${data.id_competency}`,
+    {
+      method: "PATCH",
+
+      headers: getAuthHeaders(),
+
+      body: JSON.stringify({
+        name_competency: data.name_competency,
+        code_competency: data.code_competency,
+      }),
+    }
+  );
+
+  if (!response.ok) {
+    throw new Error(`Erro HTTP: ${response.status}`);
+  }
+
+  return response.json();
+}
+
+export async function updateCompetencyDocuments(data) {
+
+  const response = await fetch(
+    `${API_URL}/academic-documents/${data.id_competency}/documents`,
+    {
+      method: "PATCH",
+
+      headers: getAuthHeaders(),
+
+      body: JSON.stringify({
+        planner_link: data.planner_link,
+        teaching_plan_link: data.teaching_plan_link,
+        trimestre: data.trimestre,
+      }),
+    }
+  );
+
+  if (!response.ok) {
+    throw new Error(`Erro HTTP: ${response.status}`);
+  }
+
+  return response.json();
+}
+
+export async function updateDriveLink(documentId, link) {
+
+  const response = await fetch(
+    `${API_URL}/academic-documents/${documentId}/drive-link`,
+    {
+      method: "PATCH",
+
+      headers: getAuthHeaders(),
+
+      body: JSON.stringify({
+        link,
+      }),
+    }
+  );
+
+  if (!response.ok) {
+    throw new Error(`Erro HTTP: ${response.status}`);
+  }
+
+  return response.json();
 }

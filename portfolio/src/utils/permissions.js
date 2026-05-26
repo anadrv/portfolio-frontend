@@ -10,8 +10,9 @@ export function hasPermission(permission) {
   return user.permissions.includes(permission);
 }
 
-export function hasRole(role) {
+export function hasRole(roleName) {
   const user = getUser();
 
-  return user?.role === role;
+  return user?.role === roleName;
 }
+

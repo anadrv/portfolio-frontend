@@ -1,10 +1,12 @@
 import {
   loginMicrosoft as loginMicrosoftService
 } from "../../services/userService";
-import { useState, useContext } from "react";
+
+import { useState, useContext, useEffect } from "react";
 import { AuthContext } from "../../context/AuthContext";
 import { useNavigate } from "react-router-dom";
 import { useMsal } from "@azure/msal-react";
+
 import bgImage from "../../assets/images/bg-image.png";
 import unifacisa from "../../assets/images/name-image.png";
 import logo from "../../assets/icons/unifacisa-icon.png";
@@ -24,6 +26,57 @@ function Login() {
 
   const { instance } = useMsal();
 
+  useEffect(() => {
+    async function handleRedirect() {
+      try {
+        const response = await instance.handleRedirectPromise();
+
+        if (response) {
+          const account = response.account;
+
+          instance.setActiveAccount(account);
+
+          const accessToken = response.accessToken;
+
+          console.log("ACCOUNT:", account);
+console.log("CLAIMS:", account.idTokenClaims);
+
+console.log({
+  microsoft_id: account.localAccountId,
+  name_users: account.name,
+  email_users:
+    account.idTokenClaims?.email ||
+    account.idTokenClaims?.preferred_username,
+});
+
+          const backendResponse = await loginMicrosoftService({
+  microsoft_id: account.localAccountId,
+  name_users: account.name,
+  email_users:
+    account.idTokenClaims?.email ||
+    account.idTokenClaims?.preferred_username,
+});
+
+const userData = backendResponse.user;
+
+login({
+  token: backendResponse.token,
+  user: userData,
+});
+
+localStorage.setItem("token", backendResponse.token);
+localStorage.setItem("user", JSON.stringify(userData));
+
+          navigate("/");
+        }
+      } catch (error) {
+        console.log(error);
+      }
+    }
+
+    handleRedirect();
+  }, []);
+
   function handleChange(e) {
     const { name, value } = e.target;
 
@@ -32,36 +85,17 @@ function Login() {
       [name]: value,
     }));
   }
-async function loginMicrosoft() {
-  try {
-    const response = await instance.loginPopup({
-  scopes: ["User.Read"],
-});
 
-const account = response.account;
-
-instance.setActiveAccount(account);
-
-const accessToken = response.accessToken;
-
-const backendResponse = await loginMicrosoftService(accessToken);
-
-login({
-  token: backendResponse.token,
-  user: {
-    name: account.name,
-    email: account.username,
-  },
-});
-
-localStorage.setItem("token", backendResponse.token);
-
-window.location.replace("/");
-  } catch (error) {
-    console.log(error);
-    alert("Erro ao fazer login com Microsoft");
+  async function loginMicrosoft() {
+    try {
+      await instance.loginRedirect({
+        scopes: ["User.Read"],
+      });
+    } catch (error) {
+      console.log(error);
+      alert("Erro ao fazer login com Microsoft");
+    }
   }
-}
 
   function handleSubmit(e) {
     e.preventDefault();
@@ -84,8 +118,12 @@ window.location.replace("/");
     navigate("/");
   }
 
+<<<<<<< Updated upstream
    return (
 
+=======
+  return (
+>>>>>>> Stashed changes
     <div className="relative min-h-screen w-full bg-sky-200 overflow-x-hidden">
 
       <img

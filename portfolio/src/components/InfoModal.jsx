@@ -38,7 +38,7 @@ function InfoModal({
 
   reload,
 }) {
-  const isProfessor = hasRole("PROFESSOR");
+  const isProfessor = hasRole("TEACHER");
 
   const [isEditing, setIsEditing] = useState(false);
 
@@ -241,7 +241,7 @@ function InfoModal({
             >
               <Pencil size={16} />
 
-              {hasRole("PROFESSOR") ? "Editar status" : "Editar informações"}
+              {hasRole("TEACHER") ? "Editar status" : "Editar informações"}
             </button>
           )}
         </footer>
