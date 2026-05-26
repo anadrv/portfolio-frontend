@@ -84,7 +84,7 @@ window.location.replace("/");
     navigate("/");
   }
 
-  return (
+   return (
 
     <div className="relative min-h-screen w-full bg-sky-200 overflow-x-hidden">
 
@@ -133,7 +133,7 @@ window.location.replace("/");
 
             <div className="w-full md:w-1/2 flex flex-col justify-center">
 
-              <div className="md:hidden flex justify-center items-center gap-2 mb-10">
+              <div className="md:hidden flex justify-center items-center gap-2 mb-10 mt-5">
 
                 <img
                   src={logo}
@@ -152,17 +152,17 @@ window.location.replace("/");
               </h1>
 
               <form
-                className="w-full flex flex-col gap-4 md:gap-3 mt-10 md:mt-0"
+                className="w-full flex flex-col gap-4 md:gap-3 mt-13 md:mt-0"
                 onSubmit={handleSubmit}
               >
 
-                <div>
+                <div className="max-w-[340px] mx-auto md:max-w-none md:mx-0 w-full">
 
                   <label className="block text-base md:text-sm text-white mb-2">
                     E-mail:
                   </label>
 
-                  <div className="relative max-w-[340px] md:max-w-none mx-auto md:mx-0">
+                  <div className="relative">
 
                     <div className="absolute left-0 top-0 h-full w-3 bg-primary rounded-l-lg"></div>
 
@@ -177,13 +177,13 @@ window.location.replace("/");
                   </div>
                 </div>
 
-                <div>
+                <div className="max-w-[340px] mx-auto md:max-w-none md:mx-0 w-full">
 
                   <label className="block text-base md:text-sm text-white mb-2">
                     Senha:
                   </label>
 
-                  <div className="relative max-w-[340px] md:max-w-none mx-auto md:mx-0">
+                  <div className="relative">
 
                     <div className="absolute left-0 top-0 h-full w-3 bg-primary rounded-l-lg"></div>
 
@@ -217,10 +217,11 @@ window.location.replace("/");
 
                 <button
                   type="submit"
-                  className="w-full max-w-[340px] md:w-85 mx-auto md:mx-0 bg-accent text-background text-xl md:text-base font-semibold py-2 rounded-lg mt-1"
+                  className="w-full max-w-[340px] md:w-85 mx-auto md:mx-0 bg-accent text-background text-lg md:text-base font-semibold py-2 rounded-lg mt-1"
                 >
                   Login
                 </button>
+
                 <div className="flex flex-col gap-1 text-center">
 
                   <a
@@ -242,6 +243,7 @@ window.location.replace("/");
                   </a>
 
                 </div>
+
               </form>
             </div>
           </div>
