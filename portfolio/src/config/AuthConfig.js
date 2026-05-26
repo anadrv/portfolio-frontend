@@ -1,8 +1,12 @@
+console.log("CLIENT ID:", import.meta.env.VITE_CLIENT_ID);
+console.log("TENANT ID:", import.meta.env.VITE_TENANT_ID);
+console.log("REDIRECT:", import.meta.env.VITE_REDIRECT_URI);
+
 export const msalConfig = {
   auth: {
-    clientId: "329dddde-cbb3-42c2-aba0-cccbaf4c48fd",
-    authority:
-      "https://login.microsoftonline.com/f8643258-ffd3-409e-8eed-0cd461ec638b",
-    redirectUri: "http://localhost:5173",
+    clientId: import.meta.env.VITE_CLIENT_ID,
+    authority: `https://login.microsoftonline.com/${import.meta.env.VITE_TENANT_ID}`,
+    redirectUri: import.meta.env.VITE_REDIRECT_URI,
+    navigateToLoginRequestUrl: false,
   },
 };

@@ -32,58 +32,36 @@ function Login() {
       [name]: value,
     }));
   }
+async function loginMicrosoft() {
+  try {
+    const response = await instance.loginPopup({
+  scopes: ["User.Read"],
+});
 
-  async function loginMicrosoft() {
-    try {
-      const response =
-        await instance.loginPopup({
-          scopes: ["User.Read"],
-        });
+const account = response.account;
 
-      console.log(
-        "Microsoft:",
-        response
-      );
+instance.setActiveAccount(account);
 
-      const backendResponse =
-        await loginMicrosoftService(
-          response.accessToken
-        );
+const accessToken = response.accessToken;
 
-      console.log(
-        "Backend:",
-        backendResponse
-      );
+const backendResponse = await loginMicrosoftService(accessToken);
 
-      login({
-        token: backendResponse.token,
+login({
+  token: backendResponse.token,
+  user: {
+    name: account.name,
+    email: account.username,
+  },
+});
 
-        user: {
-          name: response.account.name,
-          email: response.account.username,
-        },
-      });
+localStorage.setItem("token", backendResponse.token);
 
-      localStorage.setItem(
-        "token",
-        backendResponse.token
-      );
-
-      alert(
-        "Login Microsoft realizado com sucesso!"
-      );
-
-      navigate("/");
-
-    } catch (error) {
-
-      console.log(error);
-
-      alert(
-        "Erro ao fazer login com Microsoft"
-      );
-    }
+window.location.replace("/");
+  } catch (error) {
+    console.log(error);
+    alert("Erro ao fazer login com Microsoft");
   }
+}
 
   function handleSubmit(e) {
     e.preventDefault();
