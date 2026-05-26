@@ -1,6 +1,4 @@
-import {
-  loginMicrosoft as loginMicrosoftService
-} from "../../services/userService";
+import { loginMicrosoft as loginMicrosoftService } from "../../services/userService";
 
 import { useState, useContext, useEffect } from "react";
 import { AuthContext } from "../../context/AuthContext";
@@ -39,33 +37,33 @@ function Login() {
           const accessToken = response.accessToken;
 
           console.log("ACCOUNT:", account);
-console.log("CLAIMS:", account.idTokenClaims);
+          console.log("CLAIMS:", account.idTokenClaims);
 
-console.log({
-  microsoft_id: account.localAccountId,
-  name_users: account.name,
-  email_users:
-    account.idTokenClaims?.email ||
-    account.idTokenClaims?.preferred_username,
-});
+          console.log({
+            microsoft_id: account.localAccountId,
+            name_users: account.name,
+            email_users:
+              account.idTokenClaims?.email ||
+              account.idTokenClaims?.preferred_username,
+          });
 
           const backendResponse = await loginMicrosoftService({
-  microsoft_id: account.localAccountId,
-  name_users: account.name,
-  email_users:
-    account.idTokenClaims?.email ||
-    account.idTokenClaims?.preferred_username,
-});
+            microsoft_id: account.localAccountId,
+            name_users: account.name,
+            email_users:
+              account.idTokenClaims?.email ||
+              account.idTokenClaims?.preferred_username,
+          });
 
-const userData = backendResponse.user;
+          const userData = backendResponse.user;
 
-login({
-  token: backendResponse.token,
-  user: userData,
-});
+          login({
+            token: backendResponse.token,
+            user: userData,
+          });
 
-localStorage.setItem("token", backendResponse.token);
-localStorage.setItem("user", JSON.stringify(userData));
+          localStorage.setItem("token", backendResponse.token);
+          localStorage.setItem("user", JSON.stringify(userData));
 
           navigate("/");
         }
@@ -118,10 +116,8 @@ localStorage.setItem("user", JSON.stringify(userData));
     navigate("/");
   }
 
-   return (
-
+  return (
     <div className="relative min-h-screen w-full bg-sky-200 overflow-x-hidden">
-
       <img
         src={bgImage}
         alt="background"
@@ -129,7 +125,6 @@ localStorage.setItem("user", JSON.stringify(userData));
       />
 
       <div className="relative z-10">
-
         <img
           src={unifacisa}
           alt="Unifacisa"
@@ -137,48 +132,24 @@ localStorage.setItem("user", JSON.stringify(userData));
         />
 
         <div className="min-h-screen flex items-center justify-center px-0 md:px-6">
-
           <div className="bg-background w-full max-w-3xl mx-auto rounded-none md:rounded-3xl shadow-2xl p-6 md:p-12 flex flex-col md:flex-row min-h-screen md:min-h-0 md:mt-5">
-
             <div className="hidden md:flex w-1/2 items-center justify-center relative">
+              <img src={border} alt="" className="w-52 absolute left-12" />
 
-              <img
-                src={border}
-                alt=""
-                className="w-52 absolute left-12"
-              />
-
-              <img
-                src={bo}
-                alt=""
-                className="w-45 absolute right-8"
-              />
+              <img src={bo} alt="" className="w-45 absolute right-8" />
 
               <div className="bg-sky-200 border-3 border-slate-400 rounded-md w-70 h-80 flex items-center justify-center absolute z-20 right-13">
-
-                <img
-                  src={jack}
-                  alt="Jack"
-                  className="w-56 mt-15"
-                />
-
+                <img src={jack} alt="Jack" className="w-56 mt-15" />
               </div>
             </div>
 
             <div className="w-full md:w-1/2 flex flex-col justify-center">
-
               <div className="md:hidden flex justify-center items-center gap-2 mb-10 mt-5">
-
-                <img
-                  src={logo}
-                  alt="Unifacisa"
-                  className="w-8"
-                />
+                <img src={logo} alt="Unifacisa" className="w-8" />
 
                 <span className="font-semibold text-2xl text-white font-sans">
                   Unifacisa
                 </span>
-
               </div>
 
               <h1 className="hidden md:block text-4xl font-bold text-white mb-4">
@@ -189,15 +160,12 @@ localStorage.setItem("user", JSON.stringify(userData));
                 className="w-full flex flex-col gap-4 md:gap-3 mt-13 md:mt-0"
                 onSubmit={handleSubmit}
               >
-
                 <div className="max-w-[340px] mx-auto md:max-w-none md:mx-0 w-full">
-
                   <label className="block text-base md:text-sm text-white mb-2">
                     E-mail:
                   </label>
 
                   <div className="relative">
-
                     <div className="absolute left-0 top-0 h-full w-3 bg-primary rounded-l-lg"></div>
 
                     <input
@@ -207,18 +175,15 @@ localStorage.setItem("user", JSON.stringify(userData));
                       onChange={handleChange}
                       className="w-full md:w-85 py-2 pl-5 pr-3 rounded-lg border border-gray-300 outline-none bg-white text-xl md:text-sm md:placeholder-transparent"
                     />
-
                   </div>
                 </div>
 
                 <div className="max-w-[340px] mx-auto md:max-w-none md:mx-0 w-full">
-
                   <label className="block text-base md:text-sm text-white mb-2">
                     Senha:
                   </label>
 
                   <div className="relative">
-
                     <div className="absolute left-0 top-0 h-full w-3 bg-primary rounded-l-lg"></div>
 
                     <input
@@ -228,12 +193,10 @@ localStorage.setItem("user", JSON.stringify(userData));
                       onChange={handleChange}
                       className="w-full md:w-85 py-2 pl-5 pr-3 rounded-lg border border-gray-300 outline-none bg-white text-xl md:text-sm md:placeholder-transparent"
                     />
-
                   </div>
                 </div>
 
                 <div className="flex items-center gap-2 mt-1 max-w-[340px] mx-auto md:mx-0 w-full">
-
                   <input
                     type="checkbox"
                     id="remember"
@@ -246,7 +209,6 @@ localStorage.setItem("user", JSON.stringify(userData));
                   >
                     Continuar conectado(a)
                   </label>
-
                 </div>
 
                 <button
@@ -257,7 +219,6 @@ localStorage.setItem("user", JSON.stringify(userData));
                 </button>
 
                 <div className="flex flex-col gap-1 text-center">
-
                   <a
                     href="#"
                     onClick={(e) => {
@@ -275,9 +236,7 @@ localStorage.setItem("user", JSON.stringify(userData));
                   >
                     Esqueceu a senha?
                   </a>
-
                 </div>
-
               </form>
             </div>
           </div>
