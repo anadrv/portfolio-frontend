@@ -1,8 +1,12 @@
 import { useEffect, useRef, useState } from "react";
 import { NavLink, useNavigate } from "react-router-dom";
 import { User, X } from "lucide-react";
+
 import SearchBar from "./SearchBar";
+
 import logo from "../assets/icons/unifacisa-icon.png";
+
+
 
 function Menu() {
   const [open, setOpen] = useState(false);
@@ -18,36 +22,50 @@ function Menu() {
 
   useEffect(() => {
     function handleClickOutside(event) {
-      if (profileRef.current && !profileRef.current.contains(event.target)) {
+      if (
+        profileRef.current &&
+        !profileRef.current.contains(event.target)
+      ) {
         setProfileOpen(false);
       }
     }
 
-    document.addEventListener("mousedown", handleClickOutside);
+    document.addEventListener(
+      "mousedown",
+      handleClickOutside
+    );
 
     return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
+      document.removeEventListener(
+        "mousedown",
+        handleClickOutside
+      );
     };
   }, []);
 
-  function handleLogout() {
-    localStorage.removeItem("token");
-    localStorage.removeItem("user");
+function handleLogout() {
+  localStorage.removeItem("token");
+  localStorage.removeItem("user");
 
-    navigate("/login");
-  }
+  sessionStorage.clear();
 
+  window.location.href = "/login";
+}
   return (
     <header className="bg-primary text-white rounded-lg relative">
       <nav className="w-full px-8 py-5 flex items-center justify-between">
         {/* Logo */}
         <h1 className="text-lg font-bold">
-          <NavLink to="/" className="flex items-center gap-2">
+          <NavLink
+            to="/"
+            className="flex items-center gap-2"
+          >
             <img
               src={logo}
               alt="Logo do site"
               className="w-8 h-8 object-contain"
             />
+
             <span className="hidden font-semibold text-xl font-sans md:hidden lg:block">
               Unifacisa
             </span>
@@ -66,13 +84,20 @@ function Menu() {
 
           {!isProfessor && (
             <li>
-              <NavLink to="/notifications">Notificações</NavLink>
+              <NavLink to="/notifications">
+                Notificações
+              </NavLink>
             </li>
           )}
 
-          <li className="relative" ref={profileRef}>
+          <li
+            className="relative"
+            ref={profileRef}
+          >
             <button
-              onClick={() => setProfileOpen(!profileOpen)}
+              onClick={() =>
+                setProfileOpen(!profileOpen)
+              }
               className="p-2 rounded-full hover:bg-white/20 transition flex items-center cursor-pointer"
             >
               <User size={24} />
@@ -81,7 +106,9 @@ function Menu() {
             {profileOpen && (
               <div className="absolute -right-8 top-16 w-56 rounded-lg bg-white p-1 shadow-lg text-background z-20">
                 <div className="p-2 border-b border-primary mb-2">
-                  <p className="text-sm">Olá, Jungsu!</p>
+                  <p className="text-sm">
+                    Olá, {user?.name || "Usuário"}!
+                  </p>
                 </div>
 
                 <button
@@ -146,6 +173,15 @@ function Menu() {
               >
                 Conta
               </NavLink>
+            </li>
+
+            <li>
+              <button
+                onClick={handleLogout}
+                className="w-full text-left p-2 rounded hover:bg-white/20 transition cursor-pointer"
+              >
+                Sair
+              </button>
             </li>
           </ul>
         </div>

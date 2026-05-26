@@ -27,6 +27,19 @@ function Login() {
   useEffect(() => {
     async function handleRedirect() {
       try {
+        const localToken = localStorage.getItem("token");
+
+        if (localToken) {
+          navigate("/");
+          return;
+        }
+
+        const accounts = instance.getAllAccounts();
+
+        if (accounts.length > 0) {
+          instance.setActiveAccount(null);
+        }
+
         const response = await instance.handleRedirectPromise();
 
         if (response) {
@@ -34,22 +47,11 @@ function Login() {
 
           instance.setActiveAccount(account);
 
-          const accessToken = response.accessToken;
-
-          console.log("ACCOUNT:", account);
-          console.log("CLAIMS:", account.idTokenClaims);
-
-          console.log({
-            microsoft_id: account.localAccountId,
-            name_users: account.name,
-            email_users:
-              account.idTokenClaims?.email ||
-              account.idTokenClaims?.preferred_username,
-          });
-
           const backendResponse = await loginMicrosoftService({
             microsoft_id: account.localAccountId,
+
             name_users: account.name,
+
             email_users:
               account.idTokenClaims?.email ||
               account.idTokenClaims?.preferred_username,
@@ -88,6 +90,7 @@ function Login() {
     try {
       await instance.loginRedirect({
         scopes: ["User.Read"],
+        prompt: "select_account",
       });
     } catch (error) {
       console.log(error);
