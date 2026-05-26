@@ -45,13 +45,15 @@ function InfoModal({
   const [selectedTrimestre, setSelectedTrimestre] = useState("");
   const [statuses, setStatuses] = useState({});
 
+  const [initialStatuses, setInitialStatuses] = useState({});
+
   const [errors, setErrors] = useState({});
   const [successMessage, setSuccessMessage] = useState("");
 
   useEffect(() => {
     setSelectedTrimestre(trimestre || "");
 
-    setStatuses({
+    const currentStatuses = {
       em_preenchimento: !!flag_em_preenchimento,
       preenchido: !!flag_preenchido,
       revisao: !!flag_necessita_revisao,
@@ -59,7 +61,12 @@ function InfoModal({
       customizar: !!flag_liberado_customizar,
       canvas: !!flag_disponivel_canva,
       integracao: !!flag_integrado_rm,
-    });
+    };
+
+    setStatuses(currentStatuses);
+
+    setInitialStatuses(currentStatuses);
+
   }, [
     trimestre,
     flag_em_preenchimento,
@@ -74,76 +81,148 @@ function InfoModal({
 
   async function handleSave() {
     try {
-      await updateTrimestre(id_academicD, selectedTrimestre);
 
-      await updateFlagEmPreenchimento(id_academicD, statuses.em_preenchimento);
+      await updateTrimestre(
+        id_academicD,
+        selectedTrimestre
+      );
 
-      await updateFlagPreenchido(id_academicD, statuses.preenchido);
+      if (
+        statuses.em_preenchimento !==
+        initialStatuses.em_preenchimento
+      ) {
+        await updateFlagEmPreenchimento(
+          id_academicD,
+          statuses.em_preenchimento
+        );
+      }
 
-      await updateFlagNecessitaRevisao(id_academicD, statuses.revisao);
+      if (
+        statuses.preenchido !==
+        initialStatuses.preenchido
+      ) {
+        await updateFlagPreenchido(
+          id_academicD,
+          statuses.preenchido
+        );
+      }
 
-      await updateFlagCoordenacao(id_academicD, statuses.validado);
+      if (
+        statuses.revisao !==
+        initialStatuses.revisao
+      ) {
+        await updateFlagNecessitaRevisao(
+          id_academicD,
+          statuses.revisao
+        );
+      }
 
-      await updateFlagCustomizar(id_academicD, statuses.customizar);
+      if (
+        statuses.validado !==
+        initialStatuses.validado
+      ) {
+        await updateFlagCoordenacao(
+          id_academicD,
+          statuses.validado
+        );
+      }
 
-      await updateFlagCanvas(id_academicD, statuses.canvas);
+      if (
+        statuses.customizar !==
+        initialStatuses.customizar
+      ) {
+        await updateFlagCustomizar(
+          id_academicD,
+          statuses.customizar
+        );
+      }
 
-      await updateFlagGestao(id_academicD, statuses.integracao);
+      if (
+        statuses.canvas !==
+        initialStatuses.canvas
+      ) {
+        await updateFlagCanvas(
+          id_academicD,
+          statuses.canvas
+        );
+      }
+
+      if (
+        statuses.integracao !==
+        initialStatuses.integracao
+      ) {
+        await updateFlagGestao(
+          id_academicD,
+          statuses.integracao
+        );
+      }
 
       setIsEditing(false);
+
       setErrors({});
 
-      showFeedback(setSuccessMessage, "Dados atualizados com sucesso!");
+      showFeedback(
+        setSuccessMessage,
+        "Dados atualizados com sucesso!"
+      );
 
       setTimeout(async () => {
         await reload?.();
         onClose?.();
       }, 1000);
+
     } catch (error) {
-      console.error("Erro ao salvar:", error);
-      setErrors({ save: "Erro ao salvar dados" });
+
+      console.error(
+        "Erro ao salvar:",
+        error
+      );
+
+      setErrors({
+        save: "Erro ao salvar dados",
+      });
     }
   }
 
   function renderStatus(key, label) {
-  const editableByProfessor = [
-    "em_preenchimento",
-    "preenchido",
-  ];
+    const editableByProfessor = [
+      "em_preenchimento",
+      "preenchido",
+    ];
 
-  const canEdit =
-    !isProfessor ||
-    editableByProfessor.includes(key);
+    const canEdit =
+      !isProfessor ||
+      editableByProfessor.includes(key);
 
-  return (
-    <label className="flex items-center gap-2 text-sm">
-      {isEditing && canEdit && (
-        <input
-          type="checkbox"
-          checked={statuses[key]}
-          onChange={() =>
-            setStatuses((prev) => ({
-              ...prev,
-              [key]: !prev[key],
-            }))
+    return (
+      <label className="flex items-center gap-2 text-sm">
+        {isEditing && canEdit && (
+          <input
+            type="checkbox"
+            checked={statuses[key]}
+            onChange={() =>
+              setStatuses((prev) => ({
+                ...prev,
+                [key]: !prev[key],
+              }))
+            }
+          />
+        )}
+
+        <span
+          className={
+            statuses[key]
+              ? "text-accent"
+              : "text-gray-400"
           }
-        />
-      )}
+        >
+          {statuses[key] ? "✓" : "X"}
+        </span>
 
-      <span
-        className={
-          statuses[key]
-            ? "text-accent"
-            : "text-gray-400"
-        }
-      >
-        {statuses[key] ? "✓" : "X"}
-      </span>
-
-      <p>{label}</p>
-    </label>
-  );
-}
+        <p>{label}</p>
+      </label>
+    );
+  }
 
   return (
     <div
@@ -157,7 +236,10 @@ function InfoModal({
         <header className="flex items-center justify-between mb-8 gap-6">
           <div className="flex items-center gap-3">
             <img src={icon} alt="" className="w-8 h-8" />
-            <h2 className="text-xl font-bold">{title}</h2>
+
+            <h2 className="text-xl font-bold">
+              {title}
+            </h2>
           </div>
         </header>
 
@@ -178,46 +260,81 @@ function InfoModal({
               />
 
               {errors.trimestre && (
-                <p className="text-red-400 text-xs mt-2">{errors.trimestre}</p>
+                <p className="text-red-400 text-xs mt-2">
+                  {errors.trimestre}
+                </p>
               )}
             </div>
           ) : (
             <div className="flex gap-4">
-              <FilterInfo>Matriz - {matriz}</FilterInfo>
+              <FilterInfo>
+                Matriz - {matriz}
+              </FilterInfo>
 
-              <FilterInfo>{selectedTrimestre}</FilterInfo>
+              <FilterInfo>
+                {selectedTrimestre}
+              </FilterInfo>
             </div>
           )}
         </section>
 
         <section className="mb-8">
-          <h3 className="text-sm font-semibold mb-3">Status</h3>
+          <h3 className="text-sm font-semibold mb-3">
+            Status
+          </h3>
 
-         <div className="bg-white rounded-xl p-4 text-background flex flex-col gap-4">
-  {isProfessor && isEditing ? (
-    <>
-      {renderStatus("em_preenchimento", "Em andamento")}
+          <div className="bg-white rounded-xl p-4 text-background flex flex-col gap-4">
+            {isProfessor && isEditing ? (
+              <>
+                {renderStatus(
+                  "em_preenchimento",
+                  "Em andamento"
+                )}
 
-      {renderStatus("preenchido", "Preenchido")}
-    </>
-  ) : (
-    <>
-      {renderStatus("em_preenchimento", "Em andamento")}
+                {renderStatus(
+                  "preenchido",
+                  "Preenchido"
+                )}
+              </>
+            ) : (
+              <>
+                {renderStatus(
+                  "em_preenchimento",
+                  "Em andamento"
+                )}
 
-      {renderStatus("preenchido", "Preenchido")}
+                {renderStatus(
+                  "preenchido",
+                  "Preenchido"
+                )}
 
-      {renderStatus("revisao", "Necessita revisão")}
+                {renderStatus(
+                  "revisao",
+                  "Necessita revisão"
+                )}
 
-      {renderStatus("validado", "Validado pela coordenação")}
+                {renderStatus(
+                  "validado",
+                  "Validado pela coordenação"
+                )}
 
-      {renderStatus("customizar", "Liberado para customizar")}
+                {renderStatus(
+                  "customizar",
+                  "Liberado para customizar"
+                )}
 
-      {renderStatus("canvas", "Disponível no Canvas")}
+                {renderStatus(
+                  "canvas",
+                  "Disponível no Canvas"
+                )}
 
-      {renderStatus("integracao", "Integrado ao RM-Canvas")}
-    </>
-  )}
-</div>
+                {renderStatus(
+                  "integracao",
+                  "Integrado ao RM-Canvas"
+                )}
+              </>
+            )}
+          </div>
         </section>
 
         <footer className="flex items-center justify-between gap-4">
@@ -241,7 +358,9 @@ function InfoModal({
             >
               <Pencil size={16} />
 
-              {hasRole("TEACHER") ? "Editar status" : "Editar informações"}
+              {hasRole("TEACHER")
+                ? "Editar status"
+                : "Editar informações"}
             </button>
           )}
         </footer>
