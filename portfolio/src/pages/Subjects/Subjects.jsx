@@ -4,11 +4,13 @@ import { ChevronRight, ChevronLeft } from "lucide-react";
 
 import { getCompetenciesByCourse } from "../../services/competencyService";
 import { getCourses } from "../../services/courseService";
+import { getNotifications } from "../../services/notificationService";
 
 import Subject from "../../components/Subject";
 import Layout from "../../Layout/Layout";
 import FilterSelect from "../../components/FilterSelect";
 import CreateSubjectModal from "../../components/CreateSubjectModal";
+import NotificationCard from "../../components/NotificationCard";
 
 function Subjects() {
   const { id } = useParams();
@@ -21,6 +23,7 @@ function Subjects() {
   const [currentPage, setCurrentPage] = useState(1);
   const [subjects, setSubjects] = useState([]);
   const [courseName, setCourseName] = useState("");
+  const [notifications, setNotifications] = useState([]);
 
   const itemsPerPage = 5;
 
@@ -43,6 +46,20 @@ function Subjects() {
 
     fetchCompetencies();
   }, [id]);
+
+  useEffect(() => {
+    async function loadNotifications() {
+      try {
+        const data = await getNotifications();
+        setNotifications(data);
+      } catch (error) {
+        console.log("Erro ao carregar notificações:", error);
+      }
+    }
+
+    loadNotifications();
+  }, []);
+
   useEffect(() => {
     async function loadCourseName() {
       try {
@@ -70,28 +87,28 @@ function Subjects() {
     await loadCompetencies(id);
   };
 
- const groupedSubjects = useMemo(() => {
-  const grouped = Object.values(
-    subjects.reduce((acc, item) => {
-      if (!acc[item.id_competency]) {
-        acc[item.id_competency] = {
-          id_competency: item.id_competency,
-          name_competency: item.name_competency,
-          code_competency: item.code_competency,
-          documents: [],
-        };
-      }
+  const groupedSubjects = useMemo(() => {
+    const grouped = Object.values(
+      subjects.reduce((acc, item) => {
+        if (!acc[item.id_competency]) {
+          acc[item.id_competency] = {
+            id_competency: item.id_competency,
+            name_competency: item.name_competency,
+            code_competency: item.code_competency,
+            documents: [],
+          };
+        }
 
-      acc[item.id_competency].documents.push(item);
+        acc[item.id_competency].documents.push(item);
 
-      return acc;
-    }, {}),
-  );
+        return acc;
+      }, {}),
+    );
 
-  return grouped.sort((a, b) =>
-    a.code_competency.localeCompare(b.code_competency)
-  );
-}, [subjects]);
+    return grouped.sort((a, b) =>
+      a.code_competency.localeCompare(b.code_competency),
+    );
+  }, [subjects]);
 
   const statusRules = {
     "Em andamento": (doc) => doc.flag_em_preenchimento,
@@ -255,9 +272,21 @@ function Subjects() {
 
         <aside
           aria-labelledby="notificacoes-title"
-          className="hidden lg:block lg:mr-40"
+          className="hidden lg:block  w-80"
         >
-          <h2 id="notificacoes-title">Notificações</h2>
+          <h2 id="notificacoes-title" className="mb-4">
+            Notificações
+          </h2>
+
+          <div className="flex flex-col gap-3">
+            {notifications.length === 0 ? (
+              <p className="text-sm text-gray-400">Nenhuma notificação</p>
+            ) : (
+              notifications.map((item) => (
+                <NotificationCard key={item.id_notification} item={item} />
+              ))
+            )}
+          </div>
         </aside>
       </main>
 
