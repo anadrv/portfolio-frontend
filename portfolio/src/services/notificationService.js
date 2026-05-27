@@ -27,3 +27,17 @@ export async function deleteNotification(id) {
 
   return response.json();
 }
+
+
+
+export async function getNotificationsByCourse(courseId) {
+  const response = await fetch(
+    `${API_URL}/notifications/course/${courseId}`
+  );
+
+  if (!response.ok) {
+    throw new Error("Erro ao buscar notificações");
+  }
+
+  return response.json();
+}

@@ -4,7 +4,7 @@ import { ChevronRight, ChevronLeft } from "lucide-react";
 
 import { getCompetenciesByCourse } from "../../services/competencyService";
 import { getCourses } from "../../services/courseService";
-import { getNotifications } from "../../services/notificationService";
+import { getNotificationsByCourse } from "../../services/notificationService";
 
 import Subject from "../../components/Subject";
 import Layout from "../../Layout/Layout";
@@ -47,18 +47,20 @@ function Subjects() {
     fetchCompetencies();
   }, [id]);
 
-  useEffect(() => {
-    async function loadNotifications() {
-      try {
-        const data = await getNotifications();
-        setNotifications(data);
-      } catch (error) {
-        console.log("Erro ao carregar notificações:", error);
-      }
+useEffect(() => {
+  async function loadNotifications() {
+    try {
+      const data = await getNotificationsByCourse(id);
+      setNotifications(data);
+    } catch (error) {
+      console.log(error.message);
     }
+  }
 
+  if (id) {
     loadNotifications();
-  }, []);
+  }
+}, [id]);
 
   useEffect(() => {
     async function loadCourseName() {
