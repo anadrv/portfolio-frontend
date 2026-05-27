@@ -2,7 +2,7 @@ import { loginMicrosoft as loginMicrosoftService } from "../../services/userServ
 
 import { useState, useContext, useEffect } from "react";
 import { AuthContext } from "../../context/AuthContext";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Navigate } from "react-router-dom";
 import { useMsal } from "@azure/msal-react";
 
 import bgImage from "../../assets/images/bg-image.png";
@@ -20,62 +20,52 @@ function Login() {
 
   const navigate = useNavigate();
 
-  const { login } = useContext(AuthContext);
+  const { login, user, loading } = useContext(AuthContext);
 
   const { instance } = useMsal();
 
   useEffect(() => {
-    async function handleRedirect() {
+    async function authenticateMicrosoftUser() {
       try {
-        const localToken = localStorage.getItem("token");
+        const account = instance.getActiveAccount();
 
-        if (localToken) {
-          navigate("/");
+        if (!account) {
           return;
         }
 
-        const accounts = instance.getAllAccounts();
+        const backendResponse = await loginMicrosoftService({
+          microsoft_id: account.localAccountId,
 
-        if (accounts.length > 0) {
-          instance.setActiveAccount(null);
-        }
+          name_users: account.name,
 
-        const response = await instance.handleRedirectPromise();
+          email_users:
+            account.idTokenClaims?.email ||
+            account.idTokenClaims?.preferred_username,
+        });
 
-        if (response) {
-          const account = response.account;
+        const userData = backendResponse.user;
 
-          instance.setActiveAccount(account);
+        login({
+          token: backendResponse.token,
+          user: userData,
+        });
 
-          const backendResponse = await loginMicrosoftService({
-            microsoft_id: account.localAccountId,
-
-            name_users: account.name,
-
-            email_users:
-              account.idTokenClaims?.email ||
-              account.idTokenClaims?.preferred_username,
-          });
-
-          const userData = backendResponse.user;
-
-          login({
-            token: backendResponse.token,
-            user: userData,
-          });
-
-          localStorage.setItem("token", backendResponse.token);
-          localStorage.setItem("user", JSON.stringify(userData));
-
-          navigate("/");
-        }
+        navigate("/");
       } catch (error) {
         console.log(error);
       }
     }
 
-    handleRedirect();
+    authenticateMicrosoftUser();
   }, []);
+
+  if (loading) {
+    return null;
+  }
+
+  if (user) {
+    return <Navigate to="/" replace />;
+  }
 
   function handleChange(e) {
     const { name, value } = e.target;

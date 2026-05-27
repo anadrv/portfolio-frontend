@@ -1,4 +1,3 @@
-import React from "react";
 import ReactDOM from "react-dom/client";
 import { BrowserRouter } from "react-router-dom";
 
@@ -14,18 +13,20 @@ import { msalInstance } from "./config/AuthConfig";
 async function startApp() {
   await msalInstance.initialize();
 
-  ReactDOM.createRoot(
-    document.getElementById("root")
-  ).render(
-    <React.StrictMode>
-      <MsalProvider instance={msalInstance}>
-        <BrowserRouter>
-          <AuthProvider>
-            <App />
-          </AuthProvider>
-        </BrowserRouter>
-      </MsalProvider>
-    </React.StrictMode>
+  const response = await msalInstance.handleRedirectPromise();
+
+  if (response) {
+    msalInstance.setActiveAccount(response.account);
+  }
+
+  ReactDOM.createRoot(document.getElementById("root")).render(
+    <MsalProvider instance={msalInstance}>
+      <BrowserRouter>
+        <AuthProvider>
+          <App />
+        </AuthProvider>
+      </BrowserRouter>
+    </MsalProvider>
   );
 }
 
