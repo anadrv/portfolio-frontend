@@ -4,7 +4,7 @@ import { ChevronRight, ChevronLeft } from "lucide-react";
 
 import { getCompetenciesByCourse } from "../../services/competencyService";
 import { getCourses } from "../../services/courseService";
-import { getNotificationsByCourse } from "../../services/notificationService";
+import { getNotificationsByCourse, deleteNotification } from "../../services/notificationService";
 
 import Subject from "../../components/Subject";
 import Layout from "../../Layout/Layout";
@@ -173,6 +173,23 @@ useEffect(() => {
     setCurrentPage(1);
   }
 
+  async function handleDeleteNotification(id) {
+  try {
+    await deleteNotification(id);
+
+    setNotifications((prev) =>
+      prev.filter(
+        (notification) =>
+          notification.id_notification !== id
+      )
+    );
+  } catch (error) {
+    console.log(error);
+
+    alert("Erro ao deletar notificação");
+  }
+}
+
   return (
     <Layout>
       <header className="flex flex-col text-text font-semibold">
@@ -285,8 +302,12 @@ useEffect(() => {
               <p className="text-sm text-gray-400">Nenhuma notificação</p>
             ) : (
               notifications.map((item) => (
-                <NotificationCard key={item.id_notification} item={item} />
-              ))
+  <NotificationCard
+    key={item.id_notification}
+    item={item}
+    onDelete={handleDeleteNotification}
+  />
+))
             )}
           </div>
         </aside>
