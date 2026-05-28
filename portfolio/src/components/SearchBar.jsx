@@ -48,7 +48,7 @@ function SearchBar() {
           onChange={(e) => handleSearch(e.target.value)}
           onFocus={() => setIsFocused(true)}
           onBlur={() => setTimeout(() => setIsFocused(false), 150)}
-          placeholder="Pesquisar"
+          placeholder="Pesquisar curso ou competência"
           className="
             w-full bg-white rounded-lg
             py-3 pl-5 pr-11
