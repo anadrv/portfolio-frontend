@@ -2,8 +2,10 @@ import { loginMicrosoft as loginMicrosoftService } from "../../services/userServ
 
 import { useState, useContext, useEffect } from "react";
 import { AuthContext } from "../../context/AuthContext";
-import { useNavigate, Navigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { useMsal } from "@azure/msal-react";
+
+import AuthLoading from "../../pages/AuthLoading/AuthLoading";
 
 import bgImage from "../../assets/images/bg-image.png";
 import unifacisa from "../../assets/images/name-image.png";
@@ -17,6 +19,8 @@ function Login() {
     email: "",
     password: "",
   });
+
+  const [authenticating, setAuthenticating] = useState(false);
 
   const navigate = useNavigate();
 
@@ -33,6 +37,8 @@ function Login() {
           return;
         }
 
+        setAuthenticating(true);
+
         const backendResponse = await loginMicrosoftService({
           microsoft_id: account.localAccountId,
 
@@ -45,27 +51,21 @@ function Login() {
 
         const userData = backendResponse.user;
 
-        login({
+        await login({
           token: backendResponse.token,
           user: userData,
         });
 
-        navigate("/");
+        navigate("/", { replace: true });
       } catch (error) {
         console.log(error);
+      } finally {
+        setAuthenticating(false);
       }
     }
 
     authenticateMicrosoftUser();
-  }, []);
-
-  if (loading) {
-    return null;
-  }
-
-  if (user) {
-    return <Navigate to="/" replace />;
-  }
+  }, [instance, login, navigate]);
 
   function handleChange(e) {
     const { name, value } = e.target;
@@ -88,7 +88,7 @@ function Login() {
     }
   }
 
-  function handleSubmit(e) {
+  async function handleSubmit(e) {
     e.preventDefault();
 
     if (!formData.email || !formData.password) {
@@ -96,17 +96,29 @@ function Login() {
       return;
     }
 
-    login({
-      token: "token-local",
+    setAuthenticating(true);
 
-      user: {
-        email: formData.email,
-      },
-    });
+    try {
+      await login({
+        token: "token-local",
 
-    alert("Login realizado com sucesso!");
+        user: {
+          email: formData.email,
+        },
+      });
 
-    navigate("/");
+      alert("Login realizado com sucesso!");
+
+      navigate("/", { replace: true });
+    } catch (error) {
+      console.log(error);
+    } finally {
+      setAuthenticating(false);
+    }
+  }
+
+  if (loading || authenticating || user) {
+    return <AuthLoading />;
   }
 
   return (

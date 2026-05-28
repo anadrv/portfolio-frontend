@@ -6,6 +6,7 @@ import Home from "../pages/Home/Home";
 import Login from "../pages/Login/Login";
 import Subjects from "../pages/Subjects/Subjects";
 import Notifications from "../pages/Notifications/Notifications";
+import AuthLoading from "../pages/AuthLoading/AuthLoading";
 
 function AppRoutes() {
   return (
@@ -29,6 +30,7 @@ function AppRoutes() {
       />
 
       <Route path="/login" element={<Login />} />
+      <Route path="/auth" element={<AuthLoading />} />
 
       <Route
         path="/notifications"
