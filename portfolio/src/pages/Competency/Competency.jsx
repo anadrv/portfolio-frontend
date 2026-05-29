@@ -4,7 +4,10 @@ import { ChevronRight, ChevronLeft } from "lucide-react";
 
 import { getCompetenciesByCourse } from "../../services/competencyService";
 import { getCourses } from "../../services/courseService";
-import { getNotificationsByCourse, deleteNotification } from "../../services/notificationService";
+import {
+  getNotificationsByCourse,
+  deleteNotification,
+} from "../../services/notificationService";
 
 import Subject from "../../components/Subject";
 import Layout from "../../Layout/Layout";
@@ -12,7 +15,7 @@ import FilterSelect from "../../components/FilterSelect";
 import CreateSubjectModal from "../../components/CreateSubjectModal";
 import NotificationCard from "../../components/NotificationCard";
 
-function Subjects() {
+function Competency() {
   const { id } = useParams();
 
   const [matriz, setMatriz] = useState("");
@@ -21,7 +24,7 @@ function Subjects() {
 
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
-  const [subjects, setSubjects] = useState([]);
+  const [competencies, setCompetencies] = useState([]);
   const [courseName, setCourseName] = useState("");
   const [notifications, setNotifications] = useState([]);
 
@@ -29,11 +32,12 @@ function Subjects() {
 
   const user = JSON.parse(localStorage.getItem("user"));
 
-  const isAdminOrGestao = user?.role === "ADMIN" || user?.role === "GESTAO";
+  const isAdminOrGestao =
+    user?.role === "ADMIN" || user?.role === "GESTAO";
 
   async function loadCompetencies(courseId = id) {
     const data = await getCompetenciesByCourse(courseId);
-    setSubjects([...data]);
+    setCompetencies([...data]);
   }
 
   useEffect(() => {
@@ -41,26 +45,26 @@ function Subjects() {
 
     async function fetchCompetencies() {
       const data = await getCompetenciesByCourse(id);
-      setSubjects([...data]);
+      setCompetencies([...data]);
     }
 
     fetchCompetencies();
   }, [id]);
 
-useEffect(() => {
-  async function loadNotifications() {
-    try {
-      const data = await getNotificationsByCourse(id);
-      setNotifications(data);
-    } catch (error) {
-      console.log(error.message);
+  useEffect(() => {
+    async function loadNotifications() {
+      try {
+        const data = await getNotificationsByCourse(id);
+        setNotifications(data);
+      } catch (error) {
+        console.log(error.message);
+      }
     }
-  }
 
-  if (id) {
-    loadNotifications();
-  }
-}, [id]);
+    if (id) {
+      loadNotifications();
+    }
+  }, [id]);
 
   useEffect(() => {
     async function loadCourseName() {
@@ -89,9 +93,9 @@ useEffect(() => {
     await loadCompetencies(id);
   };
 
-  const groupedSubjects = useMemo(() => {
+  const groupedCompetencies = useMemo(() => {
     const grouped = Object.values(
-      subjects.reduce((acc, item) => {
+      competencies.reduce((acc, item) => {
         if (!acc[item.id_competency]) {
           acc[item.id_competency] = {
             id_competency: item.id_competency,
@@ -110,7 +114,7 @@ useEffect(() => {
     return grouped.sort((a, b) =>
       a.code_competency.localeCompare(b.code_competency),
     );
-  }, [subjects]);
+  }, [competencies]);
 
   const statusRules = {
     "Em andamento": (doc) => doc.flag_em_preenchimento,
@@ -119,13 +123,17 @@ useEffect(() => {
 
     "Necessita revisão": (doc) => doc.flag_necessita_revisao,
 
-    "Validado pela coordenação": (doc) => doc.flag_validacao_coordenacao,
+    "Validado pela coordenação": (doc) =>
+      doc.flag_validacao_coordenacao,
 
-    "Liberado para customizar": (doc) => doc.flag_liberado_customizar,
+    "Liberado para customizar": (doc) =>
+      doc.flag_liberado_customizar,
 
-    "Disponível no Canvas": (doc) => doc.flag_disponivel_canva,
+    "Disponível no Canvas": (doc) =>
+      doc.flag_disponivel_canva,
 
-    "Integrado ao RM-Canvas": (doc) => doc.flag_integrado_rm,
+    "Integrado ao RM-Canvas": (doc) =>
+      doc.flag_integrado_rm,
 
     "Não preenchido": (doc) =>
       !doc.flag_em_preenchimento &&
@@ -146,22 +154,34 @@ useEffect(() => {
     return rule(doc);
   }
 
-  const filteredSubjects = groupedSubjects.filter((subject) => {
-    if (!subject.documents?.length) return true;
+  const filteredCompetencies = groupedCompetencies.filter(
+    (competency) => {
+      if (!competency.documents?.length) return true;
 
-    return (
-      (matriz === "" ||
-        subject.documents.some((doc) => doc.matriz_competency === matriz)) &&
-      (trimestre === "" ||
-        subject.documents.some((doc) => doc.trimestre === trimestre)) &&
-      (status === "" ||
-        subject.documents.some((doc) => matchStatus(doc, status)))
-    );
-  });
-  const totalPages = Math.ceil(filteredSubjects.length / itemsPerPage);
+      return (
+        (matriz === "" ||
+          competency.documents.some(
+            (doc) => doc.matriz_competency === matriz,
+          )) &&
+        (trimestre === "" ||
+          competency.documents.some(
+            (doc) => doc.trimestre === trimestre,
+          )) &&
+        (status === "" ||
+          competency.documents.some((doc) =>
+            matchStatus(doc, status),
+          ))
+      );
+    },
+  );
+
+  const totalPages = Math.ceil(
+    filteredCompetencies.length / itemsPerPage,
+  );
+
   const startIndex = (currentPage - 1) * itemsPerPage;
 
-  const currentSubjects = filteredSubjects.slice(
+  const currentCompetencies = filteredCompetencies.slice(
     startIndex,
     startIndex + itemsPerPage,
   );
@@ -174,26 +194,28 @@ useEffect(() => {
   }
 
   async function handleDeleteNotification(id) {
-  try {
-    await deleteNotification(id);
+    try {
+      await deleteNotification(id);
 
-    setNotifications((prev) =>
-      prev.filter(
-        (notification) =>
-          notification.id_notification !== id
-      )
-    );
-  } catch (error) {
-    console.log(error);
+      setNotifications((prev) =>
+        prev.filter(
+          (notification) =>
+            notification.id_notification !== id,
+        ),
+      );
+    } catch (error) {
+      console.log(error);
 
-    alert("Erro ao deletar notificação");
+      alert("Erro ao deletar notificação");
+    }
   }
-}
 
   return (
     <Layout>
       <header className="flex flex-col text-text font-semibold">
-        <h1 className="text-xl md:text-2xl font-semibold py-6">{courseName}</h1>
+        <h1 className="text-xl md:text-2xl font-semibold py-6">
+          {courseName}
+        </h1>
       </header>
 
       <main className="flex gap-30 text-text text-lg font-semibold">
@@ -246,6 +268,7 @@ useEffect(() => {
               value={status}
               onChange={setStatus}
             />
+
             <button
               onClick={clearFilters}
               className="font-normal min-w-30 text-sm hover:underline cursor-pointer"
@@ -255,12 +278,12 @@ useEffect(() => {
           </div>
 
           <div className="bg-background-white rounded-lg mt-6 p-4 flex flex-col gap-4">
-            {currentSubjects.map((subject) => (
+            {currentCompetencies.map((competency) => (
               <Subject
-                key={subject.id_competency}
-                title={subject.name_competency}
-                code={subject.code_competency}
-                documents={subject.documents}
+                key={competency.id_competency}
+                title={competency.name_competency}
+                code={competency.code_competency}
+                documents={competency.documents}
                 onRefresh={refresh}
               />
             ))}
@@ -291,7 +314,7 @@ useEffect(() => {
 
         <aside
           aria-labelledby="notificacoes-title"
-          className="hidden lg:block  w-80"
+          className="hidden lg:block w-80"
         >
           <h2 id="notificacoes-title" className="mb-4">
             Notificações
@@ -299,15 +322,17 @@ useEffect(() => {
 
           <div className="flex flex-col gap-3">
             {notifications.length === 0 ? (
-              <p className="text-sm text-gray-400">Nenhuma notificação</p>
+              <p className="text-sm text-gray-400">
+                Nenhuma notificação
+              </p>
             ) : (
               notifications.map((item) => (
-  <NotificationCard
-    key={item.id_notification}
-    item={item}
-    onDelete={handleDeleteNotification}
-  />
-))
+                <NotificationCard
+                  key={item.id_notification}
+                  item={item}
+                  onDelete={handleDeleteNotification}
+                />
+              ))
             )}
           </div>
         </aside>
@@ -323,4 +348,4 @@ useEffect(() => {
   );
 }
 
-export default Subjects;
+export default Competency;

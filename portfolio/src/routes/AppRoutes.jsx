@@ -4,9 +4,9 @@ import ProtectedRoute from "../components/ProtectedRoute";
 
 import Home from "../pages/Home/Home";
 import Login from "../pages/Login/Login";
-import Subjects from "../pages/Subjects/Subjects";
 import Notifications from "../pages/Notifications/Notifications";
 import AuthLoading from "../pages/AuthLoading/AuthLoading";
+import Competency from "../pages/Competency/Competency";
 
 function AppRoutes() {
   return (
@@ -24,7 +24,7 @@ function AppRoutes() {
         path="/course/:id"
         element={
           <ProtectedRoute>
-            <Subjects />
+            <Competency />
           </ProtectedRoute>
         }
       />
