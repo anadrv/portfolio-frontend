@@ -126,7 +126,7 @@ function Login() {
       <img
         src={bgImage}
         alt="background"
-        className="absolute top-20 left-0 w-full h-[89%]"
+        className="absolute inset-0 w-full h-full object-cover"
       />
 
       <div className="relative z-10">
