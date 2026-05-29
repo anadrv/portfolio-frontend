@@ -32,8 +32,7 @@ function Competency() {
 
   const user = JSON.parse(localStorage.getItem("user"));
 
-  const isAdminOrGestao =
-    user?.role === "ADMIN" || user?.role === "GESTAO";
+  const isAdminOrGestao = user?.role === "ADMIN" || user?.role === "GESTAO";
 
   async function loadCompetencies(courseId = id) {
     const data = await getCompetenciesByCourse(courseId);
@@ -51,16 +50,17 @@ function Competency() {
     fetchCompetencies();
   }, [id]);
 
-  useEffect(() => {
-    async function loadNotifications() {
-      try {
-        const data = await getNotificationsByCourse(id);
-        setNotifications(data);
-      } catch (error) {
-        console.log(error.message);
-      }
-    }
+  async function loadNotifications() {
+    try {
+      const data = await getNotificationsByCourse(id);
 
+      setNotifications(data);
+    } catch (error) {
+      console.log(error.message);
+    }
+  }
+
+  useEffect(() => {
     if (id) {
       loadNotifications();
     }
@@ -91,6 +91,7 @@ function Competency() {
   const refresh = async () => {
     setCurrentPage(1);
     await loadCompetencies(id);
+    await loadNotifications();
   };
 
   const groupedCompetencies = useMemo(() => {
@@ -123,17 +124,13 @@ function Competency() {
 
     "Necessita revisão": (doc) => doc.flag_necessita_revisao,
 
-    "Validado pela coordenação": (doc) =>
-      doc.flag_validacao_coordenacao,
+    "Validado pela coordenação": (doc) => doc.flag_validacao_coordenacao,
 
-    "Liberado para customizar": (doc) =>
-      doc.flag_liberado_customizar,
+    "Liberado para customizar": (doc) => doc.flag_liberado_customizar,
 
-    "Disponível no Canvas": (doc) =>
-      doc.flag_disponivel_canva,
+    "Disponível no Canvas": (doc) => doc.flag_disponivel_canva,
 
-    "Integrado ao RM-Canvas": (doc) =>
-      doc.flag_integrado_rm,
+    "Integrado ao RM-Canvas": (doc) => doc.flag_integrado_rm,
 
     "Não preenchido": (doc) =>
       !doc.flag_em_preenchimento &&
@@ -154,30 +151,20 @@ function Competency() {
     return rule(doc);
   }
 
-  const filteredCompetencies = groupedCompetencies.filter(
-    (competency) => {
-      if (!competency.documents?.length) return true;
+  const filteredCompetencies = groupedCompetencies.filter((competency) => {
+    if (!competency.documents?.length) return true;
 
-      return (
-        (matriz === "" ||
-          competency.documents.some(
-            (doc) => doc.matriz_competency === matriz,
-          )) &&
-        (trimestre === "" ||
-          competency.documents.some(
-            (doc) => doc.trimestre === trimestre,
-          )) &&
-        (status === "" ||
-          competency.documents.some((doc) =>
-            matchStatus(doc, status),
-          ))
-      );
-    },
-  );
+    return (
+      (matriz === "" ||
+        competency.documents.some((doc) => doc.matriz_competency === matriz)) &&
+      (trimestre === "" ||
+        competency.documents.some((doc) => doc.trimestre === trimestre)) &&
+      (status === "" ||
+        competency.documents.some((doc) => matchStatus(doc, status)))
+    );
+  });
 
-  const totalPages = Math.ceil(
-    filteredCompetencies.length / itemsPerPage,
-  );
+  const totalPages = Math.ceil(filteredCompetencies.length / itemsPerPage);
 
   const startIndex = (currentPage - 1) * itemsPerPage;
 
@@ -198,10 +185,7 @@ function Competency() {
       await deleteNotification(id);
 
       setNotifications((prev) =>
-        prev.filter(
-          (notification) =>
-            notification.id_notification !== id,
-        ),
+        prev.filter((notification) => notification.id_notification !== id),
       );
     } catch (error) {
       console.log(error);
@@ -213,12 +197,13 @@ function Competency() {
   return (
     <Layout>
       <header className="flex flex-col text-text font-semibold">
-        <h1 className="text-xl md:text-2xl font-semibold py-6">
-          {courseName}
-        </h1>
+        <h1 className="text-xl md:text-2xl font-semibold py-6">{courseName}</h1>
       </header>
 
-      <main className="flex gap-30 text-text text-lg font-semibold">
+      <main
+        className="flex gap-30 text-text text-lg font-semibold"
+        aria-label="Lista de competências do curso"
+      >
         <section className="flex-1">
           <div className="flex justify-between mb-8">
             <h2>Competências</h2>
@@ -271,28 +256,39 @@ function Competency() {
 
             <button
               onClick={clearFilters}
+              aria-label="Limpar todos os filtros"
               className="font-normal min-w-30 text-sm hover:underline cursor-pointer"
             >
               Limpar filtros
             </button>
           </div>
 
-          <div className="bg-background-white rounded-lg mt-6 p-4 flex flex-col gap-4">
-            {currentCompetencies.map((competency) => (
-              <Subject
-                key={competency.id_competency}
-                title={competency.name_competency}
-                code={competency.code_competency}
-                documents={competency.documents}
-                onRefresh={refresh}
-              />
-            ))}
+          <div
+            className="bg-background-white rounded-lg mt-6 p-4 flex flex-col gap-4"
+            aria-live="polite"
+          >
+            {currentCompetencies.length === 0 ? (
+              <p className="text-sm text-background">
+                Nenhuma competência encontrada.
+              </p>
+            ) : (
+              currentCompetencies.map((competency) => (
+                <Subject
+                  key={competency.id_competency}
+                  title={competency.name_competency}
+                  code={competency.code_competency}
+                  documents={competency.documents}
+                  onRefresh={refresh}
+                />
+              ))
+            )}
           </div>
 
           <div className="flex items-center justify-end gap-4 mt-6 text-white">
             <button
               onClick={() => setCurrentPage((p) => p - 1)}
               disabled={currentPage === 1}
+              aria-label="Página anterior"
               className="p-2 rounded-full bg-primary"
             >
               <ChevronLeft size={18} />
@@ -305,6 +301,7 @@ function Competency() {
             <button
               onClick={() => setCurrentPage((p) => p + 1)}
               disabled={currentPage === totalPages}
+              aria-label="Próxima página"
               className="p-2 rounded-full bg-primary"
             >
               <ChevronRight size={18} />
@@ -314,6 +311,7 @@ function Competency() {
 
         <aside
           aria-labelledby="notificacoes-title"
+          aria-live="polite"
           className="hidden lg:block w-80"
         >
           <h2 id="notificacoes-title" className="mb-4">
@@ -322,8 +320,8 @@ function Competency() {
 
           <div className="flex flex-col gap-3">
             {notifications.length === 0 ? (
-              <p className="text-sm text-gray-400">
-                Nenhuma notificação
+              <p className="text-sm font-normal text-white">
+                Sem notificações no momento
               </p>
             ) : (
               notifications.map((item) => (

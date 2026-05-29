@@ -13,12 +13,7 @@ function NotificationCard({
         flex
         items-start
         justify-between
-        gap-3
-        text-background
-        shadow-md
-        
-      "
-    >
+        gap-3 text-background shadow-md">
       <div className="flex gap-3 flex-1 min-w-0">
         
         <Bell
