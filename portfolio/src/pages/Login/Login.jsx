@@ -56,7 +56,7 @@ function Login() {
           user: userData,
         });
 
-        navigate("/", { replace: true });
+        navigate("/courses", { replace: true });
       } catch (error) {
         console.log(error);
       } finally {

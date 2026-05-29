@@ -12,7 +12,7 @@ function AppRoutes() {
   return (
     <Routes>
       <Route
-        path="/"
+        path="/courses"
         element={
           <ProtectedRoute>
             <Home />
@@ -29,7 +29,7 @@ function AppRoutes() {
         }
       />
 
-      <Route path="/login" element={<Login />} />
+      <Route path="/" element={<Login />} />
       <Route path="/auth" element={<AuthLoading />} />
 
       <Route
