@@ -45,7 +45,7 @@ function Menu() {
       <nav className="w-full px-8 py-5 flex items-center justify-between">
         {/* Logo */}
         <h1 className="text-lg font-bold">
-          <NavLink to="/" className="flex items-center gap-2">
+          <NavLink to="/courses" className="flex items-center gap-2">
             <img
               src={logo}
               alt="Logo do site"
@@ -65,7 +65,7 @@ function Menu() {
         {/* DESKTOP MENU */}
         <ul className="hidden md:flex items-center font-semibold gap-10 md:gap-4 md:text-sm lg:text-lg lg:gap-10">
           <li>
-            <NavLink to="/">Cursos</NavLink>
+            <NavLink to="/courses">Cursos</NavLink>
           </li>
 
           {!isProfessor && (
