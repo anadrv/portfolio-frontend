@@ -44,60 +44,23 @@ PORTFOLIO-FRONTEND/
 ├─ src/                         # Código-fonte principal
 │   ├─ assets/                  # Arquivos estáticos
 │   │   ├─ icons/
-│   │   │   ├─ courses/
-│   │   │   ├─ planner-icon.png
-│   │   │   ├─ planner-white-icon.png
-│   │   │   ├─ unifacisa-blue-icon.svg
-│   │   │   └─ unifacisa-icon.png
-│   │   │
 │   │   └─ images/
 │   │
 │   ├─ components/              # Componentes reutilizáveis
-│   │   ├─ CourseCard.jsx
-│   │   ├─ CreateCourseModal.jsx
-│   │   ├─ CreateSubjectModal.jsx
-│   │   ├─ DocumentCard.jsx
-│   │   ├─ FilterInfo.jsx
-│   │   ├─ FilterSelect.jsx
-│   │   ├─ InfoModal.jsx
-│   │   ├─ Menu.jsx
-│   │   ├─ NotificationCard.jsx
-│   │   ├─ NotificationCardPage.jsx
-│   │   ├─ PrimaryButton.jsx
-│   │   ├─ SearchBar.jsx
-│   │   ├─ Subject.jsx
-│   │   └─ UpdateInfoButton.jsx
-│   │
-│   ├─ context/                 # Gerenciamento de estado global
-│   │   └─ AuthContext.jsx                 
-│   │
-│   ├─ Layout/                  
-│   │   └─ Layout.jsx
-│   │
-│   ├─ mock/
-│   │    └─ currentUser.js                    
+│   ├─ context/                 # Gerenciamento de estado global              
+│   ├─ Layout/                                  
 │   │
 │   ├─ pages/                   # Páginas da aplicação
 │   │   ├─ Home/
-│   │   │   └─ Home.jsx
+│   │   ├─ AuhtLoading/
 │   │   ├─ Login/
-│   │   │   └─ Login.jsx
 │   │   ├─ Notifications/
-│   │   │   └─ Notifications.jsx
-│   │   └─ Subjects/
-│   │       └─ Subjects.jsx
-│   │
+│   │   └─ Competency/
+│   │    
 │   ├─ routes/                  # Gerenciamento de rotas
-│   │   └─ AppRoutes.jsx
-│   │
-│   ├─ services/                # Integração e serviços
-│   │   └─ subjectService.js      
-│   │
+│   ├─ services/                # Integração com backend e serviços
 │   ├─ utils/                   # Funções auxiliares
-│   │   └─ showFeedback.js
-│   │
-│   ├─ validations/             # Validações de formulários
-│   │   └─ validateSubject.js               
+│   ├─ validations/             # Validações de formulários          
 │   │
 │   ├─ App.css
 │   ├─ App.jsx
@@ -130,7 +93,7 @@ O frontend foi desenvolvido utilizando componentes reutilizáveis e separação 
 - **Validations:** realiza validações de formulários e entradas do usuário.
 - **Utils:** contém funções auxiliares reutilizáveis.
 
-## 🚀 Como executar o projeto
+## 🚀 Como executar o projeto 
 
 ### Front-end
 1. Abra o terminal na pasta do frontend.
@@ -150,13 +113,17 @@ npm run dev
 http://localhost:5173/
 ```
 
-## 💡 Funcionalidades Implementadas
+### Back-end  
+[![Backend Repo](https://img.shields.io/badge/Backend-Repositório-2346B7?style=for-the-badge&logo=github)](https://github.com/byteBolinha/portifolio_academico)
+
+
+## 💡 Funcionalidades Implementadas (front)
 - Login de usuários
 - Organização de competências
 - Visualização de cursos
 - Sistema de notificações
 - Interface organizada para gerenciamento acadêmico
-- Estruturação digital do planner acadêmico
+- Planner e Plano de ensido integrados com a competência
 
 ## ✅ Conclusão
 
