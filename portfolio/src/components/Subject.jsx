@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { ChevronDown, Pencil } from "lucide-react";
+import { ChevronDown, Pencil, X } from "lucide-react";
 import { hasPermission } from "../utils/permissions";
 
 import DocumentCard from "./DocumentCard";
@@ -11,16 +11,12 @@ import plannerWhiteIcon from "../assets/icons/planner-white-icon.png";
 import teachingPlanIcon from "../assets/icons/planner-icon.png";
 import teachingWhitePlanIcon from "../assets/icons/planner-white-icon.png";
 
-function Subject({ title, code, documents, reload, onRefresh }) {
+function Subject({ title, code, documents, reload, onRefresh, onDelete }) {
   const [open, setOpen] = useState(false);
   const [openEdit, setOpenEdit] = useState(false);
   const [editingDoc, setEditingDoc] = useState(null);
 
   const canEdit = hasPermission("CRIAR_COMPETENCIA");
-
-  console.log("USER:", JSON.parse(localStorage.getItem("user")));
-  console.log("permissions:", JSON.parse(localStorage.getItem("user"))?.permissions);
-  console.log("canEdit:", canEdit);
 
   function getDocumentIcon(type) {
     if (type === "PLANNER") {
@@ -56,21 +52,36 @@ function Subject({ title, code, documents, reload, onRefresh }) {
 
         <div className="flex items-center gap-4">
           <div className="flex items-center gap-2">
-            {/* editar */}
             {canEdit && (
-              <button
-                aria-label={`Editar ${title}`}
-                onClick={() => {
-                  setEditingDoc(documents?.[0]);
-                  setOpenEdit(true);
-                }}
-                className="p-2 rounded-full cursor-pointer hover:bg-white/20 transition"
-              >
-                <Pencil size={18} />
-              </button>
+              <>
+                <button
+                  aria-label={`Excluir ${title}`}
+                  onClick={(e) => {
+                    e.stopPropagation();
+
+                    if (
+                      window.confirm(`Deseja excluir a competência "${title}"?`)
+                    ) {
+                      onDelete?.(documents?.[0]?.id_competency);
+                    }
+                  }}
+                  className="p-2 rounded-full cursor-pointer hover:bg-white/20 transition"
+                >
+                  <X size={18} />
+                </button>
+                <button
+                  aria-label={`Editar ${title}`}
+                  onClick={() => {
+                    setEditingDoc(documents?.[0]);
+                    setOpenEdit(true);
+                  }}
+                  className="p-2 rounded-full cursor-pointer hover:bg-white/20 transition"
+                >
+                  <Pencil size={18} />
+                </button>
+              </>
             )}
 
-            {/* expandir */}
             <button
               aria-label={`Expandir ${title}`}
               onClick={() => setOpen(!open)}

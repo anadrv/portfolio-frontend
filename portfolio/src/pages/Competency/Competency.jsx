@@ -2,7 +2,10 @@ import { useEffect, useState, useMemo } from "react";
 import { useParams } from "react-router-dom";
 import { ChevronRight, ChevronLeft } from "lucide-react";
 
-import { getCompetenciesByCourse } from "../../services/competencyService";
+import {
+  getCompetenciesByCourse,
+  deleteCompetency,
+} from "../../services/competencyService";
 import { getCourses } from "../../services/courseService";
 import {
   getNotificationsByCourse,
@@ -194,6 +197,20 @@ function Competency() {
     }
   }
 
+  async function handleDeleteCompetency(id) {
+    try {
+      await deleteCompetency(id);
+
+      setCompetencies((prev) =>
+        prev.filter((competency) => competency.id_competency !== id),
+      );
+    } catch (error) {
+      console.error(error);
+
+      alert("Erro ao excluir competência");
+    }
+  }
+
   return (
     <Layout>
       <header className="flex flex-col text-text font-semibold">
@@ -279,6 +296,7 @@ function Competency() {
                   code={competency.code_competency}
                   documents={competency.documents}
                   onRefresh={refresh}
+                  onDelete={handleDeleteCompetency}
                 />
               ))
             )}
