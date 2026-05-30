@@ -15,7 +15,7 @@ import {
 import Subject from "../../components/Subject";
 import Layout from "../../Layout/Layout";
 import FilterSelect from "../../components/FilterSelect";
-import CreateSubjectModal from "../../components/CreateSubjectModal";
+import CreateCompetencyModal from "../../components/CreateCompetencyModal";
 import NotificationCard from "../../components/NotificationCard";
 
 function Competency() {
@@ -355,7 +355,7 @@ function Competency() {
       </main>
 
       {isModalOpen && (
-        <CreateSubjectModal
+        <CreateCompetencytModal
           onClose={() => setIsModalOpen(false)}
           onSuccess={refresh}
         />

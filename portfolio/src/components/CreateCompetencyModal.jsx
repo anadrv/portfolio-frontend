@@ -8,7 +8,7 @@ import FilterSelect from "./FilterSelect";
 import PrimaryButton from "./PrimaryButton";
 import validateCompetency from "../validations/validateCompetency";
 
-function CreateSubjectModal({ onClose, onSuccess }) {
+function CreateCompetencyModal({ onClose, onSuccess }) {
   const [courses, setCourses] = useState([]);
   const [cursoSelecionado, setCursoSelecionado] = useState("");
 
@@ -276,4 +276,4 @@ function CreateSubjectModal({ onClose, onSuccess }) {
   );
 }
 
-export default CreateSubjectModal;
+export default CreateCompetencytModal;
