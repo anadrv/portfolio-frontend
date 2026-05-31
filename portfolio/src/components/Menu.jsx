@@ -118,7 +118,7 @@ function Menu() {
 
       {/* MOBILE MENU */}
       {open && (
-        <div className="md:hidden absolute top-full mt-2 left-0 w-full rounded-lg bg-primary">
+        <div className="md:hidden absolute top-full mt-2 left-0 w-full rounded-lg bg-primary z-100">
           <ul className="flex flex-col p-2 gap-2 font-semibold text-md">
             <li>
               <NavLink
@@ -141,16 +141,6 @@ function Menu() {
                 </NavLink>
               </li>
             )}
-
-            <li>
-              <NavLink
-                to="/profile"
-                onClick={() => setOpen(false)}
-                className="block p-2 rounded hover:bg-white/20 transition"
-              >
-                Conta
-              </NavLink>
-            </li>
 
             <li>
               <button

@@ -276,4 +276,4 @@ function CreateCompetencyModal({ onClose, onSuccess }) {
   );
 }
 
-export default CreateCompetencytModal;
+export default CreateCompetencyModal;
