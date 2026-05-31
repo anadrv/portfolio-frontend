@@ -355,7 +355,7 @@ function Competency() {
       </main>
 
       {isModalOpen && (
-        <CreateCompetencytModal
+        <CreateCompetencyModal
           onClose={() => setIsModalOpen(false)}
           onSuccess={refresh}
         />

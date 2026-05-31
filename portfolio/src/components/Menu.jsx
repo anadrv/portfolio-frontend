@@ -38,7 +38,7 @@ function Menu() {
 
     sessionStorage.clear();
 
-    window.location.href = "/login";
+    window.location.href = "/";
   }
   return (
     <header className="bg-primary text-white rounded-lg relative">
