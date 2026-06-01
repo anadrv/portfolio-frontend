@@ -1,5 +1,5 @@
 import { useEffect, useState, useMemo } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, Link } from "react-router-dom";
 import { ChevronRight, ChevronLeft } from "lucide-react";
 
 import {
@@ -34,7 +34,7 @@ function Competency() {
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [competencyToDelete, setCompetencyToDelete] = useState(null);
 
-  const itemsPerPage = 5;
+  const itemsPerPage = 6;
 
   const user = JSON.parse(localStorage.getItem("user"));
 
@@ -354,14 +354,25 @@ function Competency() {
                 Sem notificações no momento
               </p>
             ) : (
-              notifications.map((item) => (
-                <NotificationCard
-                  key={item.id_notification}
-                  item={item}
-                  onDelete={handleDeleteNotification}
-                />
-              ))
+              notifications
+                .slice(0, 5)
+                .map((item) => (
+                  <NotificationCard
+                    key={item.id_notification}
+                    item={item}
+                    onDelete={handleDeleteNotification}
+                  />
+                ))
             )}
+          </div>
+
+          <div className="mt-4 ">
+            <Link
+              to="/notifications"
+              className="text-sm font-normal text-white hover:underline"
+            >
+              Ver todas as notificações
+            </Link>
           </div>
         </aside>
       </main>
