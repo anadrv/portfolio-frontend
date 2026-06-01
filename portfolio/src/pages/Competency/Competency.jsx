@@ -17,6 +17,7 @@ import Layout from "../../Layout/Layout";
 import FilterSelect from "../../components/FilterSelect";
 import CreateCompetencyModal from "../../components/CreateCompetencyModal";
 import NotificationCard from "../../components/NotificationCard";
+import ConfirmDeleteModal from "../../components/ConfirmDeleteModal";
 
 function Competency() {
   const { id } = useParams();
@@ -30,6 +31,8 @@ function Competency() {
   const [competencies, setCompetencies] = useState([]);
   const [courseName, setCourseName] = useState("");
   const [notifications, setNotifications] = useState([]);
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [competencyToDelete, setCompetencyToDelete] = useState(null);
 
   const itemsPerPage = 5;
 
@@ -197,17 +200,25 @@ function Competency() {
     }
   }
 
-  async function handleDeleteCompetency(id) {
+  function openDeleteModal(id) {
+    setCompetencyToDelete(id);
+    setShowDeleteModal(true);
+  }
+
+  async function handleDeleteCompetency() {
     try {
-      await deleteCompetency(id);
+      await deleteCompetency(competencyToDelete);
 
       setCompetencies((prev) =>
-        prev.filter((competency) => competency.id_competency !== id),
+        prev.filter(
+          (competency) => competency.id_competency !== competencyToDelete,
+        ),
       );
+
+      setShowDeleteModal(false);
+      setCompetencyToDelete(null);
     } catch (error) {
       console.error(error);
-
-      alert("Erro ao excluir competência");
     }
   }
 
@@ -296,7 +307,7 @@ function Competency() {
                   code={competency.code_competency}
                   documents={competency.documents}
                   onRefresh={refresh}
-                  onDelete={handleDeleteCompetency}
+                  onDelete={() => openDeleteModal(competency.id_competency)}
                 />
               ))
             )}
@@ -358,6 +369,17 @@ function Competency() {
         <CreateCompetencyModal
           onClose={() => setIsModalOpen(false)}
           onSuccess={refresh}
+        />
+      )}
+      {showDeleteModal && (
+        <ConfirmDeleteModal
+          title="Excluir competência"
+          message="Tem certeza que deseja excluir esta competência? Esta ação não poderá ser desfeita."
+          onConfirm={handleDeleteCompetency}
+          onCancel={() => {
+            setShowDeleteModal(false);
+            setCompetencyToDelete(null);
+          }}
         />
       )}
     </Layout>

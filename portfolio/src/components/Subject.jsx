@@ -58,12 +58,7 @@ function Subject({ title, code, documents, reload, onRefresh, onDelete }) {
                   aria-label={`Excluir ${title}`}
                   onClick={(e) => {
                     e.stopPropagation();
-
-                    if (
-                      window.confirm(`Deseja excluir a competência "${title}"?`)
-                    ) {
-                      onDelete?.(documents?.[0]?.id_competency);
-                    }
+                    onDelete?.(documents?.[0]?.id_competency);
                   }}
                   className="p-2 rounded-full cursor-pointer hover:bg-white/20 transition"
                 >
