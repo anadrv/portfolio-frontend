@@ -38,7 +38,8 @@ function Competency() {
 
   const user = JSON.parse(localStorage.getItem("user"));
 
-  const isAdminOrGestao = user?.role === "ADMIN" || user?.role === "GESTAO";
+  const isAdminOrGestao =
+    user?.role === "ADMIN" || user?.role === "GESTAO" || user?.role == "NITE";
 
   async function loadCompetencies(courseId = id) {
     const data = await getCompetenciesByCourse(courseId);
