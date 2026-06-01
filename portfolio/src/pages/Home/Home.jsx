@@ -16,6 +16,7 @@ import peIcon from "../../assets/icons/courses/physical-education.png";
 function Home() {
   const [matriz, setMatriz] = useState("");
   const [showCreate, setShowCreate] = useState(false);
+  const [editingCourse, setEditingCourse] = useState(null);
 
   const [courses, setCourses] = useState([]);
 
@@ -105,6 +106,7 @@ function Home() {
                         : iconMap[course.icon],
                     ]}
                     link={`/course/${course.id}`}
+                    onEdit={() => setEditingCourse(course)}
                   />
                 ))}
             </div>
@@ -131,6 +133,24 @@ function Home() {
                 };
                 setCourses((prev) => [...prev, newCourse]);
                 setShowCreate(false);
+              }}
+            />
+          </div>
+        </div>
+      )}
+
+      {editingCourse && (
+        <div
+          className="fixed inset-0 bg-black/50 flex items-center justify-center z-50"
+          onClick={() => setEditingCourse(null)}
+        >
+          <div onClick={(e) => e.stopPropagation()}>
+            <CreateCourse
+              mode="edit"
+              existingData={editingCourse}
+              onCancel={() => setEditingCourse(null)}
+              onSave={() => {
+                window.location.reload();
               }}
             />
           </div>

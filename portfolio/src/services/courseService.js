@@ -30,3 +30,41 @@ export async function createCourse(courseData) {
 
   return data;
 }
+
+export async function updateCourse(id, courseData) {
+  const formData = new FormData();
+
+  formData.append("name_courses", courseData.curso);
+  formData.append("matrix_courses", courseData.matriz);
+
+  if (courseData.image?.file) {
+    formData.append("image", courseData.image.file);
+  }
+
+  const response = await fetch(`${API_URL}/courses/${id}`, {
+    method: "PUT",
+    body: formData,
+  });
+
+  const data = await response.json();
+
+  if (!response.ok) {
+    throw new Error(data.message || "Erro ao atualizar curso");
+  }
+
+  return data;
+}
+
+export async function deleteCourse(id) {
+  const response = await fetch(`${API_URL}/courses/${id}`, {
+    method: "DELETE",
+  });
+
+  const data = await response.json();
+
+  if (!response.ok) {
+    throw new Error(data.message || "Erro ao excluir curso");
+  }
+
+  return data;
+}
