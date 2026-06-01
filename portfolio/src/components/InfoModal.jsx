@@ -39,6 +39,7 @@ function InfoModal({
   reload,
 }) {
   const isProfessor = hasRole("TEACHER");
+  const isCoordinator = hasRole("COORDINATOR");
 
   const [isEditing, setIsEditing] = useState(false);
 
@@ -66,7 +67,6 @@ function InfoModal({
     setStatuses(currentStatuses);
 
     setInitialStatuses(currentStatuses);
-
   }, [
     trimestre,
     flag_em_preenchimento,
@@ -81,102 +81,51 @@ function InfoModal({
 
   async function handleSave() {
     try {
+      await updateTrimestre(id_academicD, selectedTrimestre);
 
-      await updateTrimestre(
-        id_academicD,
-        selectedTrimestre
-      );
-
-      if (
-        statuses.em_preenchimento !==
-        initialStatuses.em_preenchimento
-      ) {
+      if (statuses.em_preenchimento !== initialStatuses.em_preenchimento) {
         await updateFlagEmPreenchimento(
           id_academicD,
-          statuses.em_preenchimento
+          statuses.em_preenchimento,
         );
       }
 
-      if (
-        statuses.preenchido !==
-        initialStatuses.preenchido
-      ) {
-        await updateFlagPreenchido(
-          id_academicD,
-          statuses.preenchido
-        );
+      if (statuses.preenchido !== initialStatuses.preenchido) {
+        await updateFlagPreenchido(id_academicD, statuses.preenchido);
       }
 
-      if (
-        statuses.revisao !==
-        initialStatuses.revisao
-      ) {
-        await updateFlagNecessitaRevisao(
-          id_academicD,
-          statuses.revisao
-        );
+      if (statuses.revisao !== initialStatuses.revisao) {
+        await updateFlagNecessitaRevisao(id_academicD, statuses.revisao);
       }
 
-      if (
-        statuses.validado !==
-        initialStatuses.validado
-      ) {
-        await updateFlagCoordenacao(
-          id_academicD,
-          statuses.validado
-        );
+      if (statuses.validado !== initialStatuses.validado) {
+        await updateFlagCoordenacao(id_academicD, statuses.validado);
       }
 
-      if (
-        statuses.customizar !==
-        initialStatuses.customizar
-      ) {
-        await updateFlagCustomizar(
-          id_academicD,
-          statuses.customizar
-        );
+      if (statuses.customizar !== initialStatuses.customizar) {
+        await updateFlagCustomizar(id_academicD, statuses.customizar);
       }
 
-      if (
-        statuses.canvas !==
-        initialStatuses.canvas
-      ) {
-        await updateFlagCanvas(
-          id_academicD,
-          statuses.canvas
-        );
+      if (statuses.canvas !== initialStatuses.canvas) {
+        await updateFlagCanvas(id_academicD, statuses.canvas);
       }
 
-      if (
-        statuses.integracao !==
-        initialStatuses.integracao
-      ) {
-        await updateFlagGestao(
-          id_academicD,
-          statuses.integracao
-        );
+      if (statuses.integracao !== initialStatuses.integracao) {
+        await updateFlagGestao(id_academicD, statuses.integracao);
       }
 
       setIsEditing(false);
 
       setErrors({});
 
-      showFeedback(
-        setSuccessMessage,
-        "Dados atualizados com sucesso!"
-      );
+      showFeedback(setSuccessMessage, "Dados atualizados com sucesso!");
 
       setTimeout(async () => {
         await reload?.();
         onClose?.();
       }, 1000);
-
     } catch (error) {
-
-      console.error(
-        "Erro ao salvar:",
-        error
-      );
+      console.error("Erro ao salvar:", error);
 
       setErrors({
         save: "Erro ao salvar dados",
@@ -185,14 +134,21 @@ function InfoModal({
   }
 
   function renderStatus(key, label) {
-    const editableByProfessor = [
-      "em_preenchimento",
-      "preenchido",
-    ];
+    let canEdit = true;
 
-    const canEdit =
-      !isProfessor ||
-      editableByProfessor.includes(key);
+    if (isProfessor) {
+      canEdit = ["em_preenchimento", "preenchido"].includes(key);
+    }
+
+    if (isCoordinator) {
+      canEdit = [
+        "em_preenchimento",
+        "preenchido",
+        "revisao",
+        "validado",
+        "customizar",
+      ].includes(key);
+    }
 
     return (
       <label className="flex items-center gap-2 text-sm">
@@ -209,13 +165,7 @@ function InfoModal({
           />
         )}
 
-        <span
-          className={
-            statuses[key]
-              ? "text-accent"
-              : "text-gray-400"
-          }
-        >
+        <span className={statuses[key] ? "text-accent" : "text-gray-400"}>
           {statuses[key] ? "✓" : "X"}
         </span>
 
@@ -237,9 +187,7 @@ function InfoModal({
           <div className="flex items-center gap-3">
             <img src={icon} alt="" className="w-8 h-8" />
 
-            <h2 className="text-xl font-bold">
-              {title}
-            </h2>
+            <h2 className="text-xl font-bold">{title}</h2>
           </div>
         </header>
 
@@ -260,78 +208,43 @@ function InfoModal({
               />
 
               {errors.trimestre && (
-                <p className="text-red-400 text-xs mt-2">
-                  {errors.trimestre}
-                </p>
+                <p className="text-red-400 text-xs mt-2">{errors.trimestre}</p>
               )}
             </div>
           ) : (
             <div className="flex gap-4">
-              <FilterInfo>
-                Matriz - {matriz}
-              </FilterInfo>
+              <FilterInfo>Matriz - {matriz}</FilterInfo>
 
-              <FilterInfo>
-                {selectedTrimestre}
-              </FilterInfo>
+              <FilterInfo>{selectedTrimestre}</FilterInfo>
             </div>
           )}
         </section>
 
         <section className="mb-8">
-          <h3 className="text-sm font-semibold mb-3">
-            Status
-          </h3>
+          <h3 className="text-sm font-semibold mb-3">Status</h3>
 
           <div className="bg-white rounded-xl p-4 text-background flex flex-col gap-4">
             {isProfessor && isEditing ? (
               <>
-                {renderStatus(
-                  "em_preenchimento",
-                  "Em andamento"
-                )}
+                {renderStatus("em_preenchimento", "Em andamento")}
 
-                {renderStatus(
-                  "preenchido",
-                  "Preenchido"
-                )}
+                {renderStatus("preenchido", "Preenchido")}
               </>
             ) : (
               <>
-                {renderStatus(
-                  "em_preenchimento",
-                  "Em andamento"
-                )}
+                {renderStatus("em_preenchimento", "Em andamento")}
 
-                {renderStatus(
-                  "preenchido",
-                  "Preenchido"
-                )}
+                {renderStatus("preenchido", "Preenchido")}
 
-                {renderStatus(
-                  "revisao",
-                  "Necessita revisão"
-                )}
+                {renderStatus("revisao", "Necessita revisão")}
 
-                {renderStatus(
-                  "validado",
-                  "Validado pela coordenação"
-                )}
+                {renderStatus("validado", "Validado pela coordenação")}
 
-                {renderStatus(
-                  "customizar",
-                  "Liberado para customizar"
-                )}
+                {renderStatus("customizar", "Liberado para customizar")}
 
-                {renderStatus(
-                  "canvas",
-                  "Disponível no Canvas"
-                )}
+                {renderStatus("canvas", "Disponível no Canvas")}
 
-                {renderStatus(
-                  "integracao",
-                  "Integrado ao RM-Canvas"
-                )}
+                {renderStatus("integracao", "Integrado ao RM-Canvas")}
               </>
             )}
           </div>
@@ -358,9 +271,7 @@ function InfoModal({
             >
               <Pencil size={16} />
 
-              {hasRole("TEACHER")
-                ? "Editar status"
-                : "Editar informações"}
+              {hasRole("TEACHER") ? "Editar status" : "Editar informações"}
             </button>
           )}
         </footer>
