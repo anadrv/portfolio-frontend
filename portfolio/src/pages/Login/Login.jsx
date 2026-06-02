@@ -118,10 +118,10 @@ function Login() {
   }
 
   useEffect(() => {
-  if (user) {
-    navigate("/courses", { replace: true });
-  }
-}, [user, navigate]);
+    if (user) {
+      navigate("/courses", { replace: true });
+    }
+  }, [user, navigate]);
 
   if (loading || authenticating) {
     return <AuthLoading />;
