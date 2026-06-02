@@ -117,7 +117,13 @@ function Login() {
     }
   }
 
-  if (loading || authenticating || user) {
+  useEffect(() => {
+  if (user) {
+    navigate("/courses", { replace: true });
+  }
+}, [user, navigate]);
+
+  if (loading || authenticating) {
     return <AuthLoading />;
   }
 
