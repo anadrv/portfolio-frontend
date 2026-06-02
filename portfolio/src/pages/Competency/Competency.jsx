@@ -33,6 +33,8 @@ function Competency() {
   const [notifications, setNotifications] = useState([]);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [competencyToDelete, setCompetencyToDelete] = useState(null);
+  const [selectedCompetencyId, setSelectedCompetencyId] = useState(null);
+  const [openCompetencyId, setOpenCompetencyId] = useState(null);
 
   const itemsPerPage = 6;
 
@@ -223,6 +225,12 @@ function Competency() {
     }
   }
 
+  const displayedNotifications = selectedCompetencyId
+    ? notifications.filter(
+        (notification) => notification.id_competency === selectedCompetencyId,
+      )
+    : notifications.slice(0, 5);
+
   return (
     <Layout>
       <header className="flex flex-col text-text font-semibold">
@@ -309,6 +317,15 @@ function Competency() {
                   documents={competency.documents}
                   onRefresh={refresh}
                   onDelete={() => openDeleteModal(competency.id_competency)}
+                  onExpand={(id) => setSelectedCompetencyId(id)}
+                  isOpen={openCompetencyId === competency.id_competency}
+                  onToggle={() =>
+                    setOpenCompetencyId(
+                      openCompetencyId === competency.id_competency
+                        ? null
+                        : competency.id_competency,
+                    )
+                  }
                 />
               ))
             )}
@@ -349,20 +366,18 @@ function Competency() {
           </h2>
 
           <div className="flex flex-col gap-3">
-            {notifications.length === 0 ? (
+            {displayedNotifications.length === 0 ? (
               <p className="text-sm font-normal text-white">
-                Sem notificações no momento
+                Sem notificações no momento para essa competênciancia ou curso!
               </p>
             ) : (
-              notifications
-                .slice(0, 5)
-                .map((item) => (
-                  <NotificationCard
-                    key={item.id_notification}
-                    item={item}
-                    onDelete={handleDeleteNotification}
-                  />
-                ))
+              displayedNotifications.map((item) => (
+                <NotificationCard
+                  key={item.id_notification}
+                  item={item}
+                  onDelete={handleDeleteNotification}
+                />
+              ))
             )}
           </div>
 

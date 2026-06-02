@@ -11,10 +11,31 @@ import plannerWhiteIcon from "../assets/icons/planner-white-icon.png";
 import teachingPlanIcon from "../assets/icons/planner-icon.png";
 import teachingWhitePlanIcon from "../assets/icons/planner-white-icon.png";
 
-function Subject({ title, code, documents, reload, onRefresh, onDelete }) {
+function Subject({
+  title,
+  code,
+  documents,
+  reload,
+  onRefresh,
+  onDelete,
+  onExpand,
+  isOpen,
+  onToggle,
+}) {
   const [open, setOpen] = useState(false);
   const [openEdit, setOpenEdit] = useState(false);
   const [editingDoc, setEditingDoc] = useState(null);
+
+
+  function handleToggle() {
+  onToggle();
+
+  if (!isOpen) {
+    onExpand?.(documents?.[0]?.id_competency);
+  } else {
+    onExpand?.(null);
+  }
+}
 
   const canEdit = hasPermission("CRIAR_COMPETENCIA");
 
@@ -43,7 +64,7 @@ function Subject({ title, code, documents, reload, onRefresh, onDelete }) {
   return (
     <article className="flex flex-col gap-4">
       <div
-        onClick={() => setOpen(!open)}
+        onClick={handleToggle}
         className="bg-primary text-white rounded-lg px-6 py-4 flex items-center justify-between gap-2 shadow-[0_4px_0_#d1d5db] cursor-pointer"
       >
         <h2 className="text-sm md:text-base font-semibold">
@@ -66,7 +87,8 @@ function Subject({ title, code, documents, reload, onRefresh, onDelete }) {
                 </button>
                 <button
                   aria-label={`Editar ${title}`}
-                  onClick={() => {
+                  onClick={(e) => {
+                    e.stopPropagation();
                     setEditingDoc(documents?.[0]);
                     setOpenEdit(true);
                   }}
@@ -79,19 +101,22 @@ function Subject({ title, code, documents, reload, onRefresh, onDelete }) {
 
             <button
               aria-label={`Expandir ${title}`}
-              onClick={() => setOpen(!open)}
+              onClick={(e) => {
+                e.stopPropagation();
+                handleToggle();
+              }}
               className="p-2 rounded-full cursor-pointer hover:bg-white/20 transition"
             >
               <ChevronDown
                 size={20}
-                className={`transition-transform ${open ? "rotate-180" : ""}`}
+                className={`transition-transform ${isOpen ? "rotate-180" : ""}`}
               />
             </button>
           </div>
         </div>
       </div>
 
-      {open && (
+      {isOpen && (
         <div className="flex flex-col gap-4 md:flex-row">
           {[...(documents || [])]
             .sort((a, b) => {
