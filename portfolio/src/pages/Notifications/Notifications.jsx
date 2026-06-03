@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { ChevronLeft, ChevronRight } from "lucide-react";
 
 import Layout from "../../Layout/Layout";
 import NotificationCardPage from "../../components/NotificationCardPage";
@@ -13,6 +14,11 @@ function Notifications() {
 
   const [notifications, setNotifications] =
     useState([]);
+
+  const [currentPage, setCurrentPage] =
+    useState(1);
+
+  const itemsPerPage = 6;
 
   useEffect(() => {
     async function loadNotifications() {
@@ -62,6 +68,20 @@ function Notifications() {
           (item) => item.is_read
         );
 
+  const totalPages = Math.ceil(
+    filteredNotifications.length /
+      itemsPerPage
+  );
+
+  const startIndex =
+    (currentPage - 1) * itemsPerPage;
+
+  const currentNotifications =
+    filteredNotifications.slice(
+      startIndex,
+      startIndex + itemsPerPage
+    );
+
   return (
     <Layout>
       <div className="mt-12">
@@ -72,13 +92,7 @@ function Notifications() {
         </header>
 
         <main
-          className="
-            flex
-            gap-8
-            items-start
-            max-w-6xl
-          "
-        >
+          className="flex gap-8 items-start max-w-6xl">
           <section className="flex-1 max-w-4xl">
             <div className="md:hidden flex flex-wrap items-center gap-2 mb-6">
               <span className="text-text md:text-sm font-medium">
@@ -92,9 +106,10 @@ function Notifications() {
               ].map((item) => (
                 <button
                   key={item}
-                  onClick={() =>
-                    setFilter(item)
-                  }
+                  onClick={() => {
+                    setFilter(item);
+                    setCurrentPage(1);
+                  }}
                   className={`
                     px-3 md:px-4 py-1 rounded-md font-semibold transition
                     ${
@@ -117,9 +132,9 @@ function Notifications() {
                 flex flex-col gap-3 overflow-y-auto w-full
               "
             >
-              {filteredNotifications.length >
+              {currentNotifications.length >
               0 ? (
-                filteredNotifications.map(
+                currentNotifications.map(
                   (item) => (
                     <NotificationCardPage
                       key={
@@ -139,16 +154,48 @@ function Notifications() {
                 </p>
               )}
             </div>
+
+            <div className="flex items-center justify-end gap-4 mt-6 text-white">
+              <button
+                onClick={() =>
+                  setCurrentPage(
+                    (p) => p - 1
+                  )
+                }
+                disabled={
+                  currentPage === 1
+                }
+                className="p-2 rounded-full bg-primary disabled:opacity-50 cursor-pointer"
+              >
+                <ChevronLeft size={18} />
+              </button>
+
+              <span>
+                Página {currentPage} de{" "}
+                {totalPages || 1}
+              </span>
+
+              <button
+                onClick={() =>
+                  setCurrentPage(
+                    (p) => p + 1
+                  )
+                }
+                disabled={
+                  currentPage ===
+                    totalPages ||
+                  totalPages === 0
+                }
+                className="p-2 rounded-full bg-primary disabled:opacity-50 cursor-pointer"
+              >
+                <ChevronRight size={18} />
+              </button>
+            </div>
           </section>
 
           <aside
             aria-labelledby="filtro-title"
-            className="
-              hidden lg:flex
-              flex-col gap-3
-              w-56 shrink-0 mt-2
-            "
-          >
+            className="hidden lg:flex flex-col gap-3 w-56 shrink-0 mt-2">
             <h2
               id="filtro-title"
               className="text-text text-md"
@@ -163,9 +210,10 @@ function Notifications() {
             ].map((item) => (
               <button
                 key={item}
-                onClick={() =>
-                  setFilter(item)
-                }
+                onClick={() => {
+                  setFilter(item);
+                  setCurrentPage(1);
+                }}
                 className={`
                   w-full text-left px-4 py-2 rounded-md text-sm font-semibold transition cursor-pointer
                   ${
