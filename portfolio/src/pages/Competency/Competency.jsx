@@ -225,11 +225,19 @@ function Competency() {
     }
   }
 
-  const displayedNotifications = selectedCompetencyId
+  const displayedNotifications = (
+  selectedCompetencyId
     ? notifications.filter(
-        (notification) => notification.id_competency === selectedCompetencyId,
+        (notification) =>
+          notification.id_competency === selectedCompetencyId,
       )
-    : notifications.slice(0, 5);
+    : notifications
+)
+  .sort(
+    (a, b) =>
+      new Date(b.created_at) - new Date(a.created_at)
+  )
+  .slice(0, 5);
 
   return (
     <Layout>
