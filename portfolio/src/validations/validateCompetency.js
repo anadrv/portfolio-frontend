@@ -1,5 +1,4 @@
 function validateCompetency({
-  course,
   trimester,
   matriz,
   competencyCode,
@@ -8,10 +7,6 @@ function validateCompetency({
   teachingPlanLink,
 }) {
   const errors = {};
-
-  if (!course) {
-    errors.course = "Selecione um curso";
-  }
 
   if (!trimester) {
     errors.trimester = "Selecione um trimestre";

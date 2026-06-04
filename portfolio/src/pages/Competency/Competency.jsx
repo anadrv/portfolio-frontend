@@ -394,6 +394,7 @@ function Competency() {
 
       {isModalOpen && (
         <CreateCompetencyModal
+          courseId={id}
           onClose={() => setIsModalOpen(false)}
           onSuccess={refresh}
         />

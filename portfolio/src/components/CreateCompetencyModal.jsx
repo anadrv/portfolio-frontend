@@ -1,17 +1,13 @@
 import { useEffect, useState } from "react";
 import { Pencil } from "lucide-react";
 
-import { getCourses } from "../services/courseService";
 import { createCompetency } from "../services/competencyService";
 
 import FilterSelect from "./FilterSelect";
 import PrimaryButton from "./PrimaryButton";
 import validateCompetency from "../validations/validateCompetency";
 
-function CreateCompetencyModal({ onClose, onSuccess }) {
-  const [courses, setCourses] = useState([]);
-  const [cursoSelecionado, setCursoSelecionado] = useState("");
-
+function CreateCompetencyModal({ courseId, onClose, onSuccess }) {
   const [codigoCompetencia, setCodigoCompetencia] = useState("");
   const [trimestre, setTrimestre] = useState("");
   const [matriz, setMatriz] = useState("");
@@ -22,19 +18,6 @@ function CreateCompetencyModal({ onClose, onSuccess }) {
   const [errors, setErrors] = useState({});
   const [successMessage, setSuccessMessage] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
-
-  useEffect(() => {
-    async function loadCourses() {
-      try {
-        const data = await getCourses();
-        setCourses(data);
-      } catch (err) {
-        console.error("Erro ao carregar cursos:", err);
-      }
-    }
-
-    loadCourses();
-  }, []);
 
   useEffect(() => {
     function handleKeyDown(e) {
@@ -51,7 +34,6 @@ function CreateCompetencyModal({ onClose, onSuccess }) {
     setErrorMessage("");
 
     const validationErrors = validateCompetency({
-      course: cursoSelecionado,
       trimester: trimestre,
       matriz: matriz,
       competencyCode: codigoCompetencia,
@@ -70,7 +52,7 @@ function CreateCompetencyModal({ onClose, onSuccess }) {
     try {
       await createCompetency({
         name_competency: nomeCompetencia,
-        course_id: cursoSelecionado,
+        course_id: courseId,
         code_competency: codigoCompetencia,
 
         planner_link: linkPlanner,
@@ -81,6 +63,7 @@ function CreateCompetencyModal({ onClose, onSuccess }) {
       });
 
       setSuccessMessage("Competência criada com sucesso!");
+
       onSuccess?.();
 
       setTimeout(() => {
@@ -88,6 +71,7 @@ function CreateCompetencyModal({ onClose, onSuccess }) {
       }, 1000);
     } catch (error) {
       console.error(error);
+
       setErrorMessage("Erro ao criar competência no servidor");
     }
   }
@@ -102,7 +86,9 @@ function CreateCompetencyModal({ onClose, onSuccess }) {
   }
 
   const inputClass = "w-full mt-1 p-2 rounded bg-white text-background text-sm";
+
   const fieldWrapper = "mb-4";
+
   const errorClass = "text-red-200 text-xs mt-1";
 
   return (
@@ -120,34 +106,35 @@ function CreateCompetencyModal({ onClose, onSuccess }) {
           CADASTRAR COMPETÊNCIA
         </h2>
 
-        {/* CURSO */}
-        <div className="flex-1 mb-2">
-          <FilterSelect
-            label="Selecionar curso"
-            options={courses.map((c) => ({
-              label: c.name_courses,
-              value: c.id_courses,
-            }))}
-            value={cursoSelecionado}
-            onChange={(value) => {
-              setCursoSelecionado(value);
-              clearFieldError("course");
-            }}
-          />
-
-          {errors.course && <p className={errorClass}>{errors.course}</p>}
-        </div>
-
         <section className="flex gap-2 mb-4">
-          {/* TRIMESTRE */}
           <div className="flex-1">
             <FilterSelect
               label="Trimestre"
               options={[
-                { label: "1° Trimestre", value: "1" },
-                { label: "2° Trimestre", value: "2" },
-                { label: "3° Trimestre", value: "3" },
-                { label: "4° Trimestre", value: "4" },
+                {
+                  label: "1° Trimestre",
+                  value: "1",
+                },
+                {
+                  label: "2° Trimestre",
+                  value: "2",
+                },
+                {
+                  label: "3° Trimestre",
+                  value: "3",
+                },
+                {
+                  label: "4° Trimestre",
+                  value: "4",
+                },
+                {
+                  label: "1° Semestre",
+                  value: "5",
+                },
+                {
+                  label: "2° Semestre",
+                  value: "6",
+                },
               ]}
               value={trimestre}
               onChange={(value) => {
@@ -161,13 +148,18 @@ function CreateCompetencyModal({ onClose, onSuccess }) {
             )}
           </div>
 
-          {/* MATRIZ */}
           <div className="mb-2">
             <FilterSelect
               label="Matriz"
               options={[
-                { label: "Matriz 62", value: "62" },
-                { label: "Matriz 63", value: "63" },
+                {
+                  label: "Matriz 62",
+                  value: "62",
+                },
+                {
+                  label: "Matriz 63",
+                  value: "63",
+                },
               ]}
               value={matriz}
               onChange={(value) => {
@@ -180,7 +172,6 @@ function CreateCompetencyModal({ onClose, onSuccess }) {
           </div>
         </section>
 
-        {/* NOME COMPETÊNCIA */}
         <div className={fieldWrapper}>
           <label className="text-sm">Nome da competência:</label>
 
@@ -198,7 +189,6 @@ function CreateCompetencyModal({ onClose, onSuccess }) {
           )}
         </div>
 
-        {/* CÓDIGO */}
         <div className={fieldWrapper}>
           <label className="text-sm">Código da competência:</label>
 
@@ -215,7 +205,7 @@ function CreateCompetencyModal({ onClose, onSuccess }) {
             <p className={errorClass}>{errors.competencyCode}</p>
           )}
         </div>
-        {/* PLANNER */}
+
         <div className={fieldWrapper}>
           <label className="text-sm">Link do Planner:</label>
 
@@ -233,7 +223,6 @@ function CreateCompetencyModal({ onClose, onSuccess }) {
           )}
         </div>
 
-        {/* PLANO ENSINO */}
         <div className={fieldWrapper}>
           <label className="text-sm">Link do Plano de ensino:</label>
 
@@ -251,7 +240,6 @@ function CreateCompetencyModal({ onClose, onSuccess }) {
           )}
         </div>
 
-        {/* AÇÕES */}
         <div className="flex justify-between mt-6">
           <button onClick={onClose} className="hover:underline">
             Cancelar
