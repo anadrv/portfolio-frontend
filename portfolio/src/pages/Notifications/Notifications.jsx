@@ -9,14 +9,31 @@ import {
   getNotifications,
   deleteNotification,
 } from "../../services/notificationService";
+import FilterSelect from "../../components/FilterSelect";
 
 function Notifications() {
-  const [filter, setFilter] = useState("Todas");
+  const [status, setStatus] = useState("");
   const [courses, setCourses] = useState([]);
   const [selectedCourse, setSelectedCourse] = useState("Todos");
   const [notifications, setNotifications] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 6;
+
+  const statusRules = {
+    "Em andamento": (item) => item.flag_em_preenchimento,
+
+    Preenchido: (item) => item.flag_preenchido,
+
+    "Necessita revisão": (item) => item.flag_necessita_revisao,
+
+    "Validado pela coordenação": (item) => item.flag_validacao_coordenacao,
+
+    "Liberado para customizar": (item) => item.flag_liberado_customizar,
+
+    "Disponível no Canvas": (item) => item.flag_disponivel_canva,
+
+    "Integrado ao RM-Canvas": (item) => item.flag_integrado_rm,
+  };
 
   useEffect(() => {
     async function loadNotifications() {
@@ -59,20 +76,23 @@ function Notifications() {
     loadCourses();
   }, []);
 
-  const filteredNotifications = notifications.filter((item) => {
-    const statusMatch =
-      filter === "Todas"
-        ? true
-        : filter === "Não lidas"
-          ? !item.is_read
-          : item.is_read;
+  function matchStatus(item, status) {
+    if (!status) return true;
 
+    const rule = statusRules[status];
+
+    if (!rule) return true;
+
+    return rule(item);
+  }
+
+  const filteredNotifications = notifications.filter((item) => {
     const courseMatch =
       selectedCourse === "Todos"
         ? true
         : item.id_courses === Number(selectedCourse);
 
-    return statusMatch && courseMatch;
+    return courseMatch && matchStatus(item, status);
   });
 
   const totalPages = Math.ceil(filteredNotifications.length / itemsPerPage);
@@ -146,26 +166,43 @@ function Notifications() {
               Filtrar por:
             </h2>
 
-            <div className="mb-3">
-              <select
-                id="course-filter"
+            <div className="flex flex-col gap-4">
+              <FilterSelect
+                label="Curso"
                 value={selectedCourse}
-                onChange={(e) => {
-                  setSelectedCourse(e.target.value);
+                onChange={(value) => {
+                  setSelectedCourse(value);
                   setCurrentPage(1);
                 }}
-                className="w-full px-3 py-2 rounded-md bg-white text-background border border-gray-300 cursor-pointer"
-              >
-                <option className="text-background" value="Todos">
-                  Todos os cursos
-                </option>
+                options={[
+                  {
+                    label: "Todos os cursos",
+                    value: "Todos",
+                  },
+                  ...courses.map((course) => ({
+                    label: course.name_courses,
+                    value: course.id_courses,
+                  })),
+                ]}
+              />
 
-                {courses.map((course) => (
-                  <option key={course.id_courses} value={course.id_courses}>
-                    {course.name_courses}
-                  </option>
-                ))}
-              </select>
+              <FilterSelect
+                label="Status"
+                value={status}
+                onChange={(value) => {
+                  setStatus(value);
+                  setCurrentPage(1);
+                }}
+                options={[
+                  "Em andamento",
+                  "Preenchido",
+                  "Necessita revisão",
+                  "Validado pela coordenação",
+                  "Liberado para customizar",
+                  "Disponível no Canvas",
+                  "Integrado ao RM-Canvas",
+                ]}
+              />
             </div>
           </aside>
         </main>
