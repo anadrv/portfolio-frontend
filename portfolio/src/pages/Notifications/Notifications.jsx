@@ -203,6 +203,17 @@ function Notifications() {
                   "Integrado ao RM-Canvas",
                 ]}
               />
+
+              <button
+                onClick={() => {
+                  setSelectedCourse("Todos");
+                  setStatus("");
+                  setCurrentPage(1);
+                }}
+                className="text-sm text-white text-start cursor-pointer hover:underline"
+              >
+                Limpar filtros
+              </button>
             </div>
           </aside>
         </main>
