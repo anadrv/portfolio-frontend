@@ -21,17 +21,11 @@ function Notifications() {
 
   const statusRules = {
     "Em andamento": (item) => item.flag_em_preenchimento,
-
     Preenchido: (item) => item.flag_preenchido,
-
     "Necessita revisão": (item) => item.flag_necessita_revisao,
-
     "Validado pela coordenação": (item) => item.flag_validacao_coordenacao,
-
     "Liberado para customizar": (item) => item.flag_liberado_customizar,
-
     "Disponível no Canvas": (item) => item.flag_disponivel_canva,
-
     "Integrado ao RM-Canvas": (item) => item.flag_integrado_rm,
   };
 
@@ -90,7 +84,7 @@ function Notifications() {
     const courseMatch =
       selectedCourse === "Todos"
         ? true
-        : item.id_courses === Number(selectedCourse);
+        : item.course_id === Number(selectedCourse);
 
     return courseMatch && matchStatus(item, status);
   });
