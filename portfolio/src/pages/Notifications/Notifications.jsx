@@ -17,6 +17,7 @@ function Notifications() {
   const [selectedCourse, setSelectedCourse] = useState("Todos");
   const [notifications, setNotifications] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
+  const [selectedCompetency, setSelectedCompetency] = useState("Todas");
   const itemsPerPage = 6;
 
   const statusRules = {
@@ -80,13 +81,38 @@ function Notifications() {
     return rule(item);
   }
 
+  const competencies = [
+    ...new Map(
+      notifications.map((item) => [
+        item.id_competency,
+        {
+          id: item.id_competency,
+          name: item.name_competency,
+          course_id: item.course_id,
+        },
+      ]),
+    ).values(),
+  ];
+
+  const filteredCompetenciesOptions =
+    selectedCourse === "Todos"
+      ? []
+      : competencies.filter(
+          (competency) => competency.course_id === Number(selectedCourse),
+        );
+
   const filteredNotifications = notifications.filter((item) => {
     const courseMatch =
       selectedCourse === "Todos"
         ? true
         : item.course_id === Number(selectedCourse);
 
-    return courseMatch && matchStatus(item, status);
+    const competencyMatch =
+      selectedCompetency === "Todas"
+        ? true
+        : item.id_competency === Number(selectedCompetency);
+
+    return courseMatch && competencyMatch && matchStatus(item, status);
   });
 
   const totalPages = Math.ceil(filteredNotifications.length / itemsPerPage);
@@ -154,7 +180,7 @@ function Notifications() {
 
           <aside
             aria-labelledby="filtro-title"
-            className="hidden lg:flex flex-col gap-3 w-56 shrink-0 mt-2"
+            className="hidden lg:flex flex-col gap-3 w-64 shrink-0 mt-2"
           >
             <h2 id="filtro-title" className="text-text text-md">
               Filtrar por:
@@ -166,6 +192,7 @@ function Notifications() {
                 value={selectedCourse}
                 onChange={(value) => {
                   setSelectedCourse(value);
+                  setSelectedCompetency("Todas");
                   setCurrentPage(1);
                 }}
                 options={[
@@ -180,6 +207,26 @@ function Notifications() {
                 ]}
               />
 
+              {selectedCourse !== "Todos" && (
+                <FilterSelect
+                  label="Competência"
+                  value={selectedCompetency}
+                  onChange={(value) => {
+                    setSelectedCompetency(value);
+                    setCurrentPage(1);
+                  }}
+                  options={[
+                    {
+                      label: "Todas as competências",
+                      value: "Todas",
+                    },
+                    ...filteredCompetenciesOptions.map((competency) => ({
+                      label: competency.name,
+                      value: competency.id,
+                    })),
+                  ]}
+                />
+              )}
               <FilterSelect
                 label="Status"
                 value={status}
@@ -201,6 +248,7 @@ function Notifications() {
               <button
                 onClick={() => {
                   setSelectedCourse("Todos");
+                  setSelectedCompetency("Todas");
                   setStatus("");
                   setCurrentPage(1);
                 }}

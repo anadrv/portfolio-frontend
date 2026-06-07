@@ -4,6 +4,7 @@ function FilterSelect({
   label,
   options,
   value,
+  disabled = false,
   onChange,
   textSize = "text-sm",
   className = "",
@@ -13,6 +14,7 @@ function FilterSelect({
       <div className="relative w-full">
         <select
           value={value}
+          disabled={disabled}
           onChange={(e) => onChange(e.target.value)}
           className={`w-full p-2 px-4 pr-10 rounded bg-white text-background appearance-none focus:outline-none cursor-pointer ${textSize} ${className}`}
         >
