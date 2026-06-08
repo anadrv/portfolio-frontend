@@ -106,6 +106,7 @@ function Home() {
                         : iconMap[course.icon],
                     ]}
                     link={`/course/${course.id}`}
+                    canEdit={isAdminOrNite}
                     onEdit={() => setEditingCourse(course)}
                   />
                 ))}
