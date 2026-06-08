@@ -62,6 +62,7 @@ function Competency() {
   async function loadNotifications() {
     try {
       const data = await getNotificationsByCourse(id);
+      console.log(notifications);
 
       setNotifications(data);
     } catch (error) {
@@ -225,19 +226,25 @@ function Competency() {
     }
   }
 
-  const displayedNotifications = (
-  selectedCompetencyId
+  const isProfessor = user?.role === "TEACHER";
+
+  const filteredNotifications = isProfessor
     ? notifications.filter(
         (notification) =>
-          notification.id_competency === selectedCompetencyId,
+          notification.title === "Documento necessita revisão" ||
+          notification.title === "Documento validado pela coordenação",
       )
-    : notifications
-)
-  .sort(
-    (a, b) =>
-      new Date(b.created_at) - new Date(a.created_at)
+    : notifications;
+
+  const displayedNotifications = (
+    selectedCompetencyId
+      ? filteredNotifications.filter(
+          (notification) => notification.id_competency === selectedCompetencyId,
+        )
+      : filteredNotifications
   )
-  .slice(0, 5);
+    .sort((a, b) => new Date(b.created_at) - new Date(a.created_at))
+    .slice(0, 5);
 
   return (
     <Layout>
@@ -280,6 +287,8 @@ function Competency() {
                 "2ª Trimestre",
                 "3ª Trimestre",
                 "4ª Trimestre",
+                "1ª Semestre",
+                "2ª Semestre",
               ]}
             />
 
