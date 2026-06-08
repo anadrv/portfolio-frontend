@@ -1,36 +1,22 @@
 const API_URL = "http://localhost:3000";
 
-// Login Microsoft
 export async function loginMicrosoft(data) {
   try {
-    const response = await fetch(
-      `${API_URL}/auth/login`,
-      {
-        method: "POST",
-
-        headers: {
-          "Content-Type": "application/json",
-        },
-
-        body: JSON.stringify(data),
-      }
-    );
+    const response = await fetch(`${API_URL}/auth/login`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${data.accessToken}`
+      },
+    });
 
     if (!response.ok) {
-      throw new Error(
-        `Erro HTTP: ${response.status}`
-      );
+      throw new Error(`Erro HTTP: ${response.status}`);
     }
 
     return await response.json();
-
   } catch (error) {
-
-    console.error(
-      "Erro no login Microsoft:",
-      error
-    );
-
+    console.error("Erro no login Microsoft:", error);
     throw error;
   }
 }

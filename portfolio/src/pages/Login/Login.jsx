@@ -39,14 +39,13 @@ function Login() {
 
         setAuthenticating(true);
 
+        const tokenResponse = await instance.acquireTokenSilent({
+          scopes: ["User.Read"],
+          account: account,
+        });
+
         const backendResponse = await loginMicrosoftService({
-          microsoft_id: account.localAccountId,
-
-          name_users: account.name,
-
-          email_users:
-            account.idTokenClaims?.email ||
-            account.idTokenClaims?.preferred_username,
+          accessToken: tokenResponse.accessToken
         });
 
         const userData = backendResponse.user;
