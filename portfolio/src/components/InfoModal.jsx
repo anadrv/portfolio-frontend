@@ -80,6 +80,7 @@ function InfoModal({
   ]);
 
   async function handleSave() {
+    console.log("selectedTrimestre:", selectedTrimestre);
     try {
       await updateTrimestre(id_academicD, selectedTrimestre);
 
@@ -197,12 +198,30 @@ function InfoModal({
               <FilterSelect
                 label="Trimestre"
                 options={[
-                  "1ª Trimestre",
-                  "2ª Trimestre",
-                  "3ª Trimestre",
-                  "4ª Trimestre",
-                  "1ª Semestre",
-                  "2ª Semestre",
+                  {
+                    label: "1° Trimestre",
+                    value: "1",
+                  },
+                  {
+                    label: "2° Trimestre",
+                    value: "2",
+                  },
+                  {
+                    label: "3° Trimestre",
+                    value: "3",
+                  },
+                  {
+                    label: "4° Trimestre",
+                    value: "4",
+                  },
+                  {
+                    label: "1° Semestre",
+                    value: "5",
+                  },
+                  {
+                    label: "2° Semestre",
+                    value: "6",
+                  },
                 ]}
                 value={selectedTrimestre}
                 onChange={setSelectedTrimestre}
