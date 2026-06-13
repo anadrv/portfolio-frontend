@@ -36,8 +36,7 @@ function ConfirmDeleteModal({
           <button
             onClick={onConfirm}
             className="
-              bg-accent
-              px-4 py-2 rounded-lg text-sm ont-semibold cursor-pointer text-background">
+              bg-accent font-semibold px-4 py-2 rounded-lg text-sm ont-semibold cursor-pointer text-background hover:scale-105 transition-transform">
             Excluir
           </button>
         </footer>
