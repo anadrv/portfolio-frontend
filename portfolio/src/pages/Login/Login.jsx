@@ -214,12 +214,12 @@ function Login() {
                     className="w-4 h-4 accent-accent"
                   />
 
-                  <label
+                  {/*<label
                     htmlFor="remember"
                     className="text-white text-base md:text-sm"
                   >
                     Continuar conectado(a)
-                  </label>
+                  </label>*/}
                 </div>
 
                 <button
@@ -240,13 +240,12 @@ function Login() {
                   >
                     Entrar com Microsoft
                   </a>
-
-                  <a
+                  {/*<a
                     href="#"
                     className="text-white text-base md:text-xs hover:underline"
                   >
                     Esqueceu a senha?
-                  </a>
+                  </a>*/}
                 </div>
               </form>
             </div>
