@@ -206,25 +206,27 @@ function Login() {
                     />
                   </div>
                 </div>
-
+                {/*
                 <div className="flex items-center gap-2 mt-1 max-w-[340px] mx-auto md:mx-0 w-full">
                   <input
                     type="checkbox"
                     id="remember"
                     className="w-4 h-4 accent-accent"
                   />
+                  
 
-                  {/*<label
+                  <label
                     htmlFor="remember"
                     className="text-white text-base md:text-sm"
                   >
                     Continuar conectado(a)
-                  </label>*/}
-                </div>
+                  </label>
+                </div>*/}
 
                 <button
                   type="submit"
-                  className="w-full max-w-[340px] md:w-85 mx-auto md:mx-0 bg-accent text-background text-lg md:text-base font-semibold py-2 rounded-lg mt-1"
+                  className="w-full max-w-[340px] md:w-85 mx-auto md:mx-0 bg-accent text-background text-lg md:text-base font-semibold py-2 rounded-lg mt-1 hover:scale-105 transition-transform
+        cursor-pointer"
                 >
                   Login
                 </button>
@@ -236,7 +238,7 @@ function Login() {
                       e.preventDefault();
                       loginMicrosoft();
                     }}
-                    className="text-white text-base md:text-xs hover:underline"
+                    className="text-white text-base md:text-md hover:underline"
                   >
                     Entrar com Microsoft
                   </a>
