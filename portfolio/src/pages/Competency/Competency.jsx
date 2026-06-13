@@ -112,6 +112,7 @@ function Competency() {
             id_competency: item.id_competency,
             name_competency: item.name_competency,
             code_competency: item.code_competency,
+            matriz_competency: item.matriz_competency,
             documents: [],
           };
         }
@@ -166,7 +167,7 @@ function Competency() {
 
     return (
       (matriz === "" ||
-        competency.documents.some((doc) => doc.matriz_competency === matriz)) &&
+        String(competency.matriz_competency) === String(matriz)) &&
       (trimestre === "" ||
         competency.documents.some((doc) => doc.trimestre === trimestre)) &&
       (status === "" ||
@@ -275,7 +276,16 @@ function Competency() {
               label="Matriz"
               value={matriz}
               onChange={setMatriz}
-              options={["Matriz - 62", "Matriz - 63"]}
+              options={[
+                {
+                  label: "Matriz 62",
+                  value: "62",
+                },
+                {
+                  label: "Matriz 63",
+                  value: "63",
+                },
+              ]}
             />
 
             <FilterSelect
