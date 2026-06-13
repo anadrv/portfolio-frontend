@@ -287,8 +287,8 @@ function Competency() {
                 "2ª Trimestre",
                 "3ª Trimestre",
                 "4ª Trimestre",
-                "1ª Semestre",
-                "2ª Semestre",
+                "1º Semestre",
+                "2º Semestre",
               ]}
             />
 

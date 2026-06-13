@@ -80,7 +80,6 @@ function InfoModal({
   ]);
 
   async function handleSave() {
-    console.log("selectedTrimestre:", selectedTrimestre);
     try {
       await updateTrimestre(id_academicD, selectedTrimestre);
 

@@ -112,19 +112,19 @@ function CreateCompetencyModal({ courseId, onClose, onSuccess }) {
               label="Trimestre"
               options={[
                 {
-                  label: "1° Trimestre",
+                  label: "1ª Trimestre",
                   value: "1",
                 },
                 {
-                  label: "2° Trimestre",
+                  label: "2ª Trimestre",
                   value: "2",
                 },
                 {
-                  label: "3° Trimestre",
+                  label: "3ª Trimestre",
                   value: "3",
                 },
                 {
-                  label: "4° Trimestre",
+                  label: "4ª Trimestre",
                   value: "4",
                 },
                 {
