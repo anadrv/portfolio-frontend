@@ -62,7 +62,6 @@ function Competency() {
   async function loadNotifications() {
     try {
       const data = await getNotificationsByCourse(id);
-      console.log(notifications);
 
       setNotifications(data);
     } catch (error) {
