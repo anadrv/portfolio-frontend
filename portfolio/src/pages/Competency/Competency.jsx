@@ -41,32 +41,29 @@ function Competency() {
   const user = JSON.parse(localStorage.getItem("user"));
 
   const isAdminOrGestao =
-    user?.role === "ADMIN" || user?.role === "GESTAO" || user?.role == "NITE";
+    user?.role === "ADMIN" || user?.role === "COORDINATOR" || user?.role === "NITE";
 
   async function loadCompetencies(courseId = id) {
-    const data = await getCompetenciesByCourse(courseId);
-    setCompetencies([...data]);
+    try {
+      const data = await getCompetenciesByCourse(courseId);
+      setCompetencies(Array.isArray(data) ? data : []);
+    } catch (error) {
+      console.error("Erro ao carregar competências:", error);
+    }
   }
 
   useEffect(() => {
-    if (!id) return;
-
-    async function fetchCompetencies() {
-      const data = await getCompetenciesByCourse(id);
-      setCompetencies([...data]);
+    if (id) {
+      loadCompetencies(id);
     }
-
-    fetchCompetencies();
   }, [id]);
 
   async function loadNotifications() {
     try {
       const data = await getNotificationsByCourse(id);
-      console.log(notifications);
-
-      setNotifications(data);
+      setNotifications(Array.isArray(data) ? data : []);
     } catch (error) {
-      console.log(error.message);
+      console.error("Erro ao carregar notificações:", error);
     }
   }
 
@@ -80,11 +77,9 @@ function Competency() {
     async function loadCourseName() {
       try {
         const courses = await getCourses();
-
         const currentCourse = courses.find(
-          (course) => String(course.id_courses) === String(id),
+          (course) => String(course.id_courses) === String(id)
         );
-
         if (currentCourse) {
           setCourseName(currentCourse.name_courses);
         }
@@ -92,7 +87,6 @@ function Competency() {
         console.error("Erro ao carregar nome do curso:", error);
       }
     }
-
     if (id) {
       loadCourseName();
     }
@@ -105,43 +99,45 @@ function Competency() {
   };
 
   const groupedCompetencies = useMemo(() => {
-    const grouped = Object.values(
-      competencies.reduce((acc, item) => {
-        if (!acc[item.id_competency]) {
-          acc[item.id_competency] = {
-            id_competency: item.id_competency,
-            name_competency: item.name_competency,
-            code_competency: item.code_competency,
-            documents: [],
-          };
-        }
+    if (!competencies || !Array.isArray(competencies)) return [];
 
-        acc[item.id_competency].documents.push(item);
+    const grouped = competencies.reduce((acc, item) => {
+      const compId = item.id_competency;
+      if (!compId) return acc;
 
-        return acc;
-      }, {}),
-    );
+      if (!acc[compId]) {
+        acc[compId] = {
+          id_competency: compId,
+          name_competency: item.name_competency || "Sem nome",
+          code_competency: item.code_competency || "S/C",
+          matriz_competency: String(item.matriz_competency || ""),
+          documents: [],
+        };
+      }
 
-    return grouped.sort((a, b) =>
-      a.code_competency.localeCompare(b.code_competency),
-    );
+      if (item.id_academicD) {
+        acc[compId].documents.push({
+          ...item,
+          matriz_competency: String(item.doc_matriz || item.matriz || item.matriz_competency || ""),
+        });
+      }
+
+      return acc;
+    }, {});
+
+    return Object.values(grouped).sort((a, b) => {
+      return String(a.code_competency).localeCompare(String(b.code_competency));
+    });
   }, [competencies]);
 
   const statusRules = {
     "Em andamento": (doc) => doc.flag_em_preenchimento,
-
-    Preenchido: (doc) => doc.flag_preenchido,
-
+    "Preenchido": (doc) => doc.flag_preenchido,
     "Necessita revisão": (doc) => doc.flag_necessita_revisao,
-
     "Validado pela coordenação": (doc) => doc.flag_validacao_coordenacao,
-
     "Liberado para customizar": (doc) => doc.flag_liberado_customizar,
-
     "Disponível no Canvas": (doc) => doc.flag_disponivel_canva,
-
     "Integrado ao RM-Canvas": (doc) => doc.flag_integrado_rm,
-
     "Não preenchido": (doc) =>
       !doc.flag_em_preenchimento &&
       !doc.flag_preenchido &&
@@ -154,19 +150,22 @@ function Competency() {
 
   function matchStatus(doc, status) {
     if (!status) return true;
-
     const rule = statusRules[status];
-    if (!rule) return true;
-
-    return rule(doc);
+    return rule ? rule(doc) : true;
   }
 
   const filteredCompetencies = groupedCompetencies.filter((competency) => {
-    if (!competency.documents?.length) return true;
+    const matchesMatriz =
+      matriz === "" ||
+      competency.matriz_competency === matriz ||
+      competency.documents.some((doc) => doc.matriz_competency === matriz);
+
+    if (competency.documents.length === 0) {
+      return matchesMatriz && trimestre === "" && status === "";
+    }
 
     return (
-      (matriz === "" ||
-        competency.documents.some((doc) => doc.matriz_competency === matriz)) &&
+      matchesMatriz &&
       (trimestre === "" ||
         competency.documents.some((doc) => doc.trimestre === trimestre)) &&
       (status === "" ||
@@ -174,13 +173,11 @@ function Competency() {
     );
   });
 
-  const totalPages = Math.ceil(filteredCompetencies.length / itemsPerPage);
-
+  const totalPages = Math.ceil(filteredCompetencies.length / itemsPerPage) || 1;
   const startIndex = (currentPage - 1) * itemsPerPage;
-
   const currentCompetencies = filteredCompetencies.slice(
     startIndex,
-    startIndex + itemsPerPage,
+    startIndex + itemsPerPage
   );
 
   function clearFilters() {
@@ -190,35 +187,28 @@ function Competency() {
     setCurrentPage(1);
   }
 
-  async function handleDeleteNotification(id) {
+  async function handleDeleteNotification(notifId) {
     try {
-      await deleteNotification(id);
-
+      await deleteNotification(notifId);
       setNotifications((prev) =>
-        prev.filter((notification) => notification.id_notification !== id),
+        prev.filter((n) => n.id_notification !== notifId)
       );
     } catch (error) {
-      console.log(error);
-
       alert("Erro ao deletar notificação");
     }
   }
 
-  function openDeleteModal(id) {
-    setCompetencyToDelete(id);
+  function openDeleteModal(compId) {
+    setCompetencyToDelete(compId);
     setShowDeleteModal(true);
   }
 
   async function handleDeleteCompetency() {
     try {
       await deleteCompetency(competencyToDelete);
-
       setCompetencies((prev) =>
-        prev.filter(
-          (competency) => competency.id_competency !== competencyToDelete,
-        ),
+        prev.filter((c) => c.id_competency !== competencyToDelete)
       );
-
       setShowDeleteModal(false);
       setCompetencyToDelete(null);
     } catch (error) {
@@ -230,17 +220,15 @@ function Competency() {
 
   const filteredNotifications = isProfessor
     ? notifications.filter(
-        (notification) =>
-          notification.title === "Documento necessita revisão" ||
-          notification.title === "Documento validado pela coordenação",
+        (n) =>
+          n.title === "Documento necessita revisão" ||
+          n.title === "Documento validado pela coordenação"
       )
     : notifications;
 
   const displayedNotifications = (
     selectedCompetencyId
-      ? filteredNotifications.filter(
-          (notification) => notification.id_competency === selectedCompetencyId,
-        )
+      ? filteredNotifications.filter((n) => n.id_competency === selectedCompetencyId)
       : filteredNotifications
   )
     .sort((a, b) => new Date(b.created_at) - new Date(a.created_at))
@@ -249,17 +237,13 @@ function Competency() {
   return (
     <Layout>
       <header className="flex flex-col text-text font-semibold">
-        <h1 className="text-xl md:text-2xl font-semibold py-6">{courseName}</h1>
+        <h1 className="text-xl md:text-2xl font-semibold py-6">{courseName || "Carregando..."}</h1>
       </header>
 
-      <main
-        className="flex gap-30 text-text text-lg font-semibold"
-        aria-label="Lista de competências do curso"
-      >
+      <main className="flex gap-30 text-text text-lg font-semibold">
         <section className="flex-1">
           <div className="flex justify-between mb-8">
             <h2>Competências</h2>
-
             {isAdminOrGestao && (
               <button
                 onClick={() => setIsModalOpen(true)}
@@ -275,7 +259,7 @@ function Competency() {
               label="Matriz"
               value={matriz}
               onChange={setMatriz}
-              options={["Matriz - 62", "Matriz - 63"]}
+              options={["62", "63"]}
             />
 
             <FilterSelect
@@ -310,37 +294,31 @@ function Competency() {
 
             <button
               onClick={clearFilters}
-              aria-label="Limpar todos os filtros"
               className="font-normal min-w-30 text-sm hover:underline cursor-pointer"
             >
               Limpar filtros
             </button>
           </div>
 
-          <div
-            className="bg-background-white rounded-lg mt-6 p-4 flex flex-col gap-4"
-            aria-live="polite"
-          >
+          <div className="bg-background-white rounded-lg mt-6 p-4 flex flex-col gap-4">
             {currentCompetencies.length === 0 ? (
               <p className="text-sm text-background">
-                Nenhuma competência encontrada.
+                Nenhuma competência encontrada para os filtros selecionados.
               </p>
             ) : (
-              currentCompetencies.map((competency) => (
+              currentCompetencies.map((comp) => (
                 <Subject
-                  key={competency.id_competency}
-                  title={competency.name_competency}
-                  code={competency.code_competency}
-                  documents={competency.documents}
+                  key={comp.id_competency}
+                  title={comp.name_competency}
+                  code={comp.code_competency}
+                  documents={comp.documents}
                   onRefresh={refresh}
-                  onDelete={() => openDeleteModal(competency.id_competency)}
+                  onDelete={() => openDeleteModal(comp.id_competency)}
                   onExpand={(id) => setSelectedCompetencyId(id)}
-                  isOpen={openCompetencyId === competency.id_competency}
+                  isOpen={openCompetencyId === comp.id_competency}
                   onToggle={() =>
                     setOpenCompetencyId(
-                      openCompetencyId === competency.id_competency
-                        ? null
-                        : competency.id_competency,
+                      openCompetencyId === comp.id_competency ? null : comp.id_competency
                     )
                   }
                 />
@@ -352,40 +330,29 @@ function Competency() {
             <button
               onClick={() => setCurrentPage((p) => p - 1)}
               disabled={currentPage === 1}
-              aria-label="Página anterior"
-              className="p-2 rounded-full bg-primary"
+              className="p-2 rounded-full bg-primary disabled:opacity-50"
             >
               <ChevronLeft size={18} />
             </button>
-
             <span>
               Página {currentPage} de {totalPages}
             </span>
-
             <button
               onClick={() => setCurrentPage((p) => p + 1)}
               disabled={currentPage === totalPages}
-              aria-label="Próxima página"
-              className="p-2 rounded-full bg-primary"
+              className="p-2 rounded-full bg-primary disabled:opacity-50"
             >
               <ChevronRight size={18} />
             </button>
           </div>
         </section>
 
-        <aside
-          aria-labelledby="notificacoes-title"
-          aria-live="polite"
-          className="hidden lg:block w-80"
-        >
-          <h2 id="notificacoes-title" className="mb-4">
-            Notificações
-          </h2>
-
+        <aside className="hidden lg:block w-80">
+          <h2 className="mb-4">Notificações</h2>
           <div className="flex flex-col gap-3">
             {displayedNotifications.length === 0 ? (
               <p className="text-sm font-normal text-white">
-                Sem notificações no momento para essa competênciancia ou curso!
+                Sem notificações no momento.
               </p>
             ) : (
               displayedNotifications.map((item) => (
@@ -397,12 +364,8 @@ function Competency() {
               ))
             )}
           </div>
-
-          <div className="mt-4 ">
-            <Link
-              to="/notifications"
-              className="text-sm font-normal text-white hover:underline"
-            >
+          <div className="mt-4">
+            <Link to="/notifications" className="text-sm font-normal text-white hover:underline">
               Ver todas as notificações
             </Link>
           </div>
@@ -416,6 +379,7 @@ function Competency() {
           onSuccess={refresh}
         />
       )}
+
       {showDeleteModal && (
         <ConfirmDeleteModal
           title="Excluir competência"

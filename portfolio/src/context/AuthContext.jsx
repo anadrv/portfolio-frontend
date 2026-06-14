@@ -8,11 +8,15 @@ function AuthProvider({ children }) {
 
   useEffect(() => {
     const savedUser = localStorage.getItem("user");
-
     if (savedUser) {
-      setUser(JSON.parse(savedUser));
+      try {
+        setUser(JSON.parse(savedUser));  
+      } catch (err) {
+        localStorage.removeItem("user");
+        localStorage.removeItem("token");
+      }
+      
     }
-
     setLoading(false);
   }, []);
 

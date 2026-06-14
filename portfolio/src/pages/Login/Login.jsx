@@ -108,7 +108,7 @@ function Login() {
 
       alert("Login realizado com sucesso!");
 
-      navigate("/", { replace: true });
+      navigate("/courses", { replace: true });
     } catch (error) {
       console.log(error);
     } finally {

@@ -1,10 +1,38 @@
 const API_URL = "http://localhost:3000";
 
+function getAuthHeaders(isFormData = false) {
+  const token = localStorage.getItem("token");
+  const headers = {
+    Authorization: `Bearer ${token}`,
+  };
+
+  if (!isFormData) {
+    headers["Content-Type"] = "application/json";
+  }
+
+  return headers;
+}
+
 export async function getCourses() {
-  const response = await fetch(`${API_URL}/courses`);
+  const response = await fetch(`${API_URL}/courses`, {
+    headers: getAuthHeaders(),
+  });
 
   if (!response.ok) {
     throw new Error("Erro ao buscar cursos");
+  }
+
+  return await response.json();
+}
+
+export async function getCoursesByUser(userId) {
+  const response = await fetch(`${API_URL}/courses/user/${userId}`, {
+    headers: getAuthHeaders(),
+  });
+
+  if (!response.ok) {
+    if (response.status === 404) return [];
+    throw new Error("Erro ao buscar cursos do usuário");
   }
 
   return await response.json();
@@ -19,6 +47,7 @@ export async function createCourse(courseData) {
 
   const response = await fetch(`${API_URL}/courses`, {
     method: "POST",
+    headers: getAuthHeaders(true),
     body: formData,
   });
 
@@ -43,6 +72,7 @@ export async function updateCourse(id, courseData) {
 
   const response = await fetch(`${API_URL}/courses/${id}`, {
     method: "PUT",
+    headers: getAuthHeaders(true),
     body: formData,
   });
 
@@ -58,6 +88,7 @@ export async function updateCourse(id, courseData) {
 export async function deleteCourse(id) {
   const response = await fetch(`${API_URL}/courses/${id}`, {
     method: "DELETE",
+    headers: getAuthHeaders(),
   });
 
   const data = await response.json();

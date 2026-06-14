@@ -19,8 +19,14 @@ function SearchBar() {
     }
 
     try {
+      const token = localStorage.getItem("token");
       const response = await axios.get(
         `http://localhost:3000/search?search=${value}`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`
+          }
+        }
       );
       setResults({
         courses: response.data?.courses || [],

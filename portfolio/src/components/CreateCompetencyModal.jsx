@@ -112,28 +112,28 @@ function CreateCompetencyModal({ courseId, onClose, onSuccess }) {
               label="Trimestre"
               options={[
                 {
-                  label: "1° Trimestre",
-                  value: "1",
+                  label: "1ª Trimestre",
+                  value: "1ª Trimestre",
                 },
                 {
-                  label: "2° Trimestre",
-                  value: "2",
+                  label: "2ª Trimestre",
+                  value: "2ª Trimestre",
                 },
                 {
-                  label: "3° Trimestre",
-                  value: "3",
+                  label: "3ª Trimestre",
+                  value: "3ª Trimestre",
                 },
                 {
-                  label: "4° Trimestre",
-                  value: "4",
+                  label: "4ª Trimestre",
+                  value: "4ª Trimestre",
                 },
                 {
-                  label: "1° Semestre",
-                  value: "5",
+                  label: "1ª Semestre",
+                  value: "1ª Semestre",
                 },
                 {
-                  label: "2° Semestre",
-                  value: "6",
+                  label: "2ª Semestre",
+                  value: "2ª Semestre",
                 },
               ]}
               value={trimestre}
