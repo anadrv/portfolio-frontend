@@ -1,6 +1,8 @@
 import { Link } from "react-router-dom";
 import { Pencil } from "lucide-react";
 
+const API_URL = import.meta.env.VITE_API_URL || "http://localhost:3000";
+
 function CourseCard({ title, icons = [], link, onEdit }) {
   return (
     <Link to={link} className="block w-full">
