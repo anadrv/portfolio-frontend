@@ -174,7 +174,10 @@ function Competency() {
     );
   });
 
-  const totalPages = Math.ceil(filteredCompetencies.length / itemsPerPage);
+  const totalPages = Math.max(
+    1,
+    Math.ceil(filteredCompetencies.length / itemsPerPage),
+  );
 
   const startIndex = (currentPage - 1) * itemsPerPage;
 
@@ -359,8 +362,8 @@ function Competency() {
 
           <div className="flex items-center justify-end gap-4 mt-6 text-white">
             <button
-              onClick={() => setCurrentPage((p) => p - 1)}
-              disabled={currentPage === 1}
+              onClick={() => setCurrentPage((p) => Math.min(p + 1, totalPages))}
+              disabled={currentPage >= totalPages}
               aria-label="Página anterior"
               className="p-2 rounded-full bg-primary"
             >
@@ -372,7 +375,7 @@ function Competency() {
             </span>
 
             <button
-              onClick={() => setCurrentPage((p) => p + 1)}
+              onClick={() => setCurrentPage((p) => Math.max(p - 1, 1))}
               disabled={currentPage === totalPages}
               aria-label="Próxima página"
               className="p-2 rounded-full bg-primary"
