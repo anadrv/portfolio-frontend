@@ -2,14 +2,16 @@ import { useState } from "react";
 
 import Layout from "../../Layout/Layout";
 import UserCard from "../../components/UserCard";
+import UserModal from "../../components/UserModal";
 
 function Users() {
   const user = JSON.parse(localStorage.getItem("user"));
   const isAdmin = user?.role === "ADMIN";
 
   const [search, setSearch] = useState("");
+  const [selectedUser, setSelectedUser] = useState(null);
 
-  /* const users apenas para testar como a lista está sendo exibida */ 
+  /* const users apenas para testar como a lista está sendo exibida */
   const users = [
     {
       id: 1,
@@ -67,13 +69,14 @@ function Users() {
               }}
             >
               {filteredUsers.length > 0 ? (
-                filteredUsers.map((user) => (
+                filteredUsers.map((u) => (
                   <UserCard
-                    key={user.id}
-                    name={user.name}
-                    role={user.role}
+                    key={u.id}
+                    name={u.name}
+                    role={u.role}
                     isAdmin={isAdmin}
-                    onEdit={() => console.log("Editar:", user.name)}
+                    onClick={() => setSelectedUser(u)}
+                    onEdit={() => setSelectedUser(u)}
                   />
                 ))
               ) : (
@@ -85,6 +88,15 @@ function Users() {
           </div>
         </div>
       </div>
+      {selectedUser && (
+        <UserModal
+          id={selectedUser.id}
+          name={selectedUser.name}
+          role={selectedUser.role}
+          onClose={() => setSelectedUser(null)}
+          reload={() => {}}
+        />
+      )}
     </Layout>
   );
 }
