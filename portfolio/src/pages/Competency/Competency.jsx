@@ -41,7 +41,9 @@ function Competency() {
   const user = JSON.parse(localStorage.getItem("user"));
 
   const isAdminOrGestao =
-    user?.role === "ADMIN" || user?.role === "COORDINATOR" || user?.role === "NITE";
+    user?.role === "ADMIN" ||
+    user?.role === "COORDINATOR" ||
+    user?.role === "NITE";
 
   async function loadCompetencies(courseId = id) {
     try {
@@ -78,7 +80,7 @@ function Competency() {
       try {
         const courses = await getCourses();
         const currentCourse = courses.find(
-          (course) => String(course.id_courses) === String(id)
+          (course) => String(course.id_courses) === String(id),
         );
         if (currentCourse) {
           setCourseName(currentCourse.name_courses);
@@ -118,7 +120,9 @@ function Competency() {
       if (item.id_academicD) {
         acc[compId].documents.push({
           ...item,
-          matriz_competency: String(item.doc_matriz || item.matriz || item.matriz_competency || ""),
+          matriz_competency: String(
+            item.doc_matriz || item.matriz || item.matriz_competency || "",
+          ),
         });
       }
 
@@ -132,7 +136,7 @@ function Competency() {
 
   const statusRules = {
     "Em andamento": (doc) => doc.flag_em_preenchimento,
-    "Preenchido": (doc) => doc.flag_preenchido,
+    Preenchido: (doc) => doc.flag_preenchido,
     "Necessita revisão": (doc) => doc.flag_necessita_revisao,
     "Validado pela coordenação": (doc) => doc.flag_validacao_coordenacao,
     "Liberado para customizar": (doc) => doc.flag_liberado_customizar,
@@ -173,11 +177,14 @@ function Competency() {
     );
   });
 
-  const totalPages = Math.ceil(filteredCompetencies.length / itemsPerPage) || 1;
+  const totalPages = Math.max(
+    1,
+    Math.ceil(filteredCompetencies.length / itemsPerPage),
+  );
   const startIndex = (currentPage - 1) * itemsPerPage;
   const currentCompetencies = filteredCompetencies.slice(
     startIndex,
-    startIndex + itemsPerPage
+    startIndex + itemsPerPage,
   );
 
   function clearFilters() {
@@ -191,7 +198,7 @@ function Competency() {
     try {
       await deleteNotification(notifId);
       setNotifications((prev) =>
-        prev.filter((n) => n.id_notification !== notifId)
+        prev.filter((n) => n.id_notification !== notifId),
       );
     } catch (error) {
       alert("Erro ao deletar notificação");
@@ -207,7 +214,7 @@ function Competency() {
     try {
       await deleteCompetency(competencyToDelete);
       setCompetencies((prev) =>
-        prev.filter((c) => c.id_competency !== competencyToDelete)
+        prev.filter((c) => c.id_competency !== competencyToDelete),
       );
       setShowDeleteModal(false);
       setCompetencyToDelete(null);
@@ -222,13 +229,15 @@ function Competency() {
     ? notifications.filter(
         (n) =>
           n.title === "Documento necessita revisão" ||
-          n.title === "Documento validado pela coordenação"
+          n.title === "Documento validado pela coordenação",
       )
     : notifications;
 
   const displayedNotifications = (
     selectedCompetencyId
-      ? filteredNotifications.filter((n) => n.id_competency === selectedCompetencyId)
+      ? filteredNotifications.filter(
+          (n) => n.id_competency === selectedCompetencyId,
+        )
       : filteredNotifications
   )
     .sort((a, b) => new Date(b.created_at) - new Date(a.created_at))
@@ -237,7 +246,9 @@ function Competency() {
   return (
     <Layout>
       <header className="flex flex-col text-text font-semibold">
-        <h1 className="text-xl md:text-2xl font-semibold py-6">{courseName || "Carregando..."}</h1>
+        <h1 className="text-xl md:text-2xl font-semibold py-6">
+          {courseName || "Carregando..."}
+        </h1>
       </header>
 
       <main className="flex gap-30 text-text text-lg font-semibold">
@@ -318,7 +329,9 @@ function Competency() {
                   isOpen={openCompetencyId === comp.id_competency}
                   onToggle={() =>
                     setOpenCompetencyId(
-                      openCompetencyId === comp.id_competency ? null : comp.id_competency
+                      openCompetencyId === comp.id_competency
+                        ? null
+                        : comp.id_competency,
                     )
                   }
                 />
@@ -328,7 +341,7 @@ function Competency() {
 
           <div className="flex items-center justify-end gap-4 mt-6 text-white">
             <button
-              onClick={() => setCurrentPage((p) => p - 1)}
+              onClick={() => setCurrentPage((p) => Math.max(p - 1, 1))}
               disabled={currentPage === 1}
               className="p-2 rounded-full bg-primary disabled:opacity-50"
             >
@@ -338,7 +351,7 @@ function Competency() {
               Página {currentPage} de {totalPages}
             </span>
             <button
-              onClick={() => setCurrentPage((p) => p + 1)}
+              onClick={() => setCurrentPage((p) => Math.min(p + 1, totalPages))}
               disabled={currentPage === totalPages}
               className="p-2 rounded-full bg-primary disabled:opacity-50"
             >
@@ -365,7 +378,10 @@ function Competency() {
             )}
           </div>
           <div className="mt-4">
-            <Link to="/notifications" className="text-sm font-normal text-white hover:underline">
+            <Link
+              to="/notifications"
+              className="text-sm font-normal text-white hover:underline"
+            >
               Ver todas as notificações
             </Link>
           </div>
