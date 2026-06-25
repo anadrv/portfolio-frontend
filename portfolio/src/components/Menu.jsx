@@ -16,6 +16,7 @@ function Menu() {
 
   const user = JSON.parse(localStorage.getItem("user"));
 
+  const isAdmin = user?.role === "ADMIN";
   const isProfessor = user?.role === "TEACHER";
 
   useEffect(() => {
@@ -74,7 +75,7 @@ function Menu() {
             </li>
           )}
 
-          {!isProfessor && (
+          {isAdmin && (
             <li>
 
               <NavLink to="/users">Usuários</NavLink>
@@ -150,7 +151,7 @@ function Menu() {
               </li>
             )}
 
-            {!isProfessor && (
+            {!isAdmin && (
               <li>
                 <NavLink
                   to="/users"
