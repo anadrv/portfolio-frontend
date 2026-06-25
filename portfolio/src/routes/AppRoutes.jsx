@@ -7,6 +7,7 @@ import Login from "../pages/Login/Login";
 import Notifications from "../pages/Notifications/Notifications";
 import AuthLoading from "../pages/AuthLoading/AuthLoading";
 import Competency from "../pages/Competency/Competency";
+import Users from "../pages/Users/Users";
 
 function AppRoutes() {
   return (
@@ -37,6 +38,14 @@ function AppRoutes() {
         element={
           <ProtectedRoute allowedRoles={["ADMIN", "COORDINATOR", "NITE"]}>
             <Notifications />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/users"
+        element={
+          <ProtectedRoute allowedRoles={["ADMIN", "COORDINATOR", "NITE"]}>
+            <Users />
           </ProtectedRoute>
         }
       />
