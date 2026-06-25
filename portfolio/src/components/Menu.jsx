@@ -71,7 +71,16 @@ function Menu() {
           {!isProfessor && (
             <li>
               <NavLink to="/notifications">Notificações</NavLink>
+     
             </li>
+            
+          )}
+           {!isProfessor && (
+            <li>
+
+              <NavLink to="/users">Usuários</NavLink>
+            </li>
+            
           )}
 
           <li className="relative" ref={profileRef}>
