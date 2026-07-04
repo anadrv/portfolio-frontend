@@ -98,40 +98,37 @@ export async function updateUserRole(
 }
 
 // Desativar usuário
-export async function deactivateUser(
-  userId,
-  token
-) {
+export async function deactivateUser(userId, token) {
   try {
-
-    const response = await fetch(
-      `${API_URL}/users/${userId}`,
-      {
-        method: "DELETE",
-
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-      }
-    );
-
-    if (!response.ok) {
-      throw new Error(
-        `Erro HTTP: ${response.status}`
-      );
-    }
-
+    const response = await fetch(`${API_URL}/users/${userId}/deactivate`, {
+      method: "PATCH",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    if (!response.ok) throw new Error(`Erro HTTP: ${response.status}`);
     return await response.json();
-
   } catch (error) {
-
-    console.error(
-      "Erro ao desativar usuário:",
-      error
-    );
-
+    console.error("Erro ao desativar usuário:", error);
     throw error;
   }
 }
 
+//Reativar Usuario
+export async function reactivateUser(userId, token) {
+  try {
+    const response = await fetch(`${API_URL}/users/${userId}/reactivate`, {
+      method: "PATCH",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    if (!response.ok) throw new Error(`Erro HTTP: ${response.status}`);
+    return await response.json();
+  } catch (error) {
+    console.error("Erro ao reativar usuário:", error);
+    throw error;
+  }
+}

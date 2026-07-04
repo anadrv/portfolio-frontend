@@ -151,7 +151,7 @@ function Menu() {
               </li>
             )}
 
-            {!isAdmin && (
+            {isAdmin && (
               <li>
                 <NavLink
                   to="/users"
