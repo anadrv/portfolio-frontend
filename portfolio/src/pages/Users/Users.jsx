@@ -1,8 +1,9 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 import Layout from "../../Layout/Layout";
 import UserCard from "../../components/UserCard";
 import UserModal from "../../components/UserModal";
+import { getUsers } from "../../services/userService";
 
 function Users() {
   const user = JSON.parse(localStorage.getItem("user"));
@@ -10,30 +11,26 @@ function Users() {
 
   const [search, setSearch] = useState("");
   const [selectedUser, setSelectedUser] = useState(null);
+  const [users, setUsers] = useState([]);
 
-  /* const users apenas para testar como a lista está sendo exibida */
-  const users = [
-    {
-      id: 1,
-      name: "Rui",
-      role: "ADMIN",
-    },
-    {
-      id: 2,
-      name: "Kanade",
-      role: "TEACHER",
-    },
-    {
-      id: 3,
-      name: "Toya",
-      role: "COORDINATOR",
-    },
-    {
-      id: 4,
-      name: "Ichika",
-      role: "NITE",
-    },
-  ];
+  async function loadUsers() {
+    try {
+      const token = localStorage.getItem("token");
+      const data = await getUsers(token);
+      const formatted = data.map((u) => ({
+        id: u.id_users,
+        name: u.name_users,
+        role: u.role_name,
+      }));
+      setUsers(formatted);
+    } catch (err) {
+      console.error("Erro ao buscar usuários:", err);
+    }
+  }
+
+  useEffect(() => {
+    loadUsers();
+  }, []);
 
   const filteredUsers = users.filter((user) =>
     user.name.toLowerCase().includes(search.toLowerCase()),
@@ -94,7 +91,7 @@ function Users() {
           name={selectedUser.name}
           role={selectedUser.role}
           onClose={() => setSelectedUser(null)}
-          reload={() => {}}
+          reload={loadUsers}
         />
       )}
     </Layout>

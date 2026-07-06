@@ -20,8 +20,9 @@ function SearchBar() {
 
     try {
       const token = localStorage.getItem("token");
+      const API_URL = import.meta.env.VITE_API_URL || "http://localhost:3000";
       const response = await axios.get(
-        `http://localhost:3000/search?search=${value}`,
+        `${API_URL}/search?search=${value}`,
         {
           headers: {
             Authorization: `Bearer ${token}`
