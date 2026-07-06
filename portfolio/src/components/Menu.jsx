@@ -76,14 +76,6 @@ function Menu() {
             </li>
             
           )}
-           {!isProfessor && (
-            <li>
-
-              <NavLink to="/users">Usuários</NavLink>
-            </li>
-            
-          )}
-
           {isAdmin && (
             <li>
 
