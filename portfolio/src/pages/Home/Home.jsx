@@ -4,7 +4,7 @@ import FilterSelect from "../../components/FilterSelect";
 import CourseCard from "../../components/CourseCard";
 import CreateCourse from "../../components/CreateCourseModal";
 
-import { getCourses } from "../../services/courseService";
+import { getCourses, getCoursesByUser } from "../../services/courseService";
 
 import adminIcon from "../../assets/icons/courses/admin.png";
 import adsIcon from "../../assets/icons/courses/ads.png";
@@ -20,6 +20,8 @@ function Home() {
 
   const [courses, setCourses] = useState([]);
 
+  const user = JSON.parse(localStorage.getItem("user"));
+
   const iconMap = {
     admin: adminIcon,
     ads: adsIcon,
@@ -33,6 +35,7 @@ function Home() {
     async function loadCourses() {
       try {
         const data = await getCourses();
+
         const formattedCourses = data.map((course) => ({
           id: course.id_courses,
           title: course.name_courses,
@@ -52,8 +55,6 @@ function Home() {
   const filteredCourses = courses.filter((course) => {
     return matriz === "" || course.matriz.includes(matriz);
   });
-
-  const user = JSON.parse(localStorage.getItem("user"));
 
   const isAdminOrNite = user?.role === "ADMIN" || user?.role === "NITE";
 

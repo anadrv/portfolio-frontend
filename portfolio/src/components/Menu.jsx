@@ -16,6 +16,7 @@ function Menu() {
 
   const user = JSON.parse(localStorage.getItem("user"));
 
+  const isAdmin = user?.role === "ADMIN";
   const isProfessor = user?.role === "TEACHER";
 
   useEffect(() => {
@@ -83,6 +84,14 @@ function Menu() {
             
           )}
 
+          {isAdmin && (
+            <li>
+
+              <NavLink to="/users">Usuários</NavLink>
+            </li>
+            
+          )}
+
           <li className="relative" ref={profileRef}>
             <button
               onClick={() => setProfileOpen(!profileOpen)}
@@ -143,6 +152,18 @@ function Menu() {
               <li>
                 <NavLink
                   to="/notifications"
+                  onClick={() => setOpen(false)}
+                  className="block p-2 rounded hover:bg-white/20 transition"
+                >
+                  Notificações
+                </NavLink>
+              </li>
+            )}
+
+            {isAdmin && (
+              <li>
+                <NavLink
+                  to="/users"
                   onClick={() => setOpen(false)}
                   className="block p-2 rounded hover:bg-white/20 transition"
                 >

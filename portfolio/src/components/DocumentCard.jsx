@@ -49,6 +49,13 @@ function DocumentCard({
     "Não preenchido": "bg-gray-400",
   };
 
+  const formattedAccessLink =
+    accessLink &&
+    !accessLink.startsWith("http://") &&
+    !accessLink.startsWith("https://")
+      ? `https://${accessLink}`
+      : accessLink;
+
   return (
     <article className="flex-1 bg-background rounded-lg p-4 flex flex-col gap-4">
       <header className="flex items-center justify-between bg-white p-4 py-6 rounded-lg">
@@ -65,7 +72,7 @@ function DocumentCard({
         </div>
 
         <a
-          href={accessLink}
+          href={formattedAccessLink}
           target="_blank"
           rel="noreferrer"
           aria-label={`Acessar documento ${title} em nova aba`}
