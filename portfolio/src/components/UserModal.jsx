@@ -4,6 +4,7 @@ import { Pencil, User } from "lucide-react";
 
 import PrimaryButton from "./PrimaryButton";
 import showFeedback from "../utils/showFeedback";
+import { updateUserRole } from "../services/userService";
 
 function UserModal({ id, name, role, onClose, reload }) {
   const [isEditing, setIsEditing] = useState(false);
@@ -21,6 +22,21 @@ function UserModal({ id, name, role, onClose, reload }) {
 
   async function handleSave() {
     try {
+      const token = localStorage.getItem("token");
+      const roleIdMap = {
+        ADMIN: 1,
+        NITE: 2,
+        COORDINATOR: 3,
+        TEACHER: 4,
+      };
+
+      const roleId = roleIdMap[selectedRole];
+      if (!roleId) {
+        throw new Error("Cargo inválido selecionado");
+      }
+
+      await updateUserRole(id, roleId, token);
+
       setInitialRole(selectedRole);
       setIsEditing(false);
       setErrors({});
